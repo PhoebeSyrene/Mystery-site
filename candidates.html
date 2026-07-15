@@ -9,7 +9,7 @@
 /* ===== 浮生三千 マーダーミステリー ローカライズ 共用スタイル ===== */
 :root{
   --ink:#1a1a1a;
-  --ink-soft:#5c554a;
+  --ink-soft:#8a8378;
   --paper:#faf7f2;
   --card:#ffffff;
   --lacquer:#9b2226;
@@ -120,13 +120,58 @@ section{max-width:1200px;margin:0 auto;padding:100px 40px;}
 /* ===== CANDIDATE / LINEUP CARDS ===== */
 .files-note{border-left:2px solid var(--gold);padding:6px 0 6px 24px;font-size:0.9rem;color:var(--ink-soft);margin-bottom:56px;font-weight:300;max-width:70ch;}
 .files-note strong{color:var(--ink);font-weight:500;}
-.files-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--hair);border:1px solid var(--hair);}
-.file-card{background:var(--card);padding:52px 34px;display:flex;align-items:center;justify-content:center;text-align:center;min-height:260px;}
-.file-card .ph-text{color:var(--ink-soft);}
-.file-card .ph-text .genre-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);display:inline-block;margin-bottom:20px;}
-.file-card .ph-text strong{display:block;font-family:'Noto Serif SC','Noto Serif JP',serif;color:var(--ink);font-size:1.08rem;font-weight:400;margin-bottom:10px;letter-spacing:0.04em;}
-.file-card .ph-text span{font-size:0.85rem;font-weight:300;}
-@media (max-width:900px){.files-grid{grid-template-columns:1fr;}}
+
+/* ===== 横向作品カード ===== */
+.files-grid{display:flex;flex-direction:column;gap:1px;background:var(--hair);border:1px solid var(--hair);}
+.file-card{
+  background:var(--card);
+  display:grid;
+  grid-template-columns:200px 1fr;
+  gap:0;
+  min-height:280px;
+}
+.file-card .poster{
+  background:var(--paper-deep);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  flex-shrink:0;
+}
+.file-card .poster img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+.file-card .poster .no-img{
+  width:60px;
+  height:60px;
+  border:1px solid var(--hair);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.file-card .poster .no-img svg{stroke:var(--hair);fill:none;}
+.file-card .info{
+  padding:44px 48px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  border-left:1px solid var(--hair);
+}
+.file-card .genre-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);display:inline-block;margin-bottom:18px;}
+.file-card .genre-label{font-size:0.7rem;letter-spacing:0.2em;color:var(--gold);margin-bottom:12px;display:block;}
+.file-card h3{font-family:'Noto Serif SC','Noto Serif JP',serif;font-size:1.2rem;font-weight:400;margin-bottom:14px;letter-spacing:0.04em;color:var(--ink);}
+.file-card .desc{font-size:0.88rem;color:var(--ink-soft);font-weight:300;max-width:52ch;line-height:1.9;}
+.file-card .meta{margin-top:20px;font-size:0.78rem;color:var(--ink-soft);font-weight:300;letter-spacing:0.04em;}
+.file-card.ph-card .info{justify-content:center;align-items:flex-start;}
+
+@media (max-width:700px){
+  .file-card{grid-template-columns:1fr;}
+  .file-card .poster{min-height:200px;}
+  .file-card .info{padding:32px 28px;}
+}
 
 .lineup-empty{
   border:1px dashed var(--hair);
@@ -227,7 +272,7 @@ footer a{color:var(--gold);}
   </div>
 </header>
 
-<div style="background:var(--paper-deep) url('images/hero-band-red.webp') right center/cover no-repeat;">
+<div style="background:var(--paper-deep) url('images/hero-index.webp') right center/cover no-repeat;">
 <div class="page-hero" style="border-bottom:1px solid var(--hair);">
   <span class="eyebrow">SCRIPT CANDIDATES · 中国 → 日本</span>
   <h1>候補シナリオ</h1>
@@ -239,27 +284,52 @@ footer a{color:var(--gold);}
   <p class="files-note">ここに掲載する作品は、<strong>原作発行元との契約およびローカライズ作業への着手が確認できたもの</strong>のみを公開しています。交渉段階の作品については掲載しておりません。</p>
 
   <div class="files-grid">
-    <div class="file-card">
-      <div class="ph-text">
+
+    <!-- 作品を追加するときはこのブロックをコピーして使う -->
+    <!-- poster の <img> を実際の画像パスに、ph-card クラスと no-img を削除する -->
+
+    <div class="file-card ph-card">
+      <div class="poster">
+        <div class="no-img">
+          <svg width="24" height="24" viewBox="0 0 24 24" stroke-width="1" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="18" height="18" rx="1"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        </div>
+      </div>
+      <div class="info">
         <span class="genre-dot"></span>
-        <strong>準備中</strong>
-        <span>推理シナリオの選定を進めています</span>
+        <span class="genre-label">推理</span>
+        <h3>準備中</h3>
+        <p class="desc">推理シナリオの選定を進めています。詳細は確定次第ご案内します。</p>
       </div>
     </div>
-    <div class="file-card">
-      <div class="ph-text">
+
+    <div class="file-card ph-card">
+      <div class="poster">
+        <div class="no-img">
+          <svg width="24" height="24" viewBox="0 0 24 24" stroke-width="1" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="18" height="18" rx="1"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        </div>
+      </div>
+      <div class="info">
         <span class="genre-dot"></span>
-        <strong>準備中</strong>
-        <span>情感シナリオの選定を進めています</span>
+        <span class="genre-label">情感</span>
+        <h3>準備中</h3>
+        <p class="desc">情感シナリオの選定を進めています。詳細は確定次第ご案内します。</p>
       </div>
     </div>
-    <div class="file-card">
-      <div class="ph-text">
+
+    <div class="file-card ph-card">
+      <div class="poster">
+        <div class="no-img">
+          <svg width="24" height="24" viewBox="0 0 24 24" stroke-width="1" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="18" height="18" rx="1"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        </div>
+      </div>
+      <div class="info">
         <span class="genre-dot"></span>
-        <strong>準備中</strong>
-        <span>次の案件を調査しています</span>
+        <span class="genre-label">調査中</span>
+        <h3>準備中</h3>
+        <p class="desc">次の案件を調査しています。詳細は確定次第ご案内します。</p>
       </div>
     </div>
+
   </div>
 
   <div class="subscribe-box">
