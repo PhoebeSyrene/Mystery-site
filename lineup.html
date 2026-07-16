@@ -81,7 +81,7 @@ footer a{color:var(--gold);}
       <a href="japan-to-china.html">日本発 中国へ</a>
       <a href="contact.html">シナリオ購入</a>
     </nav>
-    <a href="ticket.html" class="nav-cta">チケット予約</a>
+    <a href="ticket.html" class="nav-cta">公演予約</a>
   </div>
 </header>
 
@@ -89,20 +89,16 @@ footer a{color:var(--gold);}
 <div class="page-hero">
   <span class="eyebrow">SCRIPT LINEUP · 中国 → 日本</span>
   <h1>作品ラインナップ</h1>
-  <p class="lead">ローカライズが完了した正式作品と、現在選定中の候補シナリオをご紹介します。</p>
+  <p class="lead">ローカライズが完了したシナリオと、現在選定中の候補シナリオをご紹介します。</p>
 </div>
 </div>
 
-<!-- ===== 正式作品 ===== -->
 <section>
   <div class="section-head">
-    <span class="eyebrow">OFFICIAL LINEUP</span>
-    <h2>正式作品</h2>
+    <span class="eyebrow">SCENARIO LIST</span>
+    <h2>シナリオ一覧</h2>
     <div class="rule"></div>
   </div>
-
-  <!-- 作品を追加する場合はこのブロックをコピーして追加 -->
-  <!-- 画像がある場合： <div class="work-thumb"><img src="images/ファイル名.jpg" alt="作品名"></div> -->
 
   <!-- ▼ 作品1 -->
   <div class="work-card">
@@ -115,17 +111,14 @@ footer a{color:var(--gold);}
       <h3>作品名がここに入ります</h3>
       <div class="sub">原題（中国語）</div>
       <p>作品の簡単な紹介文がここに入ります。ジャンルの魅力や見どころを2〜3行で説明します。</p>
-      <div class="price">店舗導入価格　<strong>¥24,000〜</strong>（買切り）</div>
     </div>
     <div class="work-action">
-      <a href="contact.html" class="btn-primary">ご相談はこちら</a>
+      <a href="ticket.html" class="btn-primary">公演予約はこちら</a>
     </div>
   </div>
-  <!-- ▲ 作品1 -->
 
 </section>
 
-<!-- ===== 候補シナリオ ===== -->
 <div class="candidate-section">
 <section>
   <div class="section-head">
@@ -133,14 +126,52 @@ footer a{color:var(--gold);}
     <h2>候補シナリオ</h2>
     <div class="rule"></div>
   </div>
-  <p style="font-size:0.9rem;color:var(--ink-soft);margin-bottom:40px;max-width:60ch;">現在ローカライズを進めている作品です。正式決定次第、上の作品ラインナップに移動します。</p>
-
-  <!-- 候補を追加する場合はこのブロックをコピーして追加 -->
-  <!-- statusは「審査中」「交渉中」「翻訳中」などに変更可能 -->
+  <p style="font-size:0.9rem;color:var(--ink-soft);margin-bottom:40px;max-width:60ch;">現在ローカライズを進めている作品です。正式決定次第、上のシナリオ一覧に移動します。</p>
 
   <!-- ▼ 候補1 -->
   <div class="candidate-card">
     <div class="candidate-thumb">
-      <!-- <img src="images/candidate-001.jpg" alt="作品名"> -->
       画像
     </div>
+    <div class="candidate-info">
+      <div class="status">審査中</div>
+      <h3>作品名</h3>
+      <div class="sub">原題（中国語）</div>
+      <p>現在ローカライズの適性を審査しています。詳細は確定次第ご案内します。</p>
+    </div>
+  </div>
+
+  <!-- ▼ 候補2 -->
+  <div class="candidate-card">
+    <div class="candidate-thumb">
+      画像
+    </div>
+    <div class="candidate-info">
+      <div class="status">翻訳中</div>
+      <h3>作品名</h3>
+      <div class="sub">原題（中国語）</div>
+      <p>現在翻訳を進めています。詳細は確定次第ご案内します。</p>
+    </div>
+  </div>
+
+  <div class="subscribe-box">
+    <div class="txt">
+      <h3>新作入荷のお知らせ</h3>
+      <p>正式ラインナップ追加時にメールでお知らせします。</p>
+    </div>
+    <form class="subscribe-form" name="lineup-notify" method="POST" data-netlify="true">
+      <input type="hidden" name="form-name" value="lineup-notify">
+      <input type="email" name="email" placeholder="メールアドレス" required>
+      <button type="submit">通知を受け取る →</button>
+    </form>
+  </div>
+
+</section>
+</div>
+
+<footer>
+  © 浮生三千 All rights reserved. ｜ mystery.threethousandlives.com
+</footer>
+
+</body>
+</html>
