@@ -21,16 +21,13 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--paper);color:var(--ink);font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:1.6;}
 
-/* ===== HEADER ===== */
 .admin-header{background:var(--ink);color:#fff;padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:56px;}
 .admin-header .logo{font-size:1rem;letter-spacing:0.12em;font-weight:500;}
 .admin-header .logo span{color:var(--gold);margin-right:8px;}
 .admin-header .user{font-size:0.78rem;color:rgba(255,255,255,0.5);}
 
-/* ===== LAYOUT ===== */
 .layout{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 56px);}
 
-/* ===== SIDEBAR ===== */
 .sidebar{background:var(--card);border-right:1px solid var(--hair);padding:24px 0;}
 .sidebar-section{margin-bottom:8px;}
 .sidebar-label{font-size:0.68rem;letter-spacing:0.16em;color:var(--ink-soft);padding:8px 20px 4px;font-weight:600;}
@@ -38,12 +35,10 @@ body{background:var(--paper);color:var(--ink);font-family:'Helvetica Neue',Arial
 .sidebar-item:hover{background:var(--paper);color:var(--lacquer);}
 .sidebar-item.active{background:var(--paper-deep);border-left-color:var(--lacquer);color:var(--lacquer);font-weight:500;}
 
-/* ===== MAIN ===== */
 .main{padding:32px 40px;max-width:900px;}
 .page-title{font-size:1.3rem;font-weight:600;margin-bottom:6px;letter-spacing:0.02em;}
 .page-sub{font-size:0.84rem;color:var(--ink-soft);margin-bottom:28px;}
 
-/* ===== SETUP PANEL ===== */
 .setup-card{background:var(--card);border:1px solid var(--hair);padding:28px 32px;margin-bottom:28px;border-radius:2px;}
 .setup-card h3{font-size:0.95rem;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
 .setup-card h3 .badge{font-size:0.68rem;background:var(--lacquer);color:#fff;padding:2px 8px;border-radius:10px;font-weight:500;}
@@ -57,19 +52,21 @@ body{background:var(--paper);color:var(--ink);font-family:'Helvetica Neue',Arial
 .btn-primary:hover{background:#7a1a1d;}
 .btn-secondary{background:var(--hair);color:var(--ink);}
 .btn-secondary:hover{background:#d5cdc0;}
-.btn-success{background:var(--green);color:#fff;}
 .btn-danger{background:#c62828;color:#fff;}
 .btn-sm{padding:6px 14px;font-size:0.78rem;}
 
-/* ===== TABS ===== */
 .panel{display:none;}
 .panel.active{display:block;}
 
-/* ===== WORK CARDS ===== */
+/* ===== DRAG & DROP ===== */
 .work-list{display:flex;flex-direction:column;gap:16px;margin-bottom:24px;}
-.work-item{background:var(--card);border:1px solid var(--hair);border-radius:2px;overflow:hidden;}
+.work-item{background:var(--card);border:1px solid var(--hair);border-radius:2px;overflow:hidden;transition:box-shadow .2s;}
+.work-item.dragging{opacity:0.5;box-shadow:0 8px 24px rgba(0,0,0,0.15);}
+.work-item.drag-over{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold);}
 .work-item-header{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--hair);background:var(--paper-deep);}
-.work-item-header .title{font-weight:600;font-size:0.9rem;}
+.work-item-header .title{font-weight:600;font-size:0.9rem;display:flex;align-items:center;gap:10px;}
+.drag-handle{cursor:grab;color:var(--ink-soft);font-size:1.1rem;padding:2px 4px;user-select:none;}
+.drag-handle:active{cursor:grabbing;}
 .work-item-header .actions{display:flex;gap:8px;}
 .work-item-body{padding:20px;display:grid;grid-template-columns:140px 1fr;gap:20px;}
 .work-thumb-preview{width:140px;height:186px;border:2px dashed var(--hair);display:flex;align-items:center;justify-content:center;font-size:0.75rem;color:var(--ink-soft);cursor:pointer;background:var(--paper);position:relative;overflow:hidden;flex-shrink:0;}
@@ -83,30 +80,24 @@ body{background:var(--paper);color:var(--ink);font-family:'Helvetica Neue',Arial
 .work-field textarea{resize:vertical;min-height:70px;}
 .field-row-inline{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
 
-/* ===== STATUS BADGE ===== */
 .status-badge{display:inline-block;font-size:0.68rem;padding:2px 10px;border-radius:10px;font-weight:600;letter-spacing:0.06em;}
 .status-official{background:#e8f5e9;color:var(--green);}
 .status-candidate{background:#fff8e1;color:#f57f17;}
 
-/* ===== TOAST ===== */
 .toast{position:fixed;bottom:28px;right:28px;background:var(--ink);color:#fff;padding:12px 20px;border-radius:4px;font-size:0.84rem;opacity:0;transform:translateY(8px);transition:all .25s ease;pointer-events:none;z-index:999;}
 .toast.show{opacity:1;transform:translateY(0);}
 .toast.success{background:var(--green);}
 .toast.error{background:#c62828;}
 
-/* ===== ADD BUTTON ===== */
 .add-btn{border:2px dashed var(--hair);background:transparent;width:100%;padding:16px;font-size:0.84rem;color:var(--ink-soft);cursor:pointer;border-radius:2px;font-family:inherit;}
 .add-btn:hover{border-color:var(--gold);color:var(--gold);}
 
-/* ===== SAVE BAR ===== */
 .save-bar{position:sticky;bottom:0;background:var(--card);border-top:1px solid var(--hair);padding:14px 40px;display:flex;align-items:center;justify-content:space-between;margin:0 -40px;margin-top:32px;}
 .save-bar .hint{font-size:0.8rem;color:var(--ink-soft);}
 
-/* ===== LOADING ===== */
 .loading{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
-.divider{height:1px;background:var(--hair);margin:24px 0;}
 .info-box{background:var(--paper-deep);border-left:3px solid var(--gold);padding:12px 16px;font-size:0.82rem;color:var(--ink-soft);margin-bottom:20px;border-radius:0 2px 2px 0;}
 </style>
 </head>
@@ -121,22 +112,20 @@ body{background:var(--paper);color:var(--ink);font-family:'Helvetica Neue',Arial
   <div class="sidebar">
     <div class="sidebar-section">
       <div class="sidebar-label">設定</div>
-      <button class="sidebar-item active" onclick="showPanel('setup')">🔑 GitHub接続</button>
+      <button class="sidebar-item active" onclick="showPanel('setup', this)">🔑 GitHub接続</button>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-label">コンテンツ</div>
-      <button class="sidebar-item" onclick="showPanel('works')">📖 シナリオ一覧</button>
-      <button class="sidebar-item" onclick="showPanel('candidates')">🔍 候補シナリオ</button>
+      <button class="sidebar-item" onclick="showPanel('works', this)">📖 シナリオ一覧</button>
+      <button class="sidebar-item" onclick="showPanel('candidates', this)">🔍 候補シナリオ</button>
     </div>
   </div>
 
   <div class="main">
 
-    <!-- ===== SETUP ===== -->
     <div id="panel-setup" class="panel active">
       <div class="page-title">GitHub接続設定</div>
       <div class="page-sub">GitHubのPersonal Access Tokenを入力してください。このページにのみ保存されます。</div>
-
       <div class="setup-card">
         <h3>接続情報 <span class="badge" id="connect-badge">未接続</span></h3>
         <div class="field-row">
@@ -156,35 +145,28 @@ body{background:var(--paper);color:var(--ink);font-family:'Helvetica Neue',Arial
           <button class="btn btn-secondary" onclick="clearConfig()">クリア</button>
         </div>
       </div>
-
       <div class="info-box">
         💡 Token、ユーザー名、リポジトリ名はこのブラウザにのみ保存されます。他の人には見えません。<br>
-        Token权限は <strong>repo</strong> のみ必要です。
+        Token権限は <strong>repo</strong> のみ必要です。
       </div>
     </div>
 
-    <!-- ===== WORKS ===== -->
     <div id="panel-works" class="panel">
       <div class="page-title">シナリオ一覧</div>
-      <div class="page-sub">正式公演中のシナリオを管理します。変更後は「保存して公開」を押してください。</div>
-
+      <div class="page-sub">正式公演中のシナリオを管理します。☰ をドラッグして並び替えができます。</div>
       <div class="work-list" id="works-list"></div>
       <button class="add-btn" onclick="addWork()">＋ シナリオを追加</button>
-
       <div class="save-bar">
         <span class="hint">変更はGitHubに直接反映されます</span>
         <button class="btn btn-primary" onclick="saveWorks()" id="save-works-btn">保存して公開</button>
       </div>
     </div>
 
-    <!-- ===== CANDIDATES ===== -->
     <div id="panel-candidates" class="panel">
       <div class="page-title">候補シナリオ</div>
-      <div class="page-sub">現在審査・翻訳中のシナリオを管理します。</div>
-
+      <div class="page-sub">現在審査・翻訳中のシナリオを管理します。☰ をドラッグして並び替えができます。</div>
       <div class="work-list" id="candidates-list"></div>
       <button class="add-btn" onclick="addCandidate()">＋ 候補を追加</button>
-
       <div class="save-bar">
         <span class="hint">変更はGitHubに直接反映されます</span>
         <button class="btn btn-primary" onclick="saveCandidates()" id="save-candidates-btn">保存して公開</button>
@@ -197,12 +179,10 @@ body{background:var(--paper);color:var(--ink);font-family:'Helvetica Neue',Arial
 <div class="toast" id="toast"></div>
 
 <script>
-// ===== STATE =====
 let works = [];
 let candidates = [];
 let ghConfig = {};
 
-// ===== INIT =====
 window.onload = () => {
   loadConfig();
   loadData();
@@ -271,8 +251,8 @@ function setBadge(text, ok) {
 function loadData() {
   const savedWorks = localStorage.getItem('works_data');
   const savedCandidates = localStorage.getItem('candidates_data');
-  works = savedWorks ? JSON.parse(savedWorks) : [defaultWork()];
-  candidates = savedCandidates ? JSON.parse(savedCandidates) : [defaultCandidate()];
+  works = savedWorks ? JSON.parse(savedWorks) : [];
+  candidates = savedCandidates ? JSON.parse(savedCandidates) : [];
   renderWorks();
   renderCandidates();
 }
@@ -294,15 +274,20 @@ function addWork() {
 function removeWork(id) {
   if (!confirm('このシナリオを削除しますか？')) return;
   works = works.filter(w => w.id !== id);
+  localStorage.setItem('works_data', JSON.stringify(works));
   renderWorks();
 }
 
 function renderWorks() {
   const list = document.getElementById('works-list');
-  list.innerHTML = works.map((w, i) => `
-    <div class="work-item" id="work-${w.id}">
+  list.innerHTML = works.map((w) => `
+    <div class="work-item" id="work-${w.id}" draggable="true" data-id="${w.id}" data-type="work">
       <div class="work-item-header">
-        <span class="title">${w.title || '（無題）'} <span class="status-badge status-official">公演中</span></span>
+        <span class="title">
+          <span class="drag-handle" title="ドラッグして並び替え">☰</span>
+          <span class="title-text">${w.title || '（無題）'}</span>
+          <span class="status-badge status-official">公演中</span>
+        </span>
         <div class="actions">
           <button class="btn btn-danger btn-sm" onclick="removeWork(${w.id})">削除</button>
         </div>
@@ -316,38 +301,39 @@ function renderWorks() {
         <div class="work-fields">
           <div class="work-field">
             <label>作品名（日本語）</label>
-            <input type="text" value="${w.title}" oninput="updateWork(${w.id}, 'title', this.value); this.closest('.work-item').querySelector('.title').childNodes[0].textContent = this.value || '（無題）'">
+            <input type="text" value="${escHtml(w.title)}" oninput="updateWork(${w.id}, 'title', this.value); this.closest('.work-item').querySelector('.title-text').textContent = this.value || '（無題）'">
           </div>
           <div class="work-field">
             <label>原題（中国語）</label>
-            <input type="text" value="${w.subtitle}" oninput="updateWork(${w.id}, 'subtitle', this.value)">
+            <input type="text" value="${escHtml(w.subtitle)}" oninput="updateWork(${w.id}, 'subtitle', this.value)">
           </div>
           <div class="field-row-inline">
             <div class="work-field">
               <label>ジャンル</label>
-              <input type="text" value="${w.genre}" placeholder="推理" oninput="updateWork(${w.id}, 'genre', this.value)">
+              <input type="text" value="${escHtml(w.genre)}" placeholder="推理" oninput="updateWork(${w.id}, 'genre', this.value)">
             </div>
             <div class="work-field">
               <label>人数</label>
-              <input type="text" value="${w.players}" placeholder="6人用" oninput="updateWork(${w.id}, 'players', this.value)">
+              <input type="text" value="${escHtml(w.players)}" placeholder="6人用" oninput="updateWork(${w.id}, 'players', this.value)">
             </div>
             <div class="work-field">
               <label>時間</label>
-              <input type="text" value="${w.duration}" placeholder="4時間" oninput="updateWork(${w.id}, 'duration', this.value)">
+              <input type="text" value="${escHtml(w.duration)}" placeholder="4時間" oninput="updateWork(${w.id}, 'duration', this.value)">
             </div>
           </div>
           <div class="work-field">
             <label>紹介文</label>
-            <textarea oninput="updateWork(${w.id}, 'description', this.value)">${w.description}</textarea>
+            <textarea oninput="updateWork(${w.id}, 'description', this.value)">${escHtml(w.description)}</textarea>
           </div>
           <div class="work-field">
             <label>公演費用</label>
-            <input type="text" value="${w.price}" placeholder="例：¥3,500/人" oninput="updateWork(${w.id}, 'price', this.value)">
+            <input type="text" value="${escHtml(w.price)}" placeholder="例：¥3,500/人" oninput="updateWork(${w.id}, 'price', this.value)">
           </div>
         </div>
       </div>
     </div>
   `).join('');
+  initDragDrop('works-list', works, 'works_data');
 }
 
 function updateWork(id, field, value) {
@@ -365,15 +351,20 @@ function addCandidate() {
 function removeCandidate(id) {
   if (!confirm('この候補を削除しますか？')) return;
   candidates = candidates.filter(c => c.id !== id);
+  localStorage.setItem('candidates_data', JSON.stringify(candidates));
   renderCandidates();
 }
 
 function renderCandidates() {
   const list = document.getElementById('candidates-list');
-  list.innerHTML = candidates.map((c, i) => `
-    <div class="work-item" id="candidate-${c.id}">
+  list.innerHTML = candidates.map((c) => `
+    <div class="work-item" id="candidate-${c.id}" draggable="true" data-id="${c.id}" data-type="candidate">
       <div class="work-item-header">
-        <span class="title">${c.title || '（無題）'} <span class="status-badge status-candidate">${c.status}</span></span>
+        <span class="title">
+          <span class="drag-handle" title="ドラッグして並び替え">☰</span>
+          <span class="title-text">${c.title || '（無題）'}</span>
+          <span class="status-badge status-candidate">${c.status}</span>
+        </span>
         <div class="actions">
           <button class="btn btn-danger btn-sm" onclick="removeCandidate(${c.id})">削除</button>
         </div>
@@ -387,11 +378,11 @@ function renderCandidates() {
         <div class="work-fields">
           <div class="work-field">
             <label>作品名（日本語）</label>
-            <input type="text" value="${c.title}" oninput="updateCandidate(${c.id}, 'title', this.value); this.closest('.work-item').querySelector('.title').childNodes[0].textContent = this.value || '（無題）'">
+            <input type="text" value="${escHtml(c.title)}" oninput="updateCandidate(${c.id}, 'title', this.value); this.closest('.work-item').querySelector('.title-text').textContent = this.value || '（無題）'">
           </div>
           <div class="work-field">
             <label>原題（中国語）</label>
-            <input type="text" value="${c.subtitle}" oninput="updateCandidate(${c.id}, 'subtitle', this.value)">
+            <input type="text" value="${escHtml(c.subtitle)}" oninput="updateCandidate(${c.id}, 'subtitle', this.value)">
           </div>
           <div class="work-field">
             <label>ステータス</label>
@@ -404,18 +395,64 @@ function renderCandidates() {
           </div>
           <div class="work-field">
             <label>紹介文</label>
-            <textarea oninput="updateCandidate(${c.id}, 'description', this.value)">${c.description}</textarea>
+            <textarea oninput="updateCandidate(${c.id}, 'description', this.value)">${escHtml(c.description)}</textarea>
           </div>
         </div>
       </div>
     </div>
   `).join('');
+  initDragDrop('candidates-list', candidates, 'candidates_data');
 }
 
 function updateCandidate(id, field, value) {
   const c = candidates.find(c => c.id === id);
   if (c) c[field] = value;
   localStorage.setItem('candidates_data', JSON.stringify(candidates));
+}
+
+// ===== DRAG & DROP =====
+function initDragDrop(listId, dataArray, storageKey) {
+  const list = document.getElementById(listId);
+  let dragSrc = null;
+
+  list.querySelectorAll('.work-item').forEach(item => {
+    item.addEventListener('dragstart', e => {
+      dragSrc = item;
+      setTimeout(() => item.classList.add('dragging'), 0);
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    item.addEventListener('dragend', () => {
+      item.classList.remove('dragging');
+      list.querySelectorAll('.work-item').forEach(i => i.classList.remove('drag-over'));
+      // Update order in dataArray
+      const newOrder = [...list.querySelectorAll('.work-item')].map(el => {
+        const id = parseInt(el.dataset.id);
+        return dataArray.find(d => d.id === id);
+      }).filter(Boolean);
+      dataArray.length = 0;
+      newOrder.forEach(d => dataArray.push(d));
+      localStorage.setItem(storageKey, JSON.stringify(dataArray));
+    });
+    item.addEventListener('dragover', e => {
+      e.preventDefault();
+      if (item !== dragSrc) item.classList.add('drag-over');
+    });
+    item.addEventListener('dragleave', () => item.classList.remove('drag-over'));
+    item.addEventListener('drop', e => {
+      e.preventDefault();
+      item.classList.remove('drag-over');
+      if (dragSrc && dragSrc !== item) {
+        const items = [...list.querySelectorAll('.work-item')];
+        const srcIdx = items.indexOf(dragSrc);
+        const tgtIdx = items.indexOf(item);
+        if (srcIdx < tgtIdx) {
+          list.insertBefore(dragSrc, item.nextSibling);
+        } else {
+          list.insertBefore(dragSrc, item);
+        }
+      }
+    });
+  });
 }
 
 // ===== IMAGE UPLOAD =====
@@ -426,20 +463,16 @@ function triggerUpload(inputId) {
 async function handleImageUpload(event, id, type) {
   const file = event.target.files[0];
   if (!file) return;
-
   const reader = new FileReader();
   reader.onload = async (e) => {
     const dataUrl = e.target.result;
     const base64 = dataUrl.split(',')[1];
     const fileName = `images/${type === 'work' ? 'work' : 'candidate'}-${id}-${file.name}`;
-
-    // Preview
     const preview = event.target.closest('.work-thumb-preview');
     let img = preview.querySelector('img');
     if (!img) { img = document.createElement('img'); preview.appendChild(img); }
     img.src = dataUrl;
     preview.querySelector('.upload-label').textContent = '画像を変更';
-
     if (type === 'work') {
       updateWork(id, 'image', dataUrl);
       updateWork(id, 'imageName', fileName);
@@ -447,8 +480,6 @@ async function handleImageUpload(event, id, type) {
       updateCandidate(id, 'image', dataUrl);
       updateCandidate(id, 'imageName', fileName);
     }
-
-    // Upload to GitHub
     if (ghConfig.token) {
       try {
         await githubPut(fileName, base64, `Add image ${file.name}`);
@@ -464,48 +495,36 @@ async function handleImageUpload(event, id, type) {
 // ===== GITHUB API =====
 async function githubPut(path, content, message) {
   const url = `https://api.github.com/repos/${ghConfig.user}/${ghConfig.repo}/contents/${path}`;
-  
-  // Get existing SHA
   let sha;
   try {
     const existing = await fetch(url, { headers: { Authorization: `token ${ghConfig.token}` } });
-    if (existing.ok) {
-      const data = await existing.json();
-      sha = data.sha;
-    }
+    if (existing.ok) { const data = await existing.json(); sha = data.sha; }
   } catch(e) {}
-
   const body = { message, content };
   if (sha) body.sha = sha;
-
   const res = await fetch(url, {
     method: 'PUT',
-    headers: {
-      Authorization: `token ${ghConfig.token}`,
-      'Content-Type': 'application/json',
-    },
+    headers: { Authorization: `token ${ghConfig.token}`, 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   });
-
   if (!res.ok) throw new Error('GitHub API error');
   return res.json();
 }
 
 // ===== GENERATE HTML =====
+function escHtml(str) {
+  return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 function generateLineupHTML() {
   const worksHTML = works.map(w => {
-    const imageName = w.imageName || '';
-    const imgTag = imageName
-      ? `<img src="${imageName.replace('images/', 'images/')}" alt="${w.title}">`
-      : '画像';
     const genreStr = [w.genre, w.players, w.duration].filter(Boolean).join(' ｜ ');
     const priceHTML = w.price ? `<div class="price">${w.price}</div>` : '';
-
     return `
   <!-- ▼ ${w.title || '作品'} -->
   <div class="work-card">
     <div class="work-thumb">
-      ${imageName ? `<img src="${imageName}" alt="${w.title}">` : '画像'}
+      ${w.imageName ? `<img src="${w.imageName}" alt="${w.title}">` : '画像'}
     </div>
     <div class="work-info">
       ${genreStr ? `<div class="genre">${genreStr}</div>` : ''}
@@ -565,8 +584,7 @@ nav.tabs a:hover::after{width:100%;}nav.tabs a.active{color:var(--lacquer);}
 .page-hero h1{font-size:clamp(1.8rem,3.2vw,2.5rem);font-weight:400;letter-spacing:0.03em;line-height:1.5;}
 .page-hero p.lead{margin-top:22px;color:var(--ink-soft);font-size:0.98rem;max-width:56ch;font-weight:300;}
 section{max-width:1200px;margin:0 auto;padding:80px 40px;}
-.section-head{margin-bottom:48px;}
-.section-head .eyebrow{margin-bottom:12px;display:block;}
+.section-head{margin-bottom:48px;}.section-head .eyebrow{margin-bottom:12px;display:block;}
 .section-head h2{font-size:clamp(1.4rem,2vw,1.8rem);font-weight:400;letter-spacing:0.04em;}
 .rule{width:48px;height:1px;background:var(--gold);margin-top:20px;}
 .work-card{display:grid;grid-template-columns:200px 1fr auto;gap:32px;align-items:start;border-top:1px solid var(--hair);padding:40px 0;}
@@ -576,7 +594,7 @@ section{max-width:1200px;margin:0 auto;padding:80px 40px;}
 .work-info .genre{font-size:0.7rem;letter-spacing:0.14em;color:var(--gold);margin-bottom:10px;}
 .work-info h3{font-size:1.2rem;font-weight:500;margin-bottom:8px;}
 .work-info .sub{font-size:0.83rem;color:var(--ink-soft);margin-bottom:14px;}
-.work-info p{font-size:0.88rem;color:var(--ink-soft);font-weight:300;max-width:52ch;line-height:1.9;}
+.work-info p{font-size:0.88rem;color:var(--ink-soft);font-weight:300;max-width:100%;line-height:1.9;}
 .work-info .price{font-size:0.9rem;color:var(--ink);margin-top:16px;font-weight:500;}
 .work-action{min-width:130px;}
 .btn-primary{background:var(--lacquer);color:#fff;padding:14px 28px;font-size:0.86rem;letter-spacing:0.08em;display:inline-block;transition:background .2s ease;white-space:nowrap;}
@@ -590,7 +608,7 @@ section{max-width:1200px;margin:0 auto;padding:80px 40px;}
 .candidate-info .status{font-size:0.68rem;letter-spacing:0.18em;color:var(--gold);margin-bottom:8px;}
 .candidate-info h3{font-size:1.05rem;font-weight:500;margin-bottom:6px;}
 .candidate-info .sub{font-size:0.8rem;color:var(--ink-soft);margin-bottom:10px;}
-.candidate-info p{font-size:0.86rem;color:var(--ink-soft);font-weight:300;max-width:52ch;line-height:1.85;}
+.candidate-info p{font-size:0.86rem;color:var(--ink-soft);font-weight:300;max-width:100%;line-height:1.85;}
 @media (max-width:800px){.candidate-card{grid-template-columns:1fr;}.candidate-thumb{width:100%;aspect-ratio:2/1;}}
 .subscribe-box{margin-top:48px;padding:36px 0 0;border-top:1px solid var(--hair);display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;}
 .subscribe-box .txt h3{font-size:1rem;font-weight:500;margin-bottom:6px;}
@@ -645,7 +663,7 @@ ${worksHTML}
     <h2>候補シナリオ</h2>
     <div class="rule"></div>
   </div>
-  <p style="font-size:0.9rem;color:var(--ink-soft);margin-bottom:40px;max-width:60ch;">現在ローカライズを進めている作品です。正式決定次第、上のシナリオ一覧に移動します。</p>
+  <p style="font-size:0.9rem;color:var(--ink-soft);margin-bottom:40px;max-width:100%;">現在ローカライズを進めている作品です。正式決定次第、上のシナリオ一覧に移動します。</p>
 ${candidatesHTML}
   <div class="subscribe-box">
     <div class="txt">
@@ -669,25 +687,17 @@ ${candidatesHTML}
 }
 
 // ===== SAVE TO GITHUB =====
-async function saveWorks() {
-  await saveToGitHub('save-works-btn');
-}
-
-async function saveCandidates() {
-  await saveToGitHub('save-candidates-btn');
-}
+async function saveWorks() { await saveToGitHub('save-works-btn'); }
+async function saveCandidates() { await saveToGitHub('save-candidates-btn'); }
 
 async function saveToGitHub(btnId) {
   if (!ghConfig.token || !ghConfig.user || !ghConfig.repo) {
     showToast('まずGitHub接続設定を行ってください', 'error');
-    showPanel('setup');
     return;
   }
-
   const btn = document.getElementById(btnId);
   btn.innerHTML = '<span class="loading"></span>保存中...';
   btn.disabled = true;
-
   try {
     const html = generateLineupHTML();
     const content = btoa(unescape(encodeURIComponent(html)));
@@ -702,11 +712,11 @@ async function saveToGitHub(btnId) {
 }
 
 // ===== UI =====
-function showPanel(name) {
+function showPanel(name, btn) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
   document.getElementById('panel-' + name).classList.add('active');
-  event.target.classList.add('active');
+  if (btn) btn.classList.add('active');
 }
 
 function showToast(msg, type = '') {
@@ -716,6 +726,5 @@ function showToast(msg, type = '') {
   setTimeout(() => t.className = 'toast', 2800);
 }
 </script>
-
 </body>
 </html>
