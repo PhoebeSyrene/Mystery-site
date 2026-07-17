@@ -308,10 +308,16 @@ function renderWorks() {
             <input type="text" value="${escHtml(w.subtitle)}" oninput="updateWork(${w.id}, 'subtitle', this.value)">
           </div>
           <div class="field-row-inline">
-            <div class="work-field">
-              <label>ジャンル</label>
-              <input type="text" value="${escHtml(w.genre)}" placeholder="推理" oninput="updateWork(${w.id}, 'genre', this.value)">
-            </div>
+          <div class="work-field">
+              <label>ジャンル分類</label>
+              <select onchange="updateWork(${w.id}, 'genre', this.value)">
+                <option value="推理系" ${(w.genre||'推理系')==='推理系'?'selected':''}>推理系</option>
+                <option value="情感系" ${w.genre==='情感系'?'selected':''}>情感系（エモ系）</option>
+                <option value="恐怖系" ${w.genre==='恐怖系'?'selected':''}>恐怖系（ホラー系）</option>
+                <option value="欢乐系" ${w.genre==='欢乐系'?'selected':''}>欢乐系（コメディ系）</option>
+                <option value="机制系" ${w.genre==='机制系'?'selected':''}>机制系（メカニクス系）</option>
+              </select>
+            </div>  
             <div class="work-field">
               <label>人数</label>
               <input type="text" value="${escHtml(w.players)}" placeholder="6人用" oninput="updateWork(${w.id}, 'players', this.value)">
@@ -529,11 +535,19 @@ function escHtml(str) {
 }
 
 function generateLineupHTML() {
-  const worksHTML = works.map(w => {
-    const genreStr = [w.genre, w.players, w.duration].filter(Boolean).join(' ｜ ');
-    const priceHTML = w.price ? `<div class="price">${w.price}</div>` : '';
-    return `
-  <!-- ▼ ${w.title || '作品'} -->
+const genreOrder = ['推理系','情感系','恐怖系','欢乐系','机制系'];
+  const genreLabel = {'推理系':'推理系','情感系':'エモ系','恐怖系':'ホラー系','欢乐系':'コメディ系','机制系':'メカニクス系'};
+  const groupedWorks = {};
+  works.forEach(w => {
+    const g = w.genre || '推理系';
+    if (!groupedWorks[g]) groupedWorks[g] = [];
+    groupedWorks[g].push(w);
+  });
+  const worksHTML = genreOrder.filter(g => groupedWorks[g] && groupedWorks[g].length > 0).map(g => {
+    const cardsHTML = groupedWorks[g].map(w => {
+      const genreStr = [w.players, w.duration].filter(Boolean).join(' ｜ ');
+      const priceHTML = w.price ? `<div class="price">${w.price}</div>` : '';
+      return `
   <div class="work-card">
     <div class="work-thumb">
       ${w.imageName ? `<img src="${w.imageName}" alt="${w.title}">` : '画像'}
@@ -548,6 +562,12 @@ function generateLineupHTML() {
     <div class="work-action">
       <a href="ticket.html" class="btn-primary">公演予約はこちら</a>
     </div>
+  </div>`;
+    }).join('\n');
+    return `
+  <div class="genre-group">
+    <div class="genre-group-title">${genreLabel[g]}</div>
+    ${cardsHTML}
   </div>`;
   }).join('\n');
 
