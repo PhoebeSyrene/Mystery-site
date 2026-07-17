@@ -262,7 +262,7 @@ function defaultWork() {
 }
 
 function defaultCandidate() {
-  return { id: Date.now(), title: '', subtitle: '', status: '審査中', description: '', image: '', imageName: '' };
+  return { id: Date.now(), title: '', subtitle: '', status: '審査中', genre: '推理系', description: '', image: '', imageName: '' };
 }
 
 // ===== WORKS =====
@@ -384,14 +384,26 @@ function renderCandidates() {
             <label>原題（中国語）</label>
             <input type="text" value="${escHtml(c.subtitle)}" oninput="updateCandidate(${c.id}, 'subtitle', this.value)">
           </div>
-          <div class="work-field">
-            <label>ステータス</label>
-            <select onchange="updateCandidate(${c.id}, 'status', this.value); this.closest('.work-item').querySelector('.status-badge').textContent = this.value">
-              <option ${c.status==='審査中'?'selected':''}>審査中</option>
-              <option ${c.status==='交渉中'?'selected':''}>交渉中</option>
-              <option ${c.status==='翻訳中'?'selected':''}>翻訳中</option>
-              <option ${c.status==='準備中'?'selected':''}>準備中</option>
-            </select>
+          <div class="field-row-inline">
+            <div class="work-field">
+              <label>ステータス</label>
+              <select onchange="updateCandidate(${c.id}, 'status', this.value); this.closest('.work-item').querySelector('.status-badge').textContent = this.value">
+                <option ${c.status==='審査中'?'selected':''}>審査中</option>
+                <option ${c.status==='交渉中'?'selected':''}>交渉中</option>
+                <option ${c.status==='翻訳中'?'selected':''}>翻訳中</option>
+                <option ${c.status==='準備中'?'selected':''}>準備中</option>
+              </select>
+            </div>
+            <div class="work-field">
+              <label>ジャンル分類</label>
+              <select onchange="updateCandidate(${c.id}, 'genre', this.value)">
+                <option value="推理系" ${(c.genre||'推理系')==='推理系'?'selected':''}>推理系（推理）</option>
+                <option value="情感系" ${c.genre==='情感系'?'selected':''}>情感系（エモ）</option>
+                <option value="恐怖系" ${c.genre==='恐怖系'?'selected':''}>恐怖系（ホラー）</option>
+                <option value="欢乐系" ${c.genre==='欢乐系'?'selected':''}>欢乐系（コメディ）</option>
+                <option value="机制系" ${c.genre==='机制系'?'selected':''}>机制系（メカニクス）</option>
+              </select>
+            </div>
           </div>
           <div class="work-field">
             <label>紹介文</label>
@@ -539,9 +551,16 @@ function generateLineupHTML() {
   </div>`;
   }).join('\n');
 
-  const candidatesHTML = candidates.map(c => {
-    return `
-  <!-- ▼ ${c.title || '候補'} -->
+  const genreOrder = ['推理系','情感系','恐怖系','欢乐系','机制系'];
+  const genreLabel = {'推理系':'推理系（推理）','情感系':'情感系（エモ）','恐怖系':'恐怖系（ホラー）','欢乐系':'欢乐系（コメディ）','机制系':'机制系（メカニクス）'};
+  const grouped = {};
+  candidates.forEach(c => {
+    const g = c.genre || '推理系';
+    if (!grouped[g]) grouped[g] = [];
+    grouped[g].push(c);
+  });
+  const candidatesHTML = genreOrder.filter(g => grouped[g] && grouped[g].length > 0).map(g => {
+    const cardsHTML = grouped[g].map(c => `
   <div class="candidate-card">
     <div class="candidate-thumb">
       ${c.imageName ? `<img src="${c.imageName}" alt="${c.title}">` : '画像'}
@@ -552,6 +571,11 @@ function generateLineupHTML() {
       ${c.subtitle ? `<div class="sub">${c.subtitle}</div>` : ''}
       ${c.description ? `<p>${c.description}</p>` : ''}
     </div>
+  </div>`).join('\n');
+    return `
+  <div class="genre-group">
+    <div class="genre-group-title">${genreLabel[g]}</div>
+    ${cardsHTML}
   </div>`;
   }).join('\n');
 
@@ -610,6 +634,8 @@ section{max-width:1200px;margin:0 auto;padding:80px 40px;}
 .candidate-info .sub{font-size:0.8rem;color:var(--ink-soft);margin-bottom:10px;}
 .candidate-info p{font-size:0.86rem;color:var(--ink-soft);font-weight:300;max-width:100%;line-height:1.85;}
 @media (max-width:800px){.candidate-card{grid-template-columns:1fr;}.candidate-thumb{width:100%;aspect-ratio:2/1;}}
+.genre-group{margin-bottom:40px;}
+.genre-group-title{font-family:'Noto Serif SC','Noto Serif JP',serif;font-size:1rem;font-weight:500;color:var(--ink);letter-spacing:0.08em;padding:12px 0;border-bottom:2px solid var(--gold);margin-bottom:8px;}
 .subscribe-box{margin-top:48px;padding:36px 0 0;border-top:1px solid var(--hair);display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;}
 .subscribe-box .txt h3{font-size:1rem;font-weight:500;margin-bottom:6px;}
 .subscribe-box .txt p{font-size:0.84rem;color:var(--ink-soft);font-weight:300;}
