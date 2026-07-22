@@ -809,7 +809,7 @@ function generateLineupHTML() {
         ? c.tags.map(t => `<span class="candidate-tag">${t}</span>`).join('')
         : '';
       const metaParts = [c.players, c.genre ? (c.genre === '推理系' ? '推理系' : c.genre === '情感系' ? 'エモ系' : c.genre === '恐怖系' ? 'ホラー系' : c.genre === '欢乐系' ? 'コメディ系' : 'メカニクス系') : ''].filter(Boolean).join(' · ');
-      const metaRowHTML = (tagsHTML || metaParts) ? `<div class="candidate-meta-row">${tagsHTML}${metaParts ? `<span class="candidate-meta-text">${metaParts}</span>` : ''}</div>` : '';
+      const metaHTML = metaParts ? `<span class="candidate-meta-text">${metaParts}</span>` : '';
       return `
   <div class="candidate-card">
     <div class="candidate-thumb">
@@ -817,9 +817,8 @@ function generateLineupHTML() {
     </div>
     <div class="candidate-info">
       <div class="status">${c.status}</div>
-      <h3>${c.title}</h3>
+      <div class="title-row">${tagsHTML}<h3>${c.title}</h3>${metaHTML}</div>
       ${c.subtitle ? `<div class="sub">${c.subtitle}</div>` : ''}
-      ${metaRowHTML}
       ${c.description ? `<p>${c.description}</p>` : ''}
     </div>
   </div>`;
@@ -882,14 +881,13 @@ section{max-width:1200px;margin:0 auto;padding:80px 40px;}
 .candidate-thumb{width:160px;aspect-ratio:3/4;background:var(--paper);border:1px solid var(--hair);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--ink-soft);font-size:0.75rem;overflow:hidden;}
 .candidate-thumb img{width:100%;height:100%;object-fit:cover;}
 .candidate-info .status{font-size:0.68rem;letter-spacing:0.18em;color:var(--gold);margin-bottom:8px;}
+.candidate-info .title-row{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;margin-bottom:6px;}
+.candidate-info .title-row h3{font-size:1.05rem;font-weight:500;margin:0;}
 .candidate-info h3{font-size:1.05rem;font-weight:500;margin-bottom:6px;}
 .candidate-info .sub{font-size:0.8rem;color:var(--ink-soft);margin-bottom:10px;}
 .candidate-info p{font-size:0.86rem;color:var(--ink-soft);font-weight:300;max-width:100%;line-height:1.85;}
-.candidate-tags{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0 12px;}
-.candidate-tag{font-size:0.68rem;padding:2px 9px;border:1px solid var(--gold);color:var(--gold);border-radius:10px;letter-spacing:0.06em;font-weight:500;}
-.candidate-meta-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:8px 0 12px;}
-.candidate-meta-row .candidate-tag{margin:0;}
-.candidate-meta-text{font-size:0.72rem;color:var(--ink-soft);letter-spacing:0.06em;}
+.candidate-tag{font-size:0.68rem;padding:2px 9px;border:1px solid var(--gold);color:var(--gold);border-radius:10px;letter-spacing:0.06em;font-weight:500;white-space:nowrap;}
+.candidate-meta-text{font-size:0.72rem;color:var(--ink-soft);letter-spacing:0.06em;white-space:nowrap;}
 @media (max-width:800px){.candidate-card{grid-template-columns:1fr;}.candidate-thumb{width:100%;aspect-ratio:2/1;}}
 .genre-group{margin-bottom:40px;}
 .genre-group-title{font-family:'Noto Serif SC','Noto Serif JP',serif;font-size:1.1rem;font-weight:600;color:var(--ink);letter-spacing:0.16em;padding:12px 24px;background:rgba(193,154,73,0.08);border-left:3px solid var(--gold);margin-bottom:24px;display:block;}
