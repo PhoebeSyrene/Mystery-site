@@ -79,10 +79,22 @@ body{background:var(--paper);color:var(--ink);font-family:'Helvetica Neue',Arial
 .work-field input:focus,.work-field textarea:focus{outline:2px solid var(--gold);border-color:var(--gold);}
 .work-field textarea{resize:vertical;min-height:70px;}
 .field-row-inline{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.field-row-inline-2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+
+/* ===== TAGS ===== */
+.tag-group{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px;}
+.tag-toggle{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border:1px solid var(--hair);border-radius:2px;font-size:0.75rem;font-family:inherit;background:var(--paper);color:var(--ink-soft);cursor:pointer;transition:all .15s;user-select:none;letter-spacing:0.04em;}
+.tag-toggle:hover{border-color:var(--gold);color:var(--gold);}
+.tag-toggle.active{background:var(--paper-deep);border-color:var(--gold);color:var(--ink);font-weight:600;}
+.tag-toggle.active::before{content:"✓ ";}
 
 .status-badge{display:inline-block;font-size:0.68rem;padding:2px 10px;border-radius:10px;font-weight:600;letter-spacing:0.06em;}
 .status-official{background:#e8f5e9;color:var(--green);}
 .status-candidate{background:#fff8e1;color:#f57f17;}
+
+/* Tag pills in header */
+.header-tags{display:flex;gap:4px;flex-wrap:wrap;}
+.header-tag-pill{font-size:0.6rem;padding:1px 7px;border:1px solid var(--gold);color:var(--gold);border-radius:10px;letter-spacing:0.06em;font-weight:500;}
 
 .toast{position:fixed;bottom:28px;right:28px;background:var(--ink);color:#fff;padding:12px 20px;border-radius:4px;font-size:0.84rem;opacity:0;transform:translateY(8px);transition:all .25s ease;pointer-events:none;z-index:999;}
 .toast.show{opacity:1;transform:translateY(0);}
@@ -99,6 +111,25 @@ body{background:var(--paper);color:var(--ink);font-family:'Helvetica Neue',Arial
 @keyframes spin{to{transform:rotate(360deg);}}
 
 .info-box{background:var(--paper-deep);border-left:3px solid var(--gold);padding:12px 16px;font-size:0.82rem;color:var(--ink-soft);margin-bottom:20px;border-radius:0 2px 2px 0;}
+
+/* ===== PROMOTE MODAL ===== */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(26,26,26,0.55);z-index:200;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--card);border:1px solid var(--hair);border-radius:2px;width:560px;max-width:90vw;max-height:80vh;display:flex;flex-direction:column;box-shadow:0 16px 48px rgba(0,0,0,0.18);}
+.modal-head{padding:20px 24px 16px;border-bottom:1px solid var(--hair);display:flex;align-items:center;justify-content:space-between;}
+.modal-head h3{font-size:0.95rem;font-weight:600;}
+.modal-close{background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--ink-soft);padding:2px 6px;}
+.modal-body{padding:16px 24px;overflow-y:auto;flex:1;}
+.modal-foot{padding:14px 24px;border-top:1px solid var(--hair);display:flex;justify-content:flex-end;gap:8px;}
+.promote-item{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--hair);cursor:pointer;transition:background .12s;}
+.promote-item:last-child{border-bottom:none;}
+.promote-item:hover{background:var(--paper-deep);margin:0 -24px;padding:12px 24px;}
+.promote-thumb{width:40px;height:53px;object-fit:cover;background:var(--paper-deep);border:1px solid var(--hair);flex-shrink:0;}
+.promote-thumb-placeholder{width:40px;height:53px;background:var(--paper-deep);border:1px solid var(--hair);flex-shrink:0;}
+.promote-info .pi-title{font-size:0.88rem;font-weight:600;margin-bottom:2px;}
+.promote-info .pi-sub{font-size:0.75rem;color:var(--ink-soft);}
+.promote-info .pi-meta{font-size:0.72rem;color:var(--gold);margin-top:3px;letter-spacing:0.04em;}
+.modal-empty{text-align:center;padding:32px 0;color:var(--ink-soft);font-size:0.86rem;}
 </style>
 </head>
 <body>
@@ -176,12 +207,29 @@ body{background:var(--paper);color:var(--ink);font-family:'Helvetica Neue',Arial
   </div>
 </div>
 
+<!-- ===== PROMOTE MODAL ===== -->
+<div class="modal-overlay" id="promote-modal" onclick="closePromoteModal(event)">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>候補から追加</h3>
+      <button class="modal-close" onclick="closePromoteModal()">✕</button>
+    </div>
+    <div class="modal-body" id="promote-modal-body"></div>
+    <div class="modal-foot">
+      <button class="btn btn-secondary btn-sm" onclick="closePromoteModal()">キャンセル</button>
+      <button class="btn btn-secondary btn-sm" onclick="addWorkBlank()">空白で新規作成</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
 let works = [];
 let candidates = [];
 let ghConfig = {};
+
+const CANDIDATE_TAGS = ['店舗限定', '数量限定', '先行公開', '店舗買い切り可能'];
 
 window.onload = () => {
   loadConfig();
@@ -262,13 +310,75 @@ function defaultWork() {
 }
 
 function defaultCandidate() {
-  return { id: Date.now(), title: '', subtitle: '', status: '審査中', genre: '推理系', description: '', image: '', imageName: '' };
+  return { id: Date.now(), title: '', subtitle: '', status: '審査中', genre: '推理系', players: '', tags: [], description: '', image: '', imageName: '' };
 }
 
 // ===== WORKS =====
 function addWork() {
+  // If there are candidates, show the promote modal; otherwise blank new entry
+  if (candidates.length > 0) {
+    openPromoteModal();
+  } else {
+    addWorkBlank();
+  }
+}
+
+function addWorkBlank() {
+  closePromoteModal();
   works.push(defaultWork());
   renderWorks();
+}
+
+function openPromoteModal() {
+  const body = document.getElementById('promote-modal-body');
+  if (candidates.length === 0) {
+    body.innerHTML = '<div class="modal-empty">候補シナリオがありません。<br>空白で新規作成してください。</div>';
+  } else {
+    body.innerHTML = candidates.map(c => {
+      const metaParts = [c.genre, c.players, c.status].filter(Boolean);
+      return `<div class="promote-item" onclick="promoteCandidate(${c.id})">
+        ${c.image ? `<img class="promote-thumb" src="${c.image}" alt="">` : '<div class="promote-thumb-placeholder"></div>'}
+        <div class="promote-info">
+          <div class="pi-title">${escHtml(c.title) || '（無題）'}</div>
+          ${c.subtitle ? `<div class="pi-sub">${escHtml(c.subtitle)}</div>` : ''}
+          <div class="pi-meta">${metaParts.join(' · ')}</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  document.getElementById('promote-modal').classList.add('open');
+}
+
+function closePromoteModal(e) {
+  if (e && e.target !== document.getElementById('promote-modal')) return;
+  document.getElementById('promote-modal').classList.remove('open');
+}
+
+function promoteCandidate(id) {
+  const c = candidates.find(c => c.id === id);
+  if (!c) return;
+  // Copy candidate fields into a new work entry
+  const newWork = {
+    id: Date.now(),
+    title: c.title,
+    subtitle: c.subtitle,
+    genre: c.genre,
+    players: c.players || '',
+    duration: '',
+    description: c.description,
+    price: '',
+    image: c.image,
+    imageName: c.imageName,
+  };
+  works.push(newWork);
+  localStorage.setItem('works_data', JSON.stringify(works));
+  // Remove from candidates
+  candidates = candidates.filter(c => c.id !== id);
+  localStorage.setItem('candidates_data', JSON.stringify(candidates));
+  closePromoteModal();
+  renderWorks();
+  renderCandidates();
+  showToast(`『${newWork.title || '（無題）'}』をシナリオ一覧に追加しました`, 'success');
 }
 
 function removeWork(id) {
@@ -308,7 +418,7 @@ function renderWorks() {
             <input type="text" value="${escHtml(w.subtitle)}" oninput="updateWork(${w.id}, 'subtitle', this.value)">
           </div>
           <div class="field-row-inline">
-          <div class="work-field">
+            <div class="work-field">
               <label>ジャンル分類</label>
               <select onchange="updateWork(${w.id}, 'genre', this.value)">
                 <option value="推理系" ${(w.genre||'推理系')==='推理系'?'selected':''}>推理系</option>
@@ -317,7 +427,7 @@ function renderWorks() {
                 <option value="欢乐系" ${w.genre==='欢乐系'?'selected':''}>欢乐系（コメディ系）</option>
                 <option value="机制系" ${w.genre==='机制系'?'selected':''}>机制系（メカニクス系）</option>
               </select>
-            </div>  
+            </div>
             <div class="work-field">
               <label>人数</label>
               <input type="text" value="${escHtml(w.players)}" placeholder="6人用" oninput="updateWork(${w.id}, 'players', this.value)">
@@ -361,6 +471,35 @@ function removeCandidate(id) {
   renderCandidates();
 }
 
+function toggleTag(id, tag) {
+  const c = candidates.find(c => c.id === id);
+  if (!c) return;
+  if (!c.tags) c.tags = [];
+  const idx = c.tags.indexOf(tag);
+  if (idx === -1) {
+    c.tags.push(tag);
+  } else {
+    c.tags.splice(idx, 1);
+  }
+  localStorage.setItem('candidates_data', JSON.stringify(candidates));
+
+  // Update header pills without full re-render
+  const header = document.querySelector(`#candidate-${id} .header-tags`);
+  if (header) header.innerHTML = c.tags.map(t => `<span class="header-tag-pill">${t}</span>`).join('');
+
+  // Update toggle button states
+  const btn = document.querySelector(`#candidate-${id} [data-tag="${tag}"]`);
+  if (btn) btn.classList.toggle('active', c.tags.includes(tag));
+}
+
+function renderTagToggles(id, currentTags) {
+  const tags = currentTags || [];
+  return CANDIDATE_TAGS.map(tag => {
+    const isActive = tags.includes(tag);
+    return `<button type="button" class="tag-toggle${isActive ? ' active' : ''}" data-tag="${tag}" onclick="toggleTag(${id}, '${tag}')">${tag}</button>`;
+  }).join('');
+}
+
 function renderCandidates() {
   const list = document.getElementById('candidates-list');
   list.innerHTML = candidates.map((c) => `
@@ -370,6 +509,7 @@ function renderCandidates() {
           <span class="drag-handle" title="ドラッグして並び替え">☰</span>
           <span class="title-text">${c.title || '（無題）'}</span>
           <span class="status-badge status-candidate">${c.status}</span>
+          <span class="header-tags">${(c.tags||[]).map(t => `<span class="header-tag-pill">${t}</span>`).join('')}</span>
         </span>
         <div class="actions">
           <button class="btn btn-danger btn-sm" onclick="removeCandidate(${c.id})">削除</button>
@@ -410,6 +550,14 @@ function renderCandidates() {
                 <option value="机制系" ${c.genre==='机制系'?'selected':''}>机制系（メカニクス系）</option>
               </select>
             </div>
+            <div class="work-field">
+              <label>人数</label>
+              <input type="text" value="${escHtml(c.players||'')}" placeholder="6人用" oninput="updateCandidate(${c.id}, 'players', this.value)">
+            </div>
+          </div>
+          <div class="work-field">
+            <label>タグ（複数選択可）</label>
+            <div class="tag-group">${renderTagToggles(c.id, c.tags)}</div>
           </div>
           <div class="work-field">
             <label>紹介文</label>
@@ -442,7 +590,6 @@ function initDragDrop(listId, dataArray, storageKey) {
     item.addEventListener('dragend', () => {
       item.classList.remove('dragging');
       list.querySelectorAll('.work-item').forEach(i => i.classList.remove('drag-over'));
-      // Update order in dataArray
       const newOrder = [...list.querySelectorAll('.work-item')].map(el => {
         const id = parseInt(el.dataset.id);
         return dataArray.find(d => d.id === id);
@@ -535,7 +682,7 @@ function escHtml(str) {
 }
 
 function generateLineupHTML() {
-const genreOrder = ['推理系','情感系','恐怖系','欢乐系','机制系'];
+  const genreOrder = ['推理系','情感系','恐怖系','欢乐系','机制系'];
   const genreLabel = {'推理系':'推理系','情感系':'エモ系','恐怖系':'ホラー系','欢乐系':'コメディ系','机制系':'メカニクス系'};
   const groupedWorks = {};
   works.forEach(w => {
@@ -578,7 +725,11 @@ const genreOrder = ['推理系','情感系','恐怖系','欢乐系','机制系']
     grouped[g].push(c);
   });
   const candidatesHTML = genreOrder.filter(g => grouped[g] && grouped[g].length > 0).map(g => {
-    const cardsHTML = grouped[g].map(c => `
+    const cardsHTML = grouped[g].map(c => {
+      const tagsHTML = (c.tags && c.tags.length > 0)
+        ? `<div class="candidate-tags">${c.tags.map(t => `<span class="candidate-tag">${t}</span>`).join('')}</div>`
+        : '';
+      return `
   <div class="candidate-card">
     <div class="candidate-thumb">
       ${c.imageName ? `<img src="${c.imageName}" alt="${c.title}">` : '画像'}
@@ -587,9 +738,11 @@ const genreOrder = ['推理系','情感系','恐怖系','欢乐系','机制系']
       <div class="status">${c.status}</div>
       <h3>${c.title}</h3>
       ${c.subtitle ? `<div class="sub">${c.subtitle}</div>` : ''}
+      ${tagsHTML}
       ${c.description ? `<p>${c.description}</p>` : ''}
     </div>
-  </div>`).join('\n');
+  </div>`;
+    }).join('\n');
     return `
   <div class="genre-group">
     <div class="genre-group-title">${genreLabel[g]}</div>
@@ -651,17 +804,11 @@ section{max-width:1200px;margin:0 auto;padding:80px 40px;}
 .candidate-info h3{font-size:1.05rem;font-weight:500;margin-bottom:6px;}
 .candidate-info .sub{font-size:0.8rem;color:var(--ink-soft);margin-bottom:10px;}
 .candidate-info p{font-size:0.86rem;color:var(--ink-soft);font-weight:300;max-width:100%;line-height:1.85;}
+.candidate-tags{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0 12px;}
+.candidate-tag{font-size:0.68rem;padding:2px 9px;border:1px solid var(--gold);color:var(--gold);border-radius:10px;letter-spacing:0.06em;font-weight:500;}
 @media (max-width:800px){.candidate-card{grid-template-columns:1fr;}.candidate-thumb{width:100%;aspect-ratio:2/1;}}
 .genre-group{margin-bottom:40px;}
 .genre-group-title{font-family:'Noto Serif SC','Noto Serif JP',serif;font-size:1.1rem;font-weight:600;color:var(--ink);letter-spacing:0.16em;padding:12px 24px;background:rgba(193,154,73,0.08);border-left:3px solid var(--gold);margin-bottom:24px;display:block;}
-.subscribe-box{margin-top:48px;padding:36px 0 0;border-top:1px solid var(--hair);display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;}
-.subscribe-box .txt h3{font-size:1rem;font-weight:500;margin-bottom:6px;}
-.subscribe-box .txt p{font-size:0.84rem;color:var(--ink-soft);font-weight:300;}
-.subscribe-form{display:flex;border-bottom:1px solid var(--ink);padding-bottom:2px;}
-.subscribe-form input{padding:10px 6px;border:none;background:transparent;font-size:0.9rem;min-width:220px;font-family:inherit;color:var(--ink);}
-.subscribe-form input:focus{outline:none;}
-.subscribe-form input::placeholder{color:var(--ink-soft);}
-.subscribe-form button{padding:10px 8px;background:transparent;color:var(--lacquer);border:none;font-size:0.84rem;letter-spacing:0.06em;cursor:pointer;white-space:nowrap;}
 footer{text-align:center;padding:40px 20px;font-size:0.76rem;color:rgba(250,247,242,0.5);background:var(--ink);border-top:1px solid rgba(250,247,242,0.1);font-weight:300;letter-spacing:0.04em;}
 footer a{color:var(--gold);}
 </style>
