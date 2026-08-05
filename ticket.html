@@ -170,12 +170,8 @@ footer a{color:var(--gold);}
       <div class="form-section">
         <label class="form-label">希望作品<span class="required">*</span></label>
         <div class="form-select-wrap">
-          <select class="form-select" name="希望作品" required>
-            <option value="" disabled selected>作品を選択してください</option>
-            <option>『漓川怪談簿』（りせん かいだんぼ）</option>
-            <option>『死者は幻夜に目覚める』（ししゃは げんやに めざめる）</option>
-            <option>『ロンドンの薔薇を盗み尽くす』</option>
-            <option>未定（ご相談ください）</option>
+          <select class="form-select" id="scenario-select" name="希望作品" required>
+            <option value="" disabled selected>読み込み中...</option>
           </select>
         </div>
       </div>
@@ -217,7 +213,7 @@ footer a{color:var(--gold);}
 
       <div class="form-section">
         <label class="form-label">その他ご要望</label>
-        <textarea class="form-textarea" name="その他ご要望" placeholder="アレルギー、アクセシビリティ、その他ご不明な点などお気軽にご記入ください。"></textarea>
+        <textarea class="form-textarea" name="その他ご要望" placeholder="ご不明な点やご要望などお気軽にご記入ください。"></textarea>
       </div>
 
       <button type="submit" class="submit-btn" id="submit-btn">予約を申し込む</button>
@@ -232,6 +228,33 @@ footer a{color:var(--gold);}
 </footer>
 
 <script>
+// シナリオ一覧を動的に読み込む
+async function loadScenarios() {
+  const select = document.getElementById('scenario-select');
+  try {
+    const res = await fetch('scenarios.json?t=' + Date.now());
+    if (res.ok) {
+      const scenarios = await res.json();
+      select.innerHTML = '<option value="" disabled selected>作品を選択してください</option>';
+      scenarios.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.title;
+        opt.textContent = s.players ? `${s.title}（${s.players}）` : s.title;
+        select.appendChild(opt);
+      });
+      const other = document.createElement('option');
+      other.value = '未定（ご相談ください）';
+      other.textContent = '未定（ご相談ください）';
+      select.appendChild(other);
+    } else {
+      throw new Error('fetch failed');
+    }
+  } catch(e) {
+    select.innerHTML = '<option value="" disabled selected>作品を選択してください</option><option value="未定（ご相談ください）">未定（ご相談ください）</option>';
+  }
+}
+loadScenarios();
+
 const form = document.getElementById('reservation-form');
 const submitBtn = document.getElementById('submit-btn');
 const successMsg = document.getElementById('success-msg');
