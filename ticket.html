@@ -27,9 +27,78 @@ nav.tabs a:hover::after{width:100%;}nav.tabs a.active{color:var(--lacquer);}
 .page-hero h1{font-size:clamp(1.8rem,3.2vw,2.5rem);font-weight:400;letter-spacing:0.03em;line-height:1.5;}
 .page-hero p.lead{margin-top:22px;color:var(--ink-soft);font-size:0.98rem;max-width:60ch;font-weight:300;}
 .content{max-width:1200px;margin:0 auto;padding:80px 40px;}
-.notice{font-size:0.88rem;color:var(--ink-soft);margin-bottom:24px;padding:16px 20px;border-left:2px solid var(--gold);background:var(--paper-deep);}
-.form-embed-wrap{background:var(--card);border:1px solid var(--hair);max-width:760px;margin:0 auto;overflow:hidden;}
-.form-embed-wrap iframe{display:block;width:100%;border:none;}
+.notice{font-size:0.88rem;color:var(--ink-soft);margin-bottom:40px;padding:16px 20px;border-left:2px solid var(--gold);background:var(--paper-deep);}
+
+/* Form */
+.form-wrap{background:var(--card);border:1px solid var(--hair);max-width:760px;margin:0 auto;padding:48px 52px;}
+.form-section{margin-bottom:32px;}
+.form-label{display:block;font-size:0.78rem;letter-spacing:0.1em;color:var(--ink-soft);font-weight:500;margin-bottom:8px;}
+.form-label .required{color:var(--lacquer);margin-left:4px;}
+.form-input,
+.form-select,
+.form-textarea{
+  width:100%;
+  border:1px solid var(--hair);
+  background:var(--paper);
+  padding:12px 16px;
+  font-size:0.9rem;
+  font-family:inherit;
+  color:var(--ink);
+  border-radius:0;
+  transition:border-color .2s;
+  appearance:none;
+  -webkit-appearance:none;
+}
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus{
+  outline:none;
+  border-color:var(--gold);
+  background:#fff;
+}
+.form-select-wrap{position:relative;}
+.form-select-wrap::after{
+  content:"▾";
+  position:absolute;
+  right:16px;
+  top:50%;
+  transform:translateY(-50%);
+  color:var(--ink-soft);
+  pointer-events:none;
+  font-size:0.8rem;
+}
+.form-textarea{resize:vertical;min-height:100px;line-height:1.7;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+@media(max-width:600px){.form-row{grid-template-columns:1fr;}.form-wrap{padding:32px 24px;}}
+
+.form-divider{border:none;border-top:1px solid var(--hair);margin:36px 0;}
+
+.submit-btn{
+  width:100%;
+  background:var(--lacquer);
+  color:#fff;
+  border:none;
+  padding:16px 32px;
+  font-size:0.9rem;
+  letter-spacing:0.12em;
+  font-family:inherit;
+  cursor:pointer;
+  transition:background .2s;
+  margin-top:8px;
+}
+.submit-btn:hover{background:var(--lacquer-deep);}
+.submit-btn:disabled{background:var(--ink-soft);cursor:not-allowed;}
+
+.form-note{font-size:0.78rem;color:var(--ink-soft);margin-top:16px;text-align:center;line-height:1.7;}
+
+/* Success / Error */
+.form-result{display:none;text-align:center;padding:48px 32px;}
+.form-result.success{display:block;}
+.form-result.error{display:block;}
+.result-icon{font-size:2.5rem;margin-bottom:16px;}
+.result-title{font-size:1.2rem;font-weight:500;margin-bottom:8px;font-family:'Noto Serif SC','Noto Serif JP',serif;}
+.result-sub{font-size:0.88rem;color:var(--ink-soft);line-height:1.8;}
+
 footer{text-align:center;padding:40px 20px;font-size:0.76rem;color:rgba(250,247,242,0.5);background:var(--ink);border-top:1px solid rgba(250,247,242,0.1);font-weight:300;letter-spacing:0.04em;}
 footer a{color:var(--gold);}
 </style>
@@ -42,7 +111,7 @@ footer a{color:var(--gold);}
       <span class="cn serif">浮生三千</span>
       <span class="en">FUSHENG SANQIAN — MYSTERY BRIDGE</span>
     </a>
-<nav class="tabs">
+    <nav class="tabs">
       <a href="about.html">私たちについて</a>
       <a href="lineup.html">作品ラインナップ</a>
       <a href="japan-to-china.html">日本発 中国へ</a>
@@ -62,21 +131,141 @@ footer a{color:var(--gold);}
 
 <div class="content">
   <p class="notice">※ ご予約はお申し込み順となります。定員に達した場合、ご希望に添えない場合があります。</p>
-  <div class="form-embed-wrap">
-    <iframe
-      src="https://docs.google.com/forms/d/e/1FAIpQLSf8dBLhzf1xU67AprWq5BtWICbx-HuzVd2kIc2qlxQZignVPg/viewform?embedded=true"
-      frameborder="0"
-      marginheight="0"
-      marginwidth="0"
-      style="width:100%;min-height:1200px;">
-      読み込んでいます…
-    </iframe>
+
+  <div class="form-wrap">
+
+    <!-- Success Message -->
+    <div class="form-result success" id="success-msg" style="display:none;">
+      <div class="result-icon">✦</div>
+      <div class="result-title">お申し込みありがとうございます</div>
+      <div class="result-sub">ご入力いただいた内容を受け付けました。<br>担当者より2〜3営業日以内にご連絡いたします。</div>
+    </div>
+
+    <!-- Error Message -->
+    <div class="form-result error" id="error-msg" style="display:none;">
+      <div class="result-icon">✕</div>
+      <div class="result-title">送信に失敗しました</div>
+      <div class="result-sub">お手数ですが、しばらく経ってから再度お試しください。</div>
+    </div>
+
+    <!-- Form -->
+    <form id="reservation-form" action="https://api.web3forms.com/submit" method="POST">
+      <input type="hidden" name="access_key" value="68ab29d4-5e08-446c-9aaf-51c0aa10ee17">
+      <input type="hidden" name="subject" value="【浮生三千】公演予約のお申し込み">
+      <input type="hidden" name="from_name" value="浮生三千 予約フォーム">
+      <input type="checkbox" name="botcheck" style="display:none;">
+
+      <div class="form-section">
+        <label class="form-label">お名前<span class="required">*</span></label>
+        <input class="form-input" type="text" name="お名前" placeholder="山田 花子" required>
+      </div>
+
+      <div class="form-section">
+        <label class="form-label">メールアドレス<span class="required">*</span></label>
+        <input class="form-input" type="email" name="メールアドレス" placeholder="example@email.com" required>
+      </div>
+
+      <hr class="form-divider">
+
+      <div class="form-section">
+        <label class="form-label">希望作品<span class="required">*</span></label>
+        <div class="form-select-wrap">
+          <select class="form-select" name="希望作品" required>
+            <option value="" disabled selected>作品を選択してください</option>
+            <option>『漓川怪談簿』（りせん かいだんぼ）</option>
+            <option>『死者は幻夜に目覚める』（ししゃは げんやに めざめる）</option>
+            <option>『ロンドンの薔薇を盗み尽くす』</option>
+            <option>未定（ご相談ください）</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-section">
+          <label class="form-label">希望日<span class="required">*</span></label>
+          <input class="form-input" type="date" name="希望日" required>
+        </div>
+        <div class="form-section">
+          <label class="form-label">希望時間<span class="required">*</span></label>
+          <div class="form-select-wrap">
+            <select class="form-select" name="希望時間" required>
+              <option value="" disabled selected>時間帯を選択</option>
+              <option>10:00〜</option>
+              <option>13:00〜</option>
+              <option>16:00〜</option>
+              <option>19:00〜</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <label class="form-label">人数<span class="required">*</span></label>
+        <div class="form-select-wrap">
+          <select class="form-select" name="人数" required>
+            <option value="" disabled selected>人数を選択してください</option>
+            <option>4人</option>
+            <option>5人</option>
+            <option>6人</option>
+            <option>7人</option>
+            <option>8人以上（要相談）</option>
+          </select>
+        </div>
+      </div>
+
+      <hr class="form-divider">
+
+      <div class="form-section">
+        <label class="form-label">その他ご要望</label>
+        <textarea class="form-textarea" name="その他ご要望" placeholder="アレルギー、アクセシビリティ、その他ご不明な点などお気軽にご記入ください。"></textarea>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submit-btn">予約を申し込む</button>
+      <p class="form-note">送信後、2〜3営業日以内に担当者よりご連絡いたします。</p>
+    </form>
+
   </div>
 </div>
 
 <footer>
   © 浮生三千 All rights reserved. ｜ mystery.threethousandlives.com
 </footer>
+
+<script>
+const form = document.getElementById('reservation-form');
+const submitBtn = document.getElementById('submit-btn');
+const successMsg = document.getElementById('success-msg');
+const errorMsg = document.getElementById('error-msg');
+
+form.addEventListener('submit', async function(e) {
+  e.preventDefault();
+  submitBtn.disabled = true;
+  submitBtn.textContent = '送信中...';
+
+  const formData = new FormData(form);
+  const object = Object.fromEntries(formData);
+  const json = JSON.stringify(object);
+
+  try {
+    const res = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: json
+    });
+    const data = await res.json();
+    if (data.success) {
+      form.style.display = 'none';
+      successMsg.style.display = 'block';
+    } else {
+      form.style.display = 'none';
+      errorMsg.style.display = 'block';
+    }
+  } catch(err) {
+    form.style.display = 'none';
+    errorMsg.style.display = 'block';
+  }
+});
+</script>
 
 </body>
 </html>
