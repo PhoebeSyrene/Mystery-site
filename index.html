@@ -1,305 +1,726 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+<script>document.documentElement.classList.add("js")</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>浮生三千 ｜ 中国・日本 マーダーミステリー ローカライズ・ブリッジ</title>
+<title>浮生三千 ｜ FUSHENG SANQIAN</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;700;900&family=Noto+Serif+JP:wght@300;400;500;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet"><style>
-/* ===== 浮生三千 マーダーミステリー ローカライズ 共用スタイル ===== */
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Zen+Maru+Gothic:wght@500;700&family=Noto+Sans+SC:wght@900&family=Noto+Serif+JP:wght@600&family=Noto+Sans+JP:wght@400;500;700&family=Inter:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+/* Layering: dot field > giant title > 三千 > copy & profile. Flat editorial plane vs. glossy 3D figure. */
 :root{
-  --ink:#1a1a1a;
-  --ink-soft:#8a8378;
-  --paper:#faf7f2;
-  --card:#ffffff;
-  --lacquer:#9b2226;
-  --lacquer-deep:#7a1a1d;
-  --jade:#4a5d53;
-  --gold:#c19a49;
-  --hair:#e4ddd0;
-  --paper-deep:#f1ebdc;
+  --bg:#C8CBE0;          /* low-saturation grey violet-blue */
+  --dot:rgba(255,255,255,.34);
+  --white:#ffffff;
+  --brand:#6B5CC4;       /* purple seal */
+  --lime:#C6F432;        /* CTA */
+  --ink:#111111;
+  --display:'Noto Sans SC','Anton','Impact','Haettenschweiler','Arial Narrow Bold',sans-serif;
+  --latin:'Inter','Helvetica Neue',Arial,sans-serif;
+  --jp:'Noto Sans JP','Hiragino Sans','Yu Gothic',sans-serif;
+  --serif:'Noto Serif JP','Hiragino Mincho ProN','Yu Mincho',serif;
 }
-*{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
-body{
-  background:var(--paper);
-  color:var(--ink);
-  font-family:'Noto Sans SC','Noto Sans JP',sans-serif;
-  line-height:1.85;
-  -webkit-font-smoothing:antialiased;
-  font-weight:300;
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{background:var(--bg)}
+body{color:var(--white);font-family:var(--jp);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+a:focus-visible,button:focus-visible{outline:2px solid var(--white);outline-offset:3px}
+
+/* nav */
+.nav{position:fixed;inset:0 0 auto 0;z-index:50;height:64px;padding:0 32px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:10px}
+.logo .mark{width:46px;height:46px;border-radius:50%;background:#fff;display:grid;place-items:center;overflow:hidden;flex:none}
+.logo .mark img{width:40px;height:auto;display:block}
+.logo i{width:31px;height:31px;border-radius:50%;background:var(--brand);display:grid;place-items:center;font-style:normal;font-family:var(--serif);font-weight:600;font-size:16px;color:var(--white);line-height:1}
+.logo b{font-family:var(--latin);font-weight:800;font-size:14px;letter-spacing:.04em}
+.nav-r{display:flex;align-items:center;gap:30px}
+.links{display:flex;gap:26px}
+.links a{font-size:13px;opacity:.72;transition:opacity .2s}
+.links a:hover{opacity:1}
+.cta{background:var(--lime);color:#000;font-weight:700;font-size:13px;padding:7px 14px;border-radius:4px}
+
+/* hero */
+.hero{position:relative;top:0;height:100vh;height:100svh;min-height:600px;overflow:hidden;z-index:0;
+  background-color:var(--bg);background-image:radial-gradient(var(--dot) 1px,transparent 1.3px);background-size:22px 22px}
+.title{position:absolute;left:0;right:0;top:max(72px,8vh);display:flex;justify-content:center;gap:0;z-index:1;
+  font-family:var(--display);font-weight:400;font-size:clamp(56px,min(10.5vw,21vh),200px);font-weight:900;line-height:1;letter-spacing:.06em;color:var(--white);
+  animation:rise .9s cubic-bezier(.2,.7,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+.figure{position:absolute;left:50%;bottom:0;transform:translateX(-50%);z-index:2;height:81vh;height:81svh;aspect-ratio:510/904}
+.figure canvas{width:100%;height:100%;display:block}
+
+.pitch{position:absolute;z-index:3;left:32px;top:auto;bottom:7vh;max-width:min(30vw,340px)}
+.pitch .role{font-family:var(--latin);font-weight:700;font-size:10px;letter-spacing:.14em;margin-bottom:10px;opacity:.9}
+.pitch p{font-size:14px;font-weight:500;line-height:1.45}
+
+.profile{position:absolute;z-index:3;left:64vw;top:57vh;display:flex;gap:16px;white-space:nowrap;pointer-events:none}
+.profile .bar{width:2px;background:var(--white);transform-origin:top;transform:scaleY(0)}
+.profile dl{font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-weight:500;display:grid;grid-template-columns:auto 1fr;column-gap:18px;row-gap:14px;font-size:clamp(13px,1.05vw,17px);line-height:1.5}
+.profile dt,.profile dd{opacity:0;transform:translateY(8px)}
+.profile dd{font-weight:500}
+.profile.show .bar{animation:grow .5s cubic-bezier(.3,.8,.3,1) forwards}
+.profile.show dt,.profile.show dd{animation:up .45s ease forwards}
+@keyframes grow{to{transform:scaleY(1)}}
+@keyframes up{to{opacity:1;transform:none}}
+.profile.show dt{--to:.72}
+
+.pills{position:absolute;z-index:3;left:32px;bottom:28px;display:flex;gap:10px}
+.pill{display:inline-flex;align-items:center;gap:8px;background:var(--white);color:var(--ink);font-size:12px;font-weight:500;padding:9px 16px;border-radius:999px;transition:transform .2s}
+.pill:hover{transform:translateY(-2px)}
+.foot{position:absolute;z-index:3;right:32px;bottom:28px;text-align:right;font-family:var(--latin);font-weight:700;font-size:10px;letter-spacing:.14em;line-height:1.7;opacity:.85}
+
+/* next block slides over the pinned hero */
+.next{position:relative;z-index:5;background:#F6F5F1;color:var(--ink);min-height:80vh;padding:110px 32px;border-radius:22px 22px 0 0}
+.next .in{max-width:760px;margin:0 auto}
+.next h2{font-family:var(--serif);font-weight:600;font-size:clamp(26px,3.4vw,40px);margin-bottom:22px}
+.next p{font-size:15px;line-height:1.9;color:#4a4a55}
+
+@media (max-width:900px){
+  .links{display:none}
+  .nav{padding:0 18px}
+  .title{top:12vh;font-size:clamp(44px,15vw,110px);gap:0}
+  .figure{height:78vh;height:78svh}
+  .pitch{left:18px;top:auto;bottom:88px;max-width:46vw}
+  .profile{display:none}
+  .pills{left:18px;bottom:22px}
+  .foot{right:18px;bottom:22px}
 }
-h1,h2,h3,.serif{font-family:'Noto Serif SC','Noto Serif JP',serif;}
-a{color:inherit;text-decoration:none;}
-.eyebrow{
-  font-size:0.72rem;
-  letter-spacing:0.32em;
-  color:var(--gold);
-  font-weight:500;
+@media (max-width:520px){.pitch p{font-size:12px}.profile dl{font-size:11px}.foot{display:none}}
+@media (prefers-reduced-motion:reduce){
+    .title{animation:none}
+  .profile .bar,.profile dt,.profile dd{animation:none!important;opacity:1;transform:none}
+  .profile dt{opacity:.72}
 }
-
-/* ===== NAV ===== */
-header{
-  position:sticky;
-  top:0;
-  z-index:100;
-  background:rgba(250,247,242,0.9);
-  backdrop-filter:blur(10px);
-  border-bottom:1px solid var(--hair);
+/* ---------- 2nd screen: 三千の世界 (slides over the pinned hero) ---------- */
+.world{position:relative;z-index:5;min-height:calc(100vh + 30vh);min-height:calc(100svh + 30svh);overflow:hidden;
+  padding-top:30vh;color:var(--ink);
+  background:linear-gradient(to bottom,var(--bg) 0,#F3F2EE 30vh,#F3F2EE 100%)}
+.world::before{content:"";position:absolute;inset:0 0 auto 0;height:30vh;pointer-events:none;
+  background-image:radial-gradient(var(--dot) 1px,transparent 1.3px);background-size:22px 22px;
+  -webkit-mask-image:linear-gradient(#000,transparent);mask-image:linear-gradient(#000,transparent)}
+.world .stage{top:30vh;bottom:0}
+.world-head{position:relative;z-index:4;text-align:center;padding:40px 20px 0}
+.world-head .kicker{font-family:var(--latin);font-weight:700;font-size:10px;letter-spacing:.18em}
+.world-head h2{font-family:'Noto Sans SC','Noto Sans JP',sans-serif;font-weight:900;font-size:clamp(34px,4.6vw,76px);line-height:1.1;margin:10px 0 12px;letter-spacing:.02em}
+.world-head p{font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-weight:700;font-size:clamp(12px,1vw,15px)}
+.stage{position:absolute;inset:0;z-index:2}
+.wcard{position:absolute;display:block;width:clamp(170px,15.5vw,290px);background:#111;border:5px solid #111;border-radius:6px;color:#fff;
+  transform:translate(-50%,-50%) rotate(var(--r));transition:transform .35s cubic-bezier(.2,.8,.2,1);text-decoration:none;cursor:pointer}
+.wcard .media{position:relative;aspect-ratio:16/10;background:var(--c);overflow:hidden;border-radius:2px;display:grid;place-items:center}
+.wcard .media .kan{font-family:'Noto Serif JP',serif;font-weight:600;font-size:clamp(46px,4.4vw,84px);color:rgba(255,255,255,.92);line-height:1}
+.wcard .media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.wcard .tag{position:absolute;left:8px;top:7px;font-family:var(--latin);font-weight:700;font-size:9px;letter-spacing:.12em;color:#111;background:#fff;padding:3px 6px;border-radius:2px}
+.wcard .cap{display:block;padding:9px 6px 6px;font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-weight:700;font-size:clamp(12px,.95vw,15px)}
+.wcard:hover,.wcard:focus-visible{transform:translate(-50%,-50%) rotate(0deg) scale(1.08);z-index:6;outline:none}
+.wcard:focus-visible{box-shadow:0 0 0 3px var(--lime)}
+.wcard[data-k=about]  {left:9%; top:68%;--r:-14deg;--c:#E9A3AD}
+.wcard[data-k=lineup] {left:24%;top:47%;--r:-8deg; --c:#7E6BC4}
+.wcard[data-k=ticket] {left:50%;top:38%;--r:0deg;  --c:#C6F432}
+.wcard[data-k=contact]{left:76%;top:47%;--r:9deg;  --c:#F2B544}
+.wcard[data-k=jtc]    {left:91%;top:68%;--r:15deg; --c:#5FB3C6}
+.wcard[data-k=ticket] .kan{color:#111}
+.michi{position:absolute;left:50%;bottom:0;transform:translateX(-50%);z-index:3;height:50vh;height:50svh;aspect-ratio:435/770;pointer-events:none}
+.michi canvas{width:100%;height:100%;display:block}
+.hint{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);z-index:4;background:#111;color:#fff;font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-weight:700;font-size:13px;padding:9px 18px;border-radius:999px;white-space:nowrap}
+.preview-switch{position:fixed;left:16px;bottom:16px;z-index:60;display:flex;gap:6px;background:#fff;border:2px solid #111;border-radius:999px;padding:4px;font:700 11px var(--latin)}
+.preview-switch button{border:0;background:none;padding:5px 10px;border-radius:999px;cursor:pointer;font:inherit}
+.preview-switch button.on{background:#111;color:#fff}
+@media (max-width:900px){
+  .world{padding-bottom:40px;padding-top:22vh;min-height:0}
+  .world .stage{top:auto}
+  .stage{position:relative;inset:auto;display:grid;grid-template-columns:1fr 1fr;gap:22px 14px;padding:28px 18px 0}
+  .wcard,.wcard[data-k]{position:relative;left:auto;top:auto;width:auto;transform:rotate(calc(var(--r)*.4))}
+  .wcard:hover{transform:scale(1.03)}
+  .michi{position:relative;left:auto;transform:none;margin:20px auto 0;height:46svh}
+  .hint{position:relative;left:auto;bottom:auto;transform:none;display:table;margin:14px auto 0;white-space:normal;text-align:center}
 }
-.nav-wrap{
-  max-width:1200px;
-  margin:0 auto;
-  padding:0 40px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  height:88px;
+@media (prefers-reduced-motion:reduce){.wcard{transition:none}}
+.nav,.nav .links a,.logo b{transition:color .3s}
+.nav.light{color:#111}.nav.light .links a{opacity:.8}
+/* ---------- 3rd screen: 作品ラインナップ (card carousel) ---------- */
+.lineup{position:relative;z-index:5;color:var(--ink);padding:26vh 0 110px;overflow:hidden;
+  background:linear-gradient(to bottom,#F3E6EA 0,#ECEBF3 22vh,#ECEBF3 100%)}
+.lu-top{position:relative;max-width:1280px;margin:0 auto;padding:0 40px;height:clamp(150px,17vw,250px)}
+.lu-ghost{position:absolute;left:50%;top:0;transform:translateX(-50%);font-family:'Anton','Impact',sans-serif;font-size:clamp(110px,15vw,240px);line-height:.9;letter-spacing:.03em;color:rgba(26,26,46,.06);white-space:nowrap;user-select:none}
+.lu-michi{position:absolute;left:50%;bottom:0;transform:translateX(-50%);height:clamp(170px,19vw,280px);width:auto;aspect-ratio:301/480;pointer-events:none}
+.lu-row{max-width:1280px;margin:0 auto;padding:0 40px 26px;display:flex;align-items:flex-end;justify-content:space-between;gap:20px}
+.lu-row h2{font-family:'Noto Sans SC','Noto Sans JP',sans-serif;font-weight:900;font-size:clamp(28px,2.6vw,42px);letter-spacing:.02em}
+.lu-arrows{display:flex;gap:10px}
+.lu-arrows button{width:40px;height:40px;border-radius:50%;border:0;background:#fff;color:#111;font-size:18px;cursor:pointer;box-shadow:0 1px 0 rgba(0,0,0,.06);transition:background .2s}
+.lu-arrows button:hover{background:var(--lime)}
+.lu-arrows button:disabled{opacity:.35;cursor:default;background:#fff}
+.lu-track{display:flex;gap:24px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-left:max(40px,calc((100vw - 1200px)/2));padding:4px max(40px,calc((100vw - 1200px)/2)) 8px;scrollbar-width:none}
+.lu-track::-webkit-scrollbar{display:none}
+.lu-card{flex:0 0 min(1000px,80vw);scroll-snap-align:start;display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:28px;
+  background:var(--c);color:var(--fg);border-radius:16px;padding:30px;min-height:min(440px,52vh)}
+.lu-card .meta-top{font-family:var(--latin);font-weight:700;font-size:10px;letter-spacing:.16em;opacity:.7}
+.lu-card h3{font-family:'Noto Sans SC','Noto Sans JP',sans-serif;font-weight:900;font-size:clamp(24px,2.3vw,36px);line-height:1.3;margin:16px 0 4px}
+.lu-card .orig{font-size:12px;opacity:.7;margin-bottom:14px}
+.lu-card .desc{font-size:13px;line-height:1.85;opacity:.9;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
+.lu-card dl{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:12px;margin:20px 0 14px}
+.lu-card dt{opacity:.6}.lu-card dd{font-weight:700}
+.lu-card .tags{display:flex;flex-wrap:wrap;gap:6px}
+.lu-card .tags span{font-size:11px;border:1px solid currentColor;border-radius:999px;padding:3px 10px;opacity:.85}
+.lu-card .cta{display:inline-block;margin-top:18px;font-size:12px;font-weight:700;background:var(--fg);color:var(--c);padding:8px 16px;border-radius:999px}
+.lu-media{position:relative;border-radius:10px;overflow:hidden;background:var(--m);min-height:260px}
+.lu-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.lu-media .ph{position:absolute;inset:0;display:grid;place-items:center;padding:20px;text-align:center;font-family:'Noto Serif JP',serif;font-weight:600;font-size:clamp(20px,1.8vw,28px);color:rgba(255,255,255,.8);letter-spacing:.12em}
+.lu-bars{max-width:1200px;margin:22px auto 0;padding:0 40px;display:flex;gap:6px}
+.lu-bars i{display:block;width:22px;height:3px;border-radius:2px;background:rgba(17,17,17,.15);transition:width .3s,background .3s}
+.lu-bars i.on{width:44px;background:#111}
+@media (max-width:820px){
+  .lineup{padding-top:18vh}.lu-top,.lu-row{padding-left:18px;padding-right:18px}
+  .lu-track{scroll-padding-left:18px;padding-left:18px;padding-right:18px}
+  .lu-card{flex-basis:86vw;grid-template-columns:1fr;padding:20px}
+  .lu-media{min-height:200px;order:-1}
+  .lu-bars{padding:0 18px}
 }
-.brand{display:flex;align-items:baseline;gap:12px;}
-.brand .cn{font-size:1.3rem;font-weight:500;letter-spacing:0.15em;}
-.brand .en{font-size:0.6rem;letter-spacing:0.24em;color:var(--ink-soft);font-family:'Noto Sans SC',sans-serif;}
-nav.tabs{display:flex;gap:36px;}
-nav.tabs a{position:relative;font-size:0.83rem;letter-spacing:0.04em;color:var(--ink);padding-bottom:4px;white-space:nowrap;}
-nav.tabs a::after{content:"";position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--lacquer);transition:width .25s ease;}
-nav.tabs a:hover::after{width:100%;}
-nav.tabs a.active{color:var(--lacquer);}
-.nav-cta{border:1px solid var(--ink);color:var(--ink);padding:11px 24px;font-size:0.8rem;letter-spacing:0.06em;transition:all .2s ease;white-space:nowrap;}
-.nav-cta:hover{background:var(--ink);color:var(--paper);}
-@media (max-width:1000px){
-  nav.tabs{display:none;}
-  .nav-wrap{padding:0 24px;}
-}
+/* ---------- 4th screen: 遊び方 ---------- */
+.play{position:relative;z-index:5;color:var(--ink);background:#ECEBF3;padding:40px 0 130px;overflow:hidden}
+.play-in{position:relative;max-width:1200px;margin:0 auto;padding:0 40px}
+.play-ghost{position:absolute;left:50%;top:-10px;transform:translateX(-50%);font-family:'Anton','Impact',sans-serif;font-size:clamp(70px,10vw,170px);line-height:.9;letter-spacing:.03em;color:rgba(26,26,46,.06);white-space:nowrap;pointer-events:none;user-select:none}
+.play-head{position:relative;padding-top:clamp(70px,8vw,120px);margin-bottom:46px}
+.play-head .eb{display:flex;align-items:center;gap:10px;font-family:var(--latin);font-weight:700;font-size:10px;letter-spacing:.18em}
+.play-head .eb::before{content:"";width:34px;height:1px;background:#111}
+.play-head h2{font-family:'Noto Sans SC','Noto Sans JP',sans-serif;font-weight:900;font-size:clamp(28px,3vw,46px);margin:10px 0 8px}
+.play-head p{font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-weight:700;font-size:14px;opacity:.75}
+.play-grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:48px;align-items:center}
+.steps{list-style:none;display:flex;flex-direction:column;gap:6px}
+.step{display:block;width:100%;text-align:left;border:0;background:transparent;border-radius:6px;padding:14px 18px;cursor:pointer;font:inherit;color:inherit;transition:background .3s}
+.step .t{display:flex;align-items:baseline;gap:12px;font-family:'Noto Sans SC','Noto Sans JP',sans-serif;font-weight:900;font-size:clamp(18px,1.6vw,24px);color:rgba(17,17,17,.28);transition:color .3s}
+.step .t b{font-family:var(--latin);font-size:12px;letter-spacing:.1em}
+.step .d{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s ease}
+.step .d span{overflow:hidden;font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-weight:500;font-size:13px;line-height:1.75;color:rgba(17,17,17,.75)}
+.step.on{background:var(--soft)}
+.step.on .t{color:#111}
+.step.on .d{grid-template-rows:1fr}
+.step.on .d span{padding-top:8px}
+.step:focus-visible{outline:2px solid #111;outline-offset:2px}
+.viz{position:relative;aspect-ratio:1/0.82;max-width:560px;justify-self:center;width:100%}
+.panel{position:absolute;inset:0;opacity:0;transform:rotateY(-35deg) scale(.92);transition:opacity .45s ease,transform .55s cubic-bezier(.2,.8,.2,1);pointer-events:none;perspective:900px}
+.panel.on{opacity:1;transform:none}
+.panel svg.blob{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.win{position:absolute;left:12%;top:16%;width:76%;height:68%;background:#fff;border:4px solid #111;border-radius:8px;box-shadow:8px 8px 0 rgba(17,17,17,.12);display:flex;flex-direction:column;overflow:hidden}
+.win .bar{height:24px;border-bottom:3px solid #111;display:flex;align-items:center;gap:5px;padding:0 9px;background:var(--soft)}
+.win .bar i{width:8px;height:8px;border-radius:50%;border:2px solid #111}
+.win .body{flex:1;display:grid;place-items:center;gap:8px;padding:18px;text-align:center;background:var(--soft2)}
+.win .body svg{width:min(42%,150px);height:auto}
+.win .body em{font-style:normal;font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-weight:700;font-size:15px}
+.tagbox{position:absolute;left:8%;top:9%;z-index:2;font-family:var(--latin);font-weight:700;font-size:10px;letter-spacing:.12em;background:#fff;border:2px solid #111;padding:4px 8px;transform:rotate(-4deg)}
+@media (max-width:860px){.play-in{padding:0 18px}.play-grid{grid-template-columns:1fr;gap:28px}.viz{order:-1;max-width:420px}}
+@media (prefers-reduced-motion:reduce){.panel,.step,.step .d{transition:none}}
+/* ---------- 3rd screen: 私たちについて ---------- */
+.about{position:relative;z-index:5;color:var(--ink);overflow:hidden;padding:30vh 0 90px;
+  background:linear-gradient(to bottom,#F3F2EE 0,#F3E6EA 26vh,#F3E6EA 100%)}
+.ab-in{position:relative;max-width:1200px;margin:0 auto;padding:0 40px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.85fr);gap:40px;align-items:center;min-height:78vh}
+.ab-ghost{position:absolute;left:50%;top:-4vh;transform:translateX(-50%);font-family:'Anton','Impact',sans-serif;font-size:clamp(80px,11vw,190px);line-height:.9;letter-spacing:.03em;color:rgba(120,60,80,.07);white-space:nowrap;pointer-events:none;user-select:none}
+.ab-text{position:relative;z-index:2}
+.ab-text .eb{font-family:var(--latin);font-weight:700;font-size:10px;letter-spacing:.18em;margin-bottom:16px}
+.ab-text .hi{display:inline-block;background:var(--lime);border:3px solid #111;font-family:var(--latin);font-weight:800;font-size:clamp(20px,2vw,30px);padding:2px 12px;transform:rotate(-3deg);margin-bottom:6px}
+.ab-text h2{font-family:'Noto Sans SC','Noto Sans JP',sans-serif;font-weight:900;font-size:clamp(36px,4.2vw,64px);line-height:1.15;margin-bottom:18px}
+.ab-text .lead{font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-weight:500;font-size:14px;line-height:1.85;max-width:34em;margin-bottom:28px}
+.ab-list{list-style:none;border-top:2px solid #111;max-width:540px}
+.ab-list li{display:grid;grid-template-columns:36px 9.5em 1fr;align-items:baseline;gap:10px;padding:13px 0;border-bottom:1px solid rgba(17,17,17,.25)}
+.ab-list b{font-family:var(--latin);font-size:11px;letter-spacing:.08em}
+.ab-list strong{font-family:'Noto Sans SC','Noto Sans JP',sans-serif;font-weight:900;font-size:15px}
+.ab-list span{font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-size:12px;opacity:.75}
+.ab-fig{position:relative;justify-self:center;height:min(78vh,720px);aspect-ratio:473/658}
+.ab-fig canvas{width:100%;height:100%;display:block}
+.ab-note{position:absolute;right:-6%;top:6%;background:#fff;border:2px solid #111;box-shadow:4px 4px 0 #111;font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-weight:700;font-size:12px;line-height:1.5;padding:8px 12px;transform:rotate(4deg)}
+@media (max-width:860px){.ab-in{grid-template-columns:1fr;padding:0 18px}.ab-fig{height:58svh;order:-1}.ab-list li{grid-template-columns:30px 1fr}.ab-list span{grid-column:2}.ab-note{right:0}}
+/* ---------- 6th screen: 公演予約 ---------- */
+.reserve{position:relative;z-index:5;color:var(--ink);overflow:hidden;padding:24vh 0 110px;
+  background:linear-gradient(to bottom,#ECEBF3 0,#EAF3D4 22vh,#EAF3D4 100%)}
+.rs-ghost{position:absolute;left:50%;top:calc(24vh - 30px);transform:translateX(-50%);font-family:'Anton','Impact',sans-serif;font-size:clamp(70px,10vw,170px);line-height:.9;letter-spacing:.03em;color:rgba(60,90,20,.08);white-space:nowrap;pointer-events:none;user-select:none}
+.rs-in{position:relative;max-width:1200px;margin:0 auto;padding:0 40px;display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:56px;align-items:start}
+.rs-side{position:sticky;top:90px}
+.rs-side .eb{display:flex;align-items:center;gap:10px;font-family:var(--latin);font-weight:700;font-size:10px;letter-spacing:.18em}
+.rs-side .eb::before{content:"";width:34px;height:1px;background:#111}
+.rs-side h2{font-family:'Noto Sans SC','Noto Sans JP',sans-serif;font-weight:900;font-size:clamp(32px,3.4vw,52px);margin:10px 0 10px}
+.rs-side .lead{font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-weight:500;font-size:14px;line-height:1.85;margin-bottom:8px}
+.rs-side .note{font-size:12px;opacity:.7;line-height:1.7}
+.rs-fig{margin-top:18px;height:min(52vh,480px);aspect-ratio:325/640}
+.rs-fig canvas{width:100%;height:100%;display:block}
+.rs-card{background:#fff;border:4px solid #111;border-radius:10px;box-shadow:8px 8px 0 #111;padding:34px 36px}
+.rs-card .row{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.fld{margin-bottom:20px}
+.fld label{display:block;font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-weight:700;font-size:13px;margin-bottom:7px}
+.fld label i{font-style:normal;color:#C2365A;margin-left:4px}
+.fld input,.fld select,.fld textarea{width:100%;font:inherit;font-size:15px;color:#111;background:#F7F7F2;border:2px solid #111;border-radius:6px;padding:11px 13px;appearance:none;-webkit-appearance:none}
+.fld textarea{min-height:96px;resize:vertical;line-height:1.7}
+.fld .sel{position:relative}.fld .sel::after{content:"▾";position:absolute;right:13px;top:50%;transform:translateY(-50%);pointer-events:none;font-size:12px}
+.fld input:focus,.fld select:focus,.fld textarea:focus{outline:none;background:#fff;box-shadow:0 0 0 3px var(--lime)}
+.rs-sep{border:0;border-top:2px dashed rgba(17,17,17,.2);margin:6px 0 24px}
+.rs-submit{width:100%;background:var(--lime);color:#000;border:3px solid #111;border-radius:999px;padding:15px;font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-weight:700;font-size:16px;cursor:pointer;box-shadow:0 4px 0 #111;transition:transform .15s,box-shadow .15s}
+.rs-submit:hover{transform:translateY(-2px);box-shadow:0 6px 0 #111}
+.rs-submit:active{transform:translateY(2px);box-shadow:0 2px 0 #111}
+.rs-submit:disabled{opacity:.6;cursor:wait}
+.rs-foot{font-size:12px;opacity:.7;text-align:center;margin-top:14px}
+.rs-result{display:none;text-align:center;padding:20px 6px}
+.rs-result.show{display:block}
+.rs-result img{width:150px;height:auto;animation:hop 1s cubic-bezier(.3,.7,.4,1) infinite}
+.rs-result h3{font-family:'Noto Sans SC','Noto Sans JP',sans-serif;font-weight:900;font-size:clamp(22px,2.4vw,32px);margin:14px 0 8px}
+.rs-result p{font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-size:14px;line-height:1.8}
+@keyframes hop{0%,100%{transform:translateY(0)}35%{transform:translateY(-16px)}55%{transform:translateY(0)}70%{transform:translateY(-6px)}}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:200}
+@media (max-width:860px){.rs-in{grid-template-columns:1fr;padding:0 18px;gap:28px}.rs-side{position:relative;top:0}.rs-fig{height:40svh;margin:10px auto 0}.rs-card{padding:24px 18px}.rs-card .row{grid-template-columns:1fr;gap:0}}
+@media (prefers-reduced-motion:reduce){.rs-result img{animation:none}}
+/* ---------- 7th screen: アクセス ---------- */
+.access{position:relative;z-index:5;color:var(--ink);overflow:hidden;padding:24vh 0 120px;
+  background:linear-gradient(to bottom,#EAF3D4 0,#F3F2EE 22vh,#F3F2EE 100%);padding-bottom:70px}
+.ac-ghost{position:absolute;left:50%;top:calc(24vh - 30px);transform:translateX(-50%);font-family:'Anton','Impact',sans-serif;font-size:clamp(70px,10vw,170px);line-height:.9;letter-spacing:.03em;color:rgba(26,26,46,.06);white-space:nowrap;pointer-events:none;user-select:none}
+.ac-in{position:relative;max-width:1200px;margin:0 auto;padding:0 40px;display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:56px;align-items:start}
+.ac-info .eb{display:flex;align-items:center;gap:10px;font-family:var(--latin);font-weight:700;font-size:10px;letter-spacing:.18em}
+.ac-info .eb::before{content:"";width:34px;height:1px;background:#111}
+.ac-info h2{font-family:'Noto Sans SC','Noto Sans JP',sans-serif;font-weight:900;font-size:clamp(32px,3.4vw,52px);margin:10px 0 18px}
+.ac-badge{display:inline-block;background:var(--lime);border:3px solid #111;font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-weight:700;font-size:15px;padding:4px 14px;transform:rotate(-2deg);margin-bottom:26px}
+.ac-dl{display:flex;gap:16px;margin-bottom:30px}
+.ac-dl .bar{width:2px;background:#111}
+.ac-dl dl{display:grid;grid-template-columns:auto 1fr;gap:10px 18px;font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-size:14px;line-height:1.6}
+.ac-dl dt{opacity:.6}.ac-dl dd{font-weight:700}
+.ac-info h3{font-family:'Noto Sans SC','Noto Sans JP',sans-serif;font-weight:900;font-size:18px;margin-bottom:12px}
+.routes{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+.routes li{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;background:#fff;border:2px solid #111;border-radius:8px;padding:10px 14px}
+.routes .ln{font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-weight:700;font-size:11px;padding:3px 9px;border-radius:999px;color:#111;white-space:nowrap}
+.routes .st{font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-weight:700;font-size:14px}
+.routes .tm{font-family:'Noto Sans SC','Noto Sans JP',sans-serif;font-weight:900;font-size:16px;white-space:nowrap}
+.routes .tm small{font-size:11px;font-weight:700;opacity:.6;margin-right:3px}
+.ac-btn{display:inline-flex;align-items:center;gap:8px;background:#111;color:#fff;border-radius:999px;padding:12px 22px;font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-weight:700;font-size:14px;transition:transform .15s}
+.ac-btn:hover{transform:translateY(-2px)}
+.ac-map{position:relative;margin-top:80px}
+.ac-map .win{position:relative;background:#fff;border:4px solid #111;border-radius:10px;box-shadow:8px 8px 0 #111;overflow:hidden}
+.ac-map .win .bar{height:26px;border-bottom:3px solid #111;display:flex;align-items:center;gap:5px;padding:0 10px;background:#FFE8EC}
+.ac-map .win .bar i{width:8px;height:8px;border-radius:50%;border:2px solid #111}
+.ac-map iframe{display:block;width:100%;aspect-ratio:4/3.3;border:0}
+.ac-map .tag{position:absolute;left:-10px;top:-16px;z-index:2;font-family:var(--latin);font-weight:700;font-size:10px;letter-spacing:.12em;background:#fff;border:2px solid #111;padding:4px 8px;transform:rotate(-4deg)}
+@media (max-width:860px){.ac-in{grid-template-columns:1fr;padding:0 18px;gap:36px}.ac-map{order:-1;margin-top:0}}
+/* LINE friend block inside reservation success */
+.rs-line{margin:22px auto 0;max-width:420px;display:grid;grid-template-columns:120px 1fr;gap:16px;align-items:center;text-align:left;background:#F2FBEF;border:2px solid #111;border-radius:10px;padding:14px}
+.rs-line img{width:120px;height:120px;display:block;animation:none}
+.rs-line b{display:block;font-family:'Noto Sans SC','Noto Sans JP',sans-serif;font-weight:900;font-size:15px;margin-bottom:4px}
+.rs-line p{font-size:12px;line-height:1.7}
+.rs-line a{display:none;margin-top:8px;background:#06C755;color:#fff;font-weight:700;font-size:13px;padding:8px 14px;border-radius:999px;text-align:center}
+@media (max-width:700px),(hover:none){.rs-line{grid-template-columns:1fr}.rs-line img{display:none}.rs-line a{display:block}}
+/* ---------- recruit banner + footer ---------- */
+.recruit{position:relative;z-index:5;background:#F3F2EE;padding:20px 40px 90px}
+.rc{position:relative;max-width:1120px;margin:0 auto;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:32px;align-items:center;
+  background:#F2A9B6;border:4px solid #111;border-radius:14px;box-shadow:8px 8px 0 #111;padding:26px 34px;overflow:hidden;color:#111}
+.rc::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.55) 2px,transparent 2.5px);background-size:18px 18px;pointer-events:none}
+.rc>*{position:relative}
+.rc .stamp{width:118px;height:118px;border-radius:50%;background:var(--lime);border:3px solid #111;display:grid;place-items:center;text-align:center;transform:rotate(-10deg);
+  font-family:'Noto Sans SC','Noto Sans JP',sans-serif;font-weight:900;font-size:22px;line-height:1.15}
+.rc .stamp small{display:block;font-family:var(--latin);font-weight:800;font-size:10px;letter-spacing:.14em}
+.rc .eb{font-family:var(--latin);font-weight:700;font-size:10px;letter-spacing:.18em;margin-bottom:6px}
+.rc h2{font-family:'Noto Sans SC','Noto Sans JP',sans-serif;font-weight:900;font-size:clamp(22px,2.4vw,34px);margin-bottom:8px}
+.rc p{font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-weight:500;font-size:14px;line-height:1.75}
+.rc .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.rc .chips span{background:#fff;border:2px solid #111;border-radius:999px;font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-weight:700;font-size:12px;padding:3px 12px}
+.rc .go{display:inline-flex;align-items:center;gap:8px;background:#06C755;color:#fff;border:3px solid #111;border-radius:999px;padding:13px 22px;font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-weight:700;font-size:15px;white-space:nowrap;box-shadow:0 4px 0 #111;transition:transform .15s,box-shadow .15s}
+.rc .go:hover{transform:translateY(-2px);box-shadow:0 6px 0 #111}
+.site-foot{position:relative;z-index:5;background:#111;color:rgba(255,255,255,.75);padding:40px 40px 34px}
+.site-foot .in{max-width:1120px;margin:0 auto;display:flex;flex-wrap:wrap;gap:20px 40px;align-items:center;justify-content:space-between;font-size:12px;line-height:1.8}
+.site-foot .brand{display:flex;align-items:center;gap:12px;color:#fff;font-family:var(--latin);font-weight:800;font-size:14px}
+.site-foot .brand span{width:40px;height:40px;border-radius:50%;background:#fff;display:grid;place-items:center;overflow:hidden}
+.site-foot .brand img{width:34px}
+.site-foot nav{display:flex;flex-wrap:wrap;gap:6px 18px}
+.site-foot nav a:hover{color:#fff}
+.site-foot .copy{width:100%;border-top:1px solid rgba(255,255,255,.15);padding-top:16px;font-size:11px;opacity:.7}
+@media (max-width:820px){.recruit{padding:10px 18px 70px}.rc{grid-template-columns:1fr;gap:16px;padding:24px 20px;text-align:left}.rc .stamp{width:92px;height:92px;font-size:18px}.site-foot{padding:34px 18px}}
 
-/* ===== PAGE HERO (interior pages) ===== */
-.page-hero{
-  max-width:1200px;
-  margin:0 auto;
-  padding:80px 40px 60px;
-  border-bottom:1px solid var(--hair);
-}
-.page-hero .eyebrow{margin-bottom:20px;display:block;}
-.page-hero h1{font-size:clamp(1.8rem,3.2vw,2.5rem);font-weight:400;letter-spacing:0.03em;line-height:1.5;max-width:20ch;}
-.page-hero p.lead{margin-top:22px;color:var(--ink-soft);font-size:0.98rem;max-width:56ch;font-weight:300;}
-
-/* ===== SECTION SHELL ===== */
-section{max-width:1200px;margin:0 auto;padding:100px 40px;}
-.section-head{margin-bottom:60px;}
-.section-head .eyebrow{margin-bottom:18px;display:block;}
-.section-head h2{font-size:clamp(1.6rem,2.4vw,2.1rem);font-weight:400;letter-spacing:0.04em;}
-.rule{width:48px;height:1px;background:var(--gold);margin-top:28px;}
-
-/* ===== BUTTONS ===== */
-.btn-primary{background:var(--lacquer);color:#fff;padding:16px 34px;font-size:0.88rem;letter-spacing:0.1em;display:inline-block;transition:background .2s ease;}
-.btn-primary:hover{background:var(--lacquer-deep);}
-.btn-ghost{padding:16px 30px;border:1px solid var(--ink);font-size:0.88rem;letter-spacing:0.1em;display:inline-block;transition:all .2s ease;}
-.btn-ghost:hover{background:var(--ink);color:var(--paper);}
-.btn-jade{background:var(--jade);color:#fff;padding:16px 34px;font-size:0.88rem;letter-spacing:0.1em;display:inline-block;transition:background .2s ease;}
-.btn-jade:hover{background:#38473f;}
-
-/* ===== HOME: PATH CARDS ===== */
-.path-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--hair);border:1px solid var(--hair);}
-.path-card{background:var(--card);padding:56px 44px;display:flex;flex-direction:column;}
-.path-card .dir{font-size:0.7rem;letter-spacing:0.2em;color:var(--gold);margin-bottom:22px;}
-.path-card h3{font-size:1.4rem;font-weight:400;line-height:1.6;margin-bottom:18px;}
-.path-card p{color:var(--ink-soft);font-size:0.92rem;font-weight:300;margin-bottom:32px;flex-grow:1;}
-@media (max-width:900px){.path-grid{grid-template-columns:1fr;}}
-
-/* ===== ABOUT role list ===== */
-.about-grid{display:grid;grid-template-columns:0.95fr 1.05fr;gap:80px;}
-.about-grid > div:first-child p{color:var(--ink-soft);margin-bottom:22px;font-size:0.98rem;font-weight:300;}
-.about-grid > div:first-child strong{color:var(--ink);font-weight:500;}
-.role-list{display:flex;flex-direction:column;}
-.role-item{display:grid;grid-template-columns:56px 1fr;gap:24px;padding:28px 0;border-top:1px solid var(--hair);}
-.role-item:last-child{border-bottom:1px solid var(--hair);}
-.role-item .no{font-family:'Noto Serif SC','Noto Serif JP',serif;font-size:1.3rem;color:var(--gold);font-weight:400;}
-.role-item h3{font-size:1.02rem;font-weight:500;margin-bottom:8px;letter-spacing:0.03em;}
-.role-item p{font-size:0.88rem;color:var(--ink-soft);font-weight:300;}
-@media (max-width:900px){.about-grid{grid-template-columns:1fr;gap:50px;}}
-
-/* ===== CANDIDATE / LINEUP CARDS ===== */
-.files-note{border-left:2px solid var(--gold);padding:6px 0 6px 24px;font-size:0.9rem;color:var(--ink-soft);margin-bottom:56px;font-weight:300;max-width:70ch;}
-.files-note strong{color:var(--ink);font-weight:500;}
-.files-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--hair);border:1px solid var(--hair);}
-.file-card{background:var(--card);padding:52px 34px;display:flex;align-items:center;justify-content:center;text-align:center;min-height:260px;}
-.file-card .ph-text{color:var(--ink-soft);}
-.file-card .ph-text .genre-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);display:inline-block;margin-bottom:20px;}
-.file-card .ph-text strong{display:block;font-family:'Noto Serif SC','Noto Serif JP',serif;color:var(--ink);font-size:1.08rem;font-weight:400;margin-bottom:10px;letter-spacing:0.04em;}
-.file-card .ph-text span{font-size:0.85rem;font-weight:300;}
-@media (max-width:900px){.files-grid{grid-template-columns:1fr;}}
-
-.lineup-empty{
-  border:1px dashed var(--hair);
-  padding:80px 40px;
-  text-align:center;
-}
-.lineup-empty strong{display:block;font-family:'Noto Serif SC','Noto Serif JP',serif;font-size:1.2rem;font-weight:400;margin-bottom:14px;}
-.lineup-empty p{color:var(--ink-soft);font-size:0.92rem;font-weight:300;max-width:50ch;margin:0 auto 30px;}
-
-.lineup-card{
-  display:grid;
-  grid-template-columns:1fr auto;
-  gap:20px;
-  align-items:center;
-  border-top:1px solid var(--hair);
-  padding:34px 0;
-}
-.lineup-card:last-child{border-bottom:1px solid var(--hair);}
-.lineup-card .genre{font-size:0.7rem;letter-spacing:0.14em;color:var(--gold);margin-bottom:10px;}
-.lineup-card h3{font-size:1.15rem;font-weight:500;margin-bottom:10px;}
-.lineup-card p{font-size:0.88rem;color:var(--ink-soft);font-weight:300;max-width:56ch;}
-.lineup-card .price{font-size:0.82rem;color:var(--ink-soft);margin-top:14px;}
-.lineup-card .price strong{color:var(--ink);font-size:1rem;font-weight:500;}
-
-/* subscribe */
-.subscribe-box{margin-top:64px;padding:44px 0 0;border-top:1px solid var(--hair);display:flex;align-items:center;justify-content:space-between;gap:30px;flex-wrap:wrap;}
-.subscribe-box .txt h3{font-size:1.05rem;font-weight:500;margin-bottom:8px;letter-spacing:0.03em;}
-.subscribe-box .txt p{font-size:0.86rem;color:var(--ink-soft);font-weight:300;}
-.subscribe-form{display:flex;gap:0;flex-wrap:wrap;border-bottom:1px solid var(--ink);padding-bottom:2px;}
-.subscribe-form input{padding:12px 6px;border:none;background:transparent;font-size:0.9rem;min-width:240px;font-family:inherit;color:var(--ink);}
-.subscribe-form input:focus{outline:none;}
-.subscribe-form input::placeholder{color:var(--ink-soft);}
-.subscribe-form button{padding:12px 8px;background:transparent;color:var(--lacquer);border:none;font-size:0.86rem;letter-spacing:0.06em;cursor:pointer;white-space:nowrap;}
-.subscribe-form button:hover{color:var(--lacquer-deep);}
-
-/* ===== PROCESS ===== */
-.process-list{display:grid;grid-template-columns:repeat(4,1fr);gap:44px;}
-.process-step{border-top:1px solid var(--ink);padding-top:24px;}
-.process-step .num{font-family:'Noto Serif SC','Noto Serif JP',serif;font-size:1.15rem;color:var(--gold);margin-bottom:18px;font-weight:400;}
-.process-step h3{font-size:0.96rem;font-weight:500;margin-bottom:10px;letter-spacing:0.03em;}
-.process-step p{font-size:0.84rem;color:var(--ink-soft);font-weight:300;}
-@media (max-width:900px){.process-list{grid-template-columns:1fr 1fr;row-gap:36px;}}
-@media (max-width:560px){.process-list{grid-template-columns:1fr;}}
-
-/* ===== model cards (buyout / share) ===== */
-.model-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--hair);border:1px solid var(--hair);}
-.model-card{background:var(--card);padding:40px 36px;}
-.model-card .tag{font-size:0.7rem;letter-spacing:0.16em;color:var(--gold);margin-bottom:16px;}
-.model-card h3{font-size:1.1rem;font-weight:500;margin-bottom:14px;}
-.model-card p{font-size:0.88rem;color:var(--ink-soft);font-weight:300;}
-@media (max-width:900px){.model-grid{grid-template-columns:1fr;}}
-
-/* ===== CONTACT / FORM SECTIONS ===== */
-.dark-shell{background:var(--ink);color:var(--paper);}
-.dark-shell .eyebrow{color:var(--gold);}
-.contact-grid{display:grid;grid-template-columns:0.85fr 1.15fr;gap:80px;}
-.contact-grid > div:first-child p{color:rgba(250,247,242,0.6);margin-bottom:20px;font-size:0.95rem;font-weight:300;max-width:38ch;}
-.contact-info-item{border-top:1px solid rgba(250,247,242,0.15);padding:20px 0;}
-.contact-info-item .label{font-size:0.7rem;letter-spacing:0.2em;color:var(--gold);margin-bottom:8px;}
-.contact-info-item .val{font-size:0.95rem;font-weight:300;}
-form.contact-form{display:flex;flex-direction:column;gap:26px;}
-.field{border-bottom:1px solid rgba(250,247,242,0.28);padding-bottom:10px;}
-.field label{font-size:0.72rem;letter-spacing:0.1em;color:rgba(250,247,242,0.55);margin-bottom:8px;display:block;}
-.field input, .field textarea, .field select{width:100%;background:transparent;border:none;color:var(--paper);font-family:inherit;font-size:0.95rem;resize:none;}
-.field select option{color:var(--ink);}
-.field input:focus, .field textarea:focus, .field select:focus{outline:none;}
-form.contact-form button{align-self:flex-start;margin-top:10px;padding:16px 40px;background:var(--lacquer);color:#fff;border:none;font-size:0.88rem;letter-spacing:0.1em;cursor:pointer;transition:background .2s ease;}
-form.contact-form button:hover{background:#b12a2f;}
-@media (max-width:900px){.contact-grid{grid-template-columns:1fr;gap:50px;}}
-
-/* light form variant (on paper bg, e.g. creator submission) */
-.light-form .field{border-bottom:1px solid var(--hair);}
-.light-form .field label{color:var(--ink-soft);}
-.light-form .field input, .light-form .field textarea, .light-form .field select{color:var(--ink);}
-
-footer{text-align:center;padding:40px 20px;font-size:0.76rem;color:var(--ink-soft);background:var(--ink);border-top:1px solid rgba(250,247,242,0.1);font-weight:300;letter-spacing:0.04em;}
-footer a{color:var(--gold);}
-
-
-  .hero-outer{background-image:url("images/hero-index.webp");background-size:100% auto;background-position:center;background-repeat:no-repeat;}
-  .hero{max-width:1300px;margin:0 auto;padding:140px 40px 120px;position:relative;overflow:hidden;}
-  .path-band{background:var(--paper-deep);}
-  .hero .eyebrow{margin-bottom:28px;display:block;}
-  .hero h1{font-size:clamp(2rem, 3.6vw, 2.9rem);font-weight:400;line-height:1.6;letter-spacing:0.02em;max-width:22ch;}
-  .hero h1 .accent{color:var(--lacquer);}
-  .hero p.lead{margin-top:30px;color:var(--ink-soft);font-size:1rem;max-width:52ch;font-weight:300;}
-
+/* ---------- nav jump offset ---------- */
+#about{scroll-margin-top:calc(70px - 26vh)}
+#lineup{scroll-margin-top:calc(55px - 26vh)}
+/* ---------- scroll-in animations ---------- */
+@keyframes rvUp{0%{opacity:0;translate:0 46px}60%{opacity:1;translate:0 -7px}80%{translate:0 2px}100%{opacity:1;translate:0 0}}
+@keyframes rvPop{0%{opacity:0;scale:.82;translate:0 30px}55%{opacity:1;scale:1.05;translate:0 -4px}78%{scale:.98}100%{opacity:1;scale:1;translate:0 0}}
+html.js .rv,html.js .pop{opacity:0}
+html.js .rv.in{animation:rvUp .8s cubic-bezier(.25,.8,.3,1) var(--d,0s) both}
+html.js .pop.in{animation:rvPop .75s cubic-bezier(.25,.8,.3,1) var(--d,0s) both}
+@media (prefers-reduced-motion:reduce){html.js .rv,html.js .pop{opacity:1;animation:none!important}}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="nav-wrap">
-    <a href="index.html" class="brand">
-      <span class="cn serif">浮生三千</span>
-      <span class="en">FUSHENG SANQIAN — MYSTERY BRIDGE</span>
-    </a>
-<nav class="tabs">
-  <a href="about.html">私たちについて</a>
-  <a href="lineup.html">作品ラインナップ</a>
-  <a href="japan-to-china.html">日本発 中国へ</a>
-  <a href="contact.html">シナリオ購入</a>
-</nav>
-<a href="ticket.html" class="nav-cta">公演予約</a>
+<header class="nav" id="nav">
+  <a class="logo" href="https://mystery.threethousandlives.com/"><span class="mark"><img src="assets/img/logo.webp" alt="浮生三千"></span><b>ThreeThousandLives</b></a>
+  <div class="nav-r">
+    <nav class="links">
+      <a href="#about">私たちについて</a>
+      <a href="#lineup">作品ラインナップ</a>
+      <a href="#play">遊び方</a>
+      <a href="#access">アクセス</a>
+    </nav>
+    <a class="cta" href="#reserve">公演予約</a>
   </div>
 </header>
 
-<section class="hero-outer" style="max-width:none;padding:0;">
-<div class="hero">
-  <span class="eyebrow">CHINA ⇄ JAPAN, MYSTERY LOCALIZED</span>
-  <h1>中国と日本、<br>二つの<span class="accent">マーダーミステリー市場</span>をつなぐ。</h1>
-  <p class="lead">浮生三千は、中国発の優れたシナリオを日本へ、日本発のシナリオを中国へ——
-    両方向のローカライズと現地流通をサポートするパートナーです。</p>
-</div>
+<main>
+<section class="hero" id="top">
+  <h1 class="title"><span>浮生</span><span>三千</span></h1>
+
+  <div class="figure"><canvas id="sanzen" width="510" height="904" role="img" aria-label="三千（みち）が手を振っている"></canvas></div>
+
+  <div class="pitch">
+    <div class="role">CHINA ⇄ JAPAN · MURDER MYSTERY</div>
+    <p>マーダーミステリー市場の店家・版権元様に向けた、<br>中国↔日本 双方向のローカライズ・パートナーです。</p>
+  </div>
+
+
+
+  <div class="profile">
+    <span class="bar" aria-hidden="true"></span>
+    <dl>
+      <dt>名前</dt><dd>三千（みち）</dd>
+      <dt>店舗</dt><dd>浮生三千（中国マダミス専門店）</dd>
+      <dt>住所</dt><dd>東京都豊島区南大塚1-1-8 ウエストモア 3F</dd>
+      <dt>LINE</dt><dd>@threethousandlives</dd>
+    </dl>
+  </div>
+
+  <div class="foot">MYSTERY BRIDGE<br>TOKYO · OTSUKA · 2026</div>
 </section>
 
-<section class="path-band" style="max-width:none;padding:70px 0;">
-  <div style="max-width:1200px;margin:0 auto;padding:0 40px;">
-  <div class="path-grid">
-    <div class="path-card">
-      <div class="dir">中国 → 日本</div>
-      <h3>中国発シナリオを、<br>日本の店舗へ。</h3>
-      <p>中国発の人気マーダーミステリー作品を日本市場向けにローカライズし、国内の店舗・流通パートナーへ展開。市場調査から版権交渉、翻訳・カルチャライズ、発売支援まで、一貫したサービスを提供します。</p>
-      <div style="display:flex;gap:14px;flex-wrap:wrap;">
-        <a href="lineup.html" class="btn-primary">作品ラインナップ</a>
-      </div>
-    </div>
-    <div class="path-card">
-      <div class="dir">日本 → 中国</div>
-      <h3>日本発シナリオを、<br>中国市場へ。</h3>
-      <p>日本オリジナル作品の中国市場向けローカライズにも対応。中国市場を熟知した専門チームが、現地流通チャネルやユーザーインサイトを踏まえ、市場参入から展開までをワンストップでサポートします。</p>
-      <div style="display:flex;gap:14px;flex-wrap:wrap;">
-        <a href="japan-to-china.html" class="btn-jade">詳しく見る</a>
-      </div>
-    </div>
+<section class="world" id="world">
+  <div class="world-head">
+    <div class="kicker">WELCOME TO SANZEN'S WORLD</div>
+    <h2 id="w-title">浮生三千の世界へようこそ</h2>
+    <p id="w-sub">中国と日本、二つの物語をつなぐ場所</p>
   </div>
+  <div class="stage">
+    <a class="wcard" data-k="about" href="#about"><span class="media"><span class="kan">我</span></span><span class="tag">01 / ABOUT US</span><span class="cap">私たちについて</span></a>
+    <a class="wcard" data-k="lineup" href="#lineup"><span class="media"><span class="kan">本</span></span><span class="tag">02 / SCRIPT LINEUP</span><span class="cap">作品ラインナップ</span></a>
+    <a class="wcard" data-k="ticket" href="#reserve"><span class="media"><span class="kan">約</span></span><span class="tag">03 / RESERVATION</span><span class="cap">公演予約</span></a>
+    <a class="wcard" data-k="contact" href="#play"><span class="media"><span class="kan">遊</span></span><span class="tag">04 / HOW TO PLAY</span><span class="cap">遊び方</span></a>
+    <a class="wcard" data-k="jtc" href="#access"><span class="media"><span class="kan">訪</span></span><span class="tag">05 / ACCESS</span><span class="cap">アクセス</span></a>
+  </div>
+  <div class="michi"><canvas id="michi" width="435" height="770" role="img" aria-label="三千（みち）"></canvas></div>
+  <div class="hint">気になるカードを選んでね。三千がご案内します</div>
+</section>
+<section class="about" id="about">
+  <div class="ab-in">
+    <div class="ab-ghost" aria-hidden="true">ABOUT US</div>
+    <div class="ab-text">
+      <div class="eb">ABOUT US / 03</div>
+      <div class="hi">NI HAO,</div>
+      <h2>浮生三千について</h2>
+      <p class="lead">東京・大塚にある、中国マダミス（剧本杀）の専門店です。中国で人気の作品を日本語にローカライズして、みなさんにお届けしています。</p>
+      <ol class="ab-list">
+        <li><b>01</b><strong>中国発の人気作品</strong><span>中国で評価の高いシナリオを厳選</span></li>
+        <li><b>02</b><strong>日本語ローカライズ</strong><span>原作の魅力はそのままに、自然な日本語で</span></li>
+        <li><b>03</b><strong>中国マダミスの体験</strong><span>寸劇や演出で、物語の中へ</span></li>
+        <li><b>04</b><strong>大塚の専門店</strong><span>新大塚駅・JR大塚駅から</span></li>
+      </ol>
+    </div>
+    <div class="ab-fig">
+      <canvas id="about-michi" width="473" height="658" role="img" aria-label="マイクを持った三千"></canvas>
+      <div class="ab-note">はじめての方も<br>大歓迎だよ！</div>
+    </div>
   </div>
 </section>
-
-<section>
-  <div class="section-head">
-    <span class="eyebrow">ABOUT US</span>
-    <h2>浮生三千について</h2>
-    <div class="rule"></div>
+<section class="lineup" id="lineup">
+  <div class="lu-top">
+    <div class="lu-ghost" aria-hidden="true">LINEUP</div>
+    <canvas class="lu-michi" id="lu-michi" width="301" height="480" role="img" aria-label="本の上で読書する三千"></canvas>
   </div>
-  <div class="about-grid">
+  <div class="lu-row">
+    <h2>作品ラインナップ</h2>
+    <div class="lu-arrows"><button type="button" id="lu-prev" aria-label="前の作品">←</button><button type="button" id="lu-next" aria-label="次の作品">→</button></div>
+  </div>
+  <div class="lu-track" id="lu-track">
+    <article class="lu-card" style="--c:#C9D9DE;--fg:#16252B;--m:#6E8F99">
+      <div>
+        <div class="meta-top">01 / 推理系 · 審査中</div>
+        <h3>漓川怪談簿</h3>
+        <div class="orig">りせん かいだんぼ　《漓川怪谈簿》</div>
+        <p class="desc">常世は、この地の名であると同時に、土地の中央に広がる不気味な湖の名でもある。 古くから、この地の水と土は人々の暮らしを育むだけでなく、数え切れないほどの怪談に語り継がれる妖や怪異を生み出してきたと伝えられている──。</p>
+        <dl><dt>人数</dt><dd>7人用</dd><dt>状態</dt><dd>審査中</dd></dl>
+        <div class="tags"><span>店舗限定</span><span>先行公開</span></div>
+        <a class="cta" href="#reserve">公演予約</a>
+      </div>
+      <div class="lu-media"><div class="ph">漓川怪談簿</div><img src="images/candidate-1784250413949-漓川怪谈簿.jpg" alt="『漓川怪談簿』" onerror="this.remove()"></div>
+    </article>
+    <article class="lu-card" style="--c:#3D4463;--fg:#F3F1F8;--m:#262B44">
+      <div>
+        <div class="meta-top">02 / 推理系 · 翻訳中</div>
+        <h3>死者は幻夜に目覚める</h3>
+        <div class="orig">ししゃは げんやに めざめる　《死者在幻夜中醒来》</div>
+        <p class="desc">川には、無数の灯火を乗せた紙舟が浮かび、 揺れる水面の上で、まるで夜空に散る星々のように淡く瞬いていた。 果ての見えないその川は、やがて彼岸へと流れ着くという。 人々は信じている。 もし灯火を宿した紙舟が無事に川の果てへ辿り着くことができたなら、この世とあの世――二つの世界に隔てられた者たちは、幻夜の中で再び巡り会えるのだと。</p>
+        <dl><dt>人数</dt><dd>7人用</dd><dt>状態</dt><dd>翻訳中</dd></dl>
+        <div class="tags"><span>店舗限定</span><span>先行公開</span></div>
+        <a class="cta" href="#reserve">公演予約</a>
+      </div>
+      <div class="lu-media"><div class="ph">死者は幻夜に目覚める</div><img src="images/candidate-1784250725923-死者从幻夜中醒来.jpg" alt="『死者は幻夜に目覚める』" onerror="this.remove()"></div>
+    </article>
+    <article class="lu-card" style="--c:#E6D8BF;--fg:#2A2219;--m:#C9B48F">
+      <div>
+        <div class="meta-top">03 / COMING SOON</div>
+        <h3>次の物語、準備中</h3>
+        <div class="orig">新しい作品のローカライズを進めています</div>
+        <p class="desc">正式決定次第、このラインナップに追加します。</p>
+      </div>
+      <div class="lu-media"><div class="ph">準備中</div></div>
+    </article>
+  </div>
+  <div class="lu-bars" id="lu-bars"></div>
+</section>
+<section class="play" id="play">
+  <div class="play-in">
+    <div class="play-ghost" aria-hidden="true">HOW TO PLAY</div>
+    <div class="play-head"><div class="eb">HOW TO PLAY / 05</div><h2>はじめてのマダミス</h2><p>4つのステップで、物語の世界へ。</p></div>
+    <div class="play-grid">
+      <ul class="steps"><li><button type="button" class="step on" data-i="0" style="--soft:#ECE6FF"><span class="t"><b>01</b>予約する</span><span class="d"><span>好きな作品と日時を選んで、Webからかんたん予約。</span></span></button></li><li><button type="button" class="step" data-i="1" style="--soft:#FFE8EC"><span class="t"><b>02</b>キャラクターを選ぶ</span><span class="d"><span>当日は役を選んで、自分だけの台本を受け取ります。</span></span></button></li><li><button type="button" class="step" data-i="2" style="--soft:#F2FBD6"><span class="t"><b>03</b>物語を体験する</span><span class="d"><span>台本を読み、仲間と語り合い、ときには寸劇で名場面を演じる。中国マダミスならではの没入感を。</span></span></button></li><li><button type="button" class="step" data-i="3" style="--soft:#FFF3D2"><span class="t"><b>04</b>エンディングへ</span><span class="d"><span>GMの進行に沿って、それぞれの結末へ。物語に燃える時も、涙する時も。</span></span></button></li></ul>
+      <div class="viz"><div class="panel on" style="--soft:#ECE6FF;--soft2:#F6F2FF"><svg class="blob" viewBox="0 0 500 480" aria-hidden="true"><g transform="translate(250 240) scale(1.2) translate(-250 -240)"><ellipse cx="250.0" cy="122.0" rx="112" ry="112" fill="#B9A9EE"/><ellipse cx="362.2" cy="203.5" rx="112" ry="112" fill="#B9A9EE"/><ellipse cx="319.4" cy="335.5" rx="112" ry="112" fill="#B9A9EE"/><ellipse cx="180.6" cy="335.5" rx="112" ry="112" fill="#B9A9EE"/><ellipse cx="137.8" cy="203.5" rx="112" ry="112" fill="#B9A9EE"/><circle cx="250" cy="240" r="70" fill="#fff" opacity=".55"/></g><g opacity=".85"><g fill="#fff"><circle cx="70.0" cy="80.1" r="7.2"/><circle cx="79.4" cy="86.9" r="7.2"/><circle cx="75.8" cy="98.0" r="7.2"/><circle cx="64.2" cy="98.0" r="7.2"/><circle cx="60.6" cy="86.9" r="7.2"/></g><g fill="#fff"><circle cx="410.0" cy="62.3" r="5.6"/><circle cx="417.3" cy="67.6" r="5.6"/><circle cx="414.5" cy="76.2" r="5.6"/><circle cx="405.5" cy="76.2" r="5.6"/><circle cx="402.7" cy="67.6" r="5.6"/></g><g fill="#fff"><circle cx="470.0" cy="239.0" r="8.0"/><circle cx="480.5" cy="246.6" r="8.0"/><circle cx="476.5" cy="258.9" r="8.0"/><circle cx="463.5" cy="258.9" r="8.0"/><circle cx="459.5" cy="246.6" r="8.0"/></g><g fill="#fff"><circle cx="60.0" cy="292.3" r="5.6"/><circle cx="67.3" cy="297.6" r="5.6"/><circle cx="64.5" cy="306.2" r="5.6"/><circle cx="55.5" cy="306.2" r="5.6"/><circle cx="52.7" cy="297.6" r="5.6"/></g><g fill="#fff"><circle cx="440.0" cy="390.1" r="7.2"/><circle cx="449.4" cy="396.9" r="7.2"/><circle cx="445.8" cy="408.0" r="7.2"/><circle cx="434.2" cy="408.0" r="7.2"/><circle cx="430.6" cy="396.9" r="7.2"/></g><g fill="#fff"><circle cx="120.0" cy="412.3" r="5.6"/><circle cx="127.3" cy="417.6" r="5.6"/><circle cx="124.5" cy="426.2" r="5.6"/><circle cx="115.5" cy="426.2" r="5.6"/><circle cx="112.7" cy="417.6" r="5.6"/></g><g fill="#fff"><circle cx="250.0" cy="21.2" r="6.4"/><circle cx="258.4" cy="27.3" r="6.4"/><circle cx="255.2" cy="37.1" r="6.4"/><circle cx="244.8" cy="37.1" r="6.4"/><circle cx="241.6" cy="27.3" r="6.4"/></g><g fill="#fff"><circle cx="30.0" cy="173.4" r="4.8"/><circle cx="36.3" cy="178.0" r="4.8"/><circle cx="33.9" cy="185.3" r="4.8"/><circle cx="26.1" cy="185.3" r="4.8"/><circle cx="23.7" cy="178.0" r="4.8"/></g><g fill="#fff"><circle cx="480.0" cy="132.8" r="5.2"/><circle cx="486.8" cy="137.8" r="5.2"/><circle cx="484.2" cy="145.8" r="5.2"/><circle cx="475.8" cy="145.8" r="5.2"/><circle cx="473.2" cy="137.8" r="5.2"/></g><g fill="#fff"><circle cx="300.0" cy="441.8" r="6.0"/><circle cx="307.8" cy="447.5" r="6.0"/><circle cx="304.8" cy="456.7" r="6.0"/><circle cx="295.2" cy="456.7" r="6.0"/><circle cx="292.2" cy="447.5" r="6.0"/></g></g></svg><span class="tagbox">STEP 01 / BOOK</span><div class="win"><div class="bar"><i></i><i></i><i></i></div><div class="body"><svg viewBox="0 0 100 100" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round"><rect x="14" y="20" width="72" height="66" rx="8"/><path d="M14 40h72M32 12v16M68 12v16"/><path d="M36 62l10 10 20-22" stroke-width="6"/></svg><em>作品と日時を選ぶ</em></div></div></div><div class="panel" style="--soft:#FFE8EC;--soft2:#FFF4F6"><svg class="blob" viewBox="0 0 500 480" aria-hidden="true"><ellipse cx="150" cy="170" rx="140" ry="130" fill="#F2A9B6"/><ellipse cx="350" cy="170" rx="140" ry="130" fill="#F2A9B6"/><ellipse cx="170" cy="340" rx="110" ry="100" fill="#F2A9B6"/><ellipse cx="330" cy="340" rx="110" ry="100" fill="#F2A9B6"/><g fill="#fff" opacity=".85" transform="translate(70 90) rotate(-15)"><ellipse cx="-6.3" cy="-3.5" rx="6.3" ry="4.9"/><ellipse cx="6.3" cy="-3.5" rx="6.3" ry="4.9"/><ellipse cx="-4.9" cy="4.2" rx="4.2" ry="3.5"/><ellipse cx="4.9" cy="4.2" rx="4.2" ry="3.5"/></g><g fill="#fff" opacity=".85" transform="translate(410 70) rotate(-15)"><ellipse cx="-8.6" cy="-4.8" rx="8.6" ry="6.6"/><ellipse cx="8.6" cy="-4.8" rx="8.6" ry="6.6"/><ellipse cx="-6.6" cy="5.7" rx="5.7" ry="4.8"/><ellipse cx="6.6" cy="5.7" rx="5.7" ry="4.8"/></g><g fill="#fff" opacity=".85" transform="translate(470 250) rotate(-15)"><ellipse cx="-10.8" cy="-6.0" rx="10.8" ry="8.4"/><ellipse cx="10.8" cy="-6.0" rx="10.8" ry="8.4"/><ellipse cx="-8.4" cy="7.2" rx="7.2" ry="6.0"/><ellipse cx="8.4" cy="7.2" rx="7.2" ry="6.0"/></g><g fill="#fff" opacity=".85" transform="translate(60 300) rotate(-15)"><ellipse cx="-6.3" cy="-3.5" rx="6.3" ry="4.9"/><ellipse cx="6.3" cy="-3.5" rx="6.3" ry="4.9"/><ellipse cx="-4.9" cy="4.2" rx="4.2" ry="3.5"/><ellipse cx="4.9" cy="4.2" rx="4.2" ry="3.5"/></g><g fill="#fff" opacity=".85" transform="translate(440 400) rotate(-15)"><ellipse cx="-8.6" cy="-4.8" rx="8.6" ry="6.6"/><ellipse cx="8.6" cy="-4.8" rx="8.6" ry="6.6"/><ellipse cx="-6.6" cy="5.7" rx="5.7" ry="4.8"/><ellipse cx="6.6" cy="5.7" rx="5.7" ry="4.8"/></g><g fill="#fff" opacity=".85" transform="translate(120 420) rotate(-15)"><ellipse cx="-10.8" cy="-6.0" rx="10.8" ry="8.4"/><ellipse cx="10.8" cy="-6.0" rx="10.8" ry="8.4"/><ellipse cx="-8.4" cy="7.2" rx="7.2" ry="6.0"/><ellipse cx="8.4" cy="7.2" rx="7.2" ry="6.0"/></g><g fill="#fff" opacity=".85" transform="translate(250 30) rotate(-15)"><ellipse cx="-6.3" cy="-3.5" rx="6.3" ry="4.9"/><ellipse cx="6.3" cy="-3.5" rx="6.3" ry="4.9"/><ellipse cx="-4.9" cy="4.2" rx="4.2" ry="3.5"/><ellipse cx="4.9" cy="4.2" rx="4.2" ry="3.5"/></g><g fill="#fff" opacity=".85" transform="translate(30 180) rotate(-15)"><ellipse cx="-8.6" cy="-4.8" rx="8.6" ry="6.6"/><ellipse cx="8.6" cy="-4.8" rx="8.6" ry="6.6"/><ellipse cx="-6.6" cy="5.7" rx="5.7" ry="4.8"/><ellipse cx="6.6" cy="5.7" rx="5.7" ry="4.8"/></g><g fill="#fff" opacity=".85" transform="translate(480 140) rotate(-15)"><ellipse cx="-10.8" cy="-6.0" rx="10.8" ry="8.4"/><ellipse cx="10.8" cy="-6.0" rx="10.8" ry="8.4"/><ellipse cx="-8.4" cy="7.2" rx="7.2" ry="6.0"/><ellipse cx="8.4" cy="7.2" rx="7.2" ry="6.0"/></g><g fill="#fff" opacity=".85" transform="translate(300 450) rotate(-15)"><ellipse cx="-6.3" cy="-3.5" rx="6.3" ry="4.9"/><ellipse cx="6.3" cy="-3.5" rx="6.3" ry="4.9"/><ellipse cx="-4.9" cy="4.2" rx="4.2" ry="3.5"/><ellipse cx="4.9" cy="4.2" rx="4.2" ry="3.5"/></g></svg><span class="tagbox">STEP 02 / ROLE</span><div class="win"><div class="bar"><i></i><i></i><i></i></div><div class="body"><svg viewBox="0 0 100 100" fill="none" stroke="#111" stroke-width="5" stroke-linejoin="round"><path d="M18 22h64v26c0 22-14 36-32 36S18 70 18 48z"/><path d="M33 44c3-4 9-4 12 0M55 44c3-4 9-4 12 0M38 62c7 6 17 6 24 0" stroke-linecap="round"/></svg><em>あなたは誰になる？</em></div></div></div><div class="panel" style="--soft:#F2FBD6;--soft2:#F9FDEB"><svg class="blob" viewBox="0 0 500 480" aria-hidden="true"><circle cx="370" cy="240" r="140" fill="#BDEA4A"/><circle cx="130" cy="240" r="140" fill="#BDEA4A"/><circle cx="250" cy="360" r="140" fill="#BDEA4A"/><circle cx="250" cy="120" r="140" fill="#BDEA4A"/><g fill="#fff" opacity=".85"><circle cx="75.88" cy="90.0" r="5.9"/><circle cx="64.12" cy="90.0" r="5.9"/><circle cx="70.0" cy="95.88" r="5.9"/><circle cx="70.0" cy="84.12" r="5.9"/></g><g fill="#fff" opacity=".85"><circle cx="417.98" cy="70.0" r="8.0"/><circle cx="402.02" cy="70.0" r="8.0"/><circle cx="410.0" cy="77.98" r="8.0"/><circle cx="410.0" cy="62.02" r="8.0"/></g><g fill="#fff" opacity=".85"><circle cx="480.08" cy="250.0" r="10.1"/><circle cx="459.92" cy="250.0" r="10.1"/><circle cx="470.0" cy="260.08" r="10.1"/><circle cx="470.0" cy="239.92" r="10.1"/></g><g fill="#fff" opacity=".85"><circle cx="65.88" cy="300.0" r="5.9"/><circle cx="54.12" cy="300.0" r="5.9"/><circle cx="60.0" cy="305.88" r="5.9"/><circle cx="60.0" cy="294.12" r="5.9"/></g><g fill="#fff" opacity=".85"><circle cx="447.98" cy="400.0" r="8.0"/><circle cx="432.02" cy="400.0" r="8.0"/><circle cx="440.0" cy="407.98" r="8.0"/><circle cx="440.0" cy="392.02" r="8.0"/></g><g fill="#fff" opacity=".85"><circle cx="130.08" cy="420.0" r="10.1"/><circle cx="109.92" cy="420.0" r="10.1"/><circle cx="120.0" cy="430.08" r="10.1"/><circle cx="120.0" cy="409.92" r="10.1"/></g><g fill="#fff" opacity=".85"><circle cx="255.88" cy="30.0" r="5.9"/><circle cx="244.12" cy="30.0" r="5.9"/><circle cx="250.0" cy="35.88" r="5.9"/><circle cx="250.0" cy="24.12" r="5.9"/></g><g fill="#fff" opacity=".85"><circle cx="37.98" cy="180.0" r="8.0"/><circle cx="22.02" cy="180.0" r="8.0"/><circle cx="30.0" cy="187.98" r="8.0"/><circle cx="30.0" cy="172.02" r="8.0"/></g><g fill="#fff" opacity=".85"><circle cx="490.08" cy="140.0" r="10.1"/><circle cx="469.92" cy="140.0" r="10.1"/><circle cx="480.0" cy="150.08" r="10.1"/><circle cx="480.0" cy="129.92" r="10.1"/></g><g fill="#fff" opacity=".85"><circle cx="305.88" cy="450.0" r="5.9"/><circle cx="294.12" cy="450.0" r="5.9"/><circle cx="300.0" cy="455.88" r="5.9"/><circle cx="300.0" cy="444.12" r="5.9"/></g></svg><span class="tagbox">STEP 03 / STORY</span><div class="win"><div class="bar"><i></i><i></i><i></i></div><div class="body"><svg viewBox="0 0 100 100" fill="none" stroke="#111" stroke-width="5" stroke-linejoin="round"><path d="M10 18h50v32H30l-12 10V50h-8z"/><path d="M44 58h46v28h-8v10L70 86H44z"/><path d="M22 34h26M56 72h22" stroke-linecap="round"/></svg><em>語り合い、演じる</em></div></div></div><div class="panel" style="--soft:#FFF3D2;--soft2:#FFF9E8"><svg class="blob" viewBox="0 0 500 480" aria-hidden="true"><g transform="translate(250 240) scale(1.2) translate(-250 -240)"><polygon points="250.0,5.0 453.5,357.5 46.5,357.5" fill="#F6C64E" stroke="#F6C64E" stroke-width="30" stroke-linejoin="round"/><polygon points="453.5,122.5 250.0,475.0 46.5,122.5" fill="#F6C64E" stroke="#F6C64E" stroke-width="30" stroke-linejoin="round"/></g><g opacity=".85"><polygon points="70.0,72.0 85.6,99.0 54.4,99.0" fill="#fff"/><polygon points="85.6,81.0 70.0,108.0 54.4,81.0" fill="#fff"/><polygon points="410.0,56.0 422.1,77.0 397.9,77.0" fill="#fff"/><polygon points="422.1,63.0 410.0,84.0 397.9,63.0" fill="#fff"/><polygon points="470.0,230.0 487.3,260.0 452.7,260.0" fill="#fff"/><polygon points="487.3,240.0 470.0,270.0 452.7,240.0" fill="#fff"/><polygon points="60.0,286.0 72.1,307.0 47.9,307.0" fill="#fff"/><polygon points="72.1,293.0 60.0,314.0 47.9,293.0" fill="#fff"/><polygon points="440.0,382.0 455.6,409.0 424.4,409.0" fill="#fff"/><polygon points="455.6,391.0 440.0,418.0 424.4,391.0" fill="#fff"/><polygon points="120.0,406.0 132.1,427.0 107.9,427.0" fill="#fff"/><polygon points="132.1,413.0 120.0,434.0 107.9,413.0" fill="#fff"/><polygon points="250.0,14.0 263.9,38.0 236.1,38.0" fill="#fff"/><polygon points="263.9,22.0 250.0,46.0 236.1,22.0" fill="#fff"/><polygon points="30.0,168.0 40.4,186.0 19.6,186.0" fill="#fff"/><polygon points="40.4,174.0 30.0,192.0 19.6,174.0" fill="#fff"/><polygon points="480.0,127.0 491.3,146.5 468.7,146.5" fill="#fff"/><polygon points="491.3,133.5 480.0,153.0 468.7,133.5" fill="#fff"/><polygon points="300.0,435.0 313.0,457.5 287.0,457.5" fill="#fff"/><polygon points="313.0,442.5 300.0,465.0 287.0,442.5" fill="#fff"/></g></svg><span class="tagbox">STEP 04 / ENDING</span><div class="win"><div class="bar"><i></i><i></i><i></i></div><div class="body"><svg viewBox="0 0 100 100" fill="none" stroke="#111" stroke-width="5" stroke-linejoin="round"><path d="M22 14h44l14 14v58H22z"/><path d="M66 14v14h14"/><path d="M51 70s-16-9-16-20c0-6 4-10 9-10 3 0 6 2 7 5 1-3 4-5 7-5 5 0 9 4 9 10 0 11-16 20-16 20z"/></svg><em>あなただけの結末</em></div></div></div></div>
+    </div>
+  </div>
+</section>
+<section class="reserve" id="reserve">
+  <div class="rs-ghost" aria-hidden="true">RESERVATION</div>
+  <div class="rs-in">
+    <div class="rs-side">
+      <div class="eb">RESERVATION / 06</div>
+      <h2>公演予約</h2>
+      <p class="lead">公演へのご参加はこちらのフォームからお申し込みください。ご記入後、担当より詳細をご案内いたします。</p>
+      <p class="note">※ ご予約はお申し込み順となります。定員に達した場合、ご希望に添えない場合があります。</p>
+      <div class="rs-fig"><canvas id="rs-michi" width="325" height="640" role="img" aria-label="予約帳に記入する三千"></canvas></div>
+    </div>
+    <div class="rs-card">
+      <div class="rs-result" id="rs-ok">
+        <img src="assets/img/sanzen-thanks.webp" alt="三千">
+        <h3>ご予約ありがとうございます！</h3>
+        <p>ご入力いただいた内容を受け付けました。<br>担当者より2〜3営業日以内にご連絡いたします。</p>
+        <div class="rs-line">
+          <img src="assets/img/line-qr.png" alt="浮生三千 LINE公式アカウントのQRコード">
+          <div><b>LINE友だち追加でクーポン！</b><p>友だち追加で、【大塚店限定】交通費補助クーポン<strong>500円</strong>をプレゼント。公演ご参加時にご利用いただけます。</p>
+          <a href="https://line.me/R/ti/p/%40threethousandlives" target="_blank" rel="noopener">LINEで友だち追加</a></div>
+        </div>
+      </div>
+      <div class="rs-result" id="rs-err">
+        <h3>送信できませんでした</h3>
+        <p>通信状況を確認して、もう一度お試しください。</p>
+      </div>
+      <form id="reservation-form" action="https://api.web3forms.com/submit" method="POST">
+        <input type="hidden" name="access_key" value="68ab29d4-5e08-446c-9aaf-51c0aa10ee17">
+        <input type="hidden" name="subject" id="dynamic-subject" value="【浮生三千】公演予約">
+        <input type="hidden" name="from_name" value="浮生三千 予約フォーム">
+        <input type="checkbox" name="botcheck" style="display:none">
+        <div class="row">
+          <div class="fld"><label for="r-name">お名前<i>*</i></label><input id="r-name" name="お名前" placeholder="山田 花子" required></div>
+          <div class="fld"><label for="r-mail">メールアドレス<i>*</i></label><input id="r-mail" type="email" name="メールアドレス" placeholder="example@email.com" required></div>
+        </div>
+        <hr class="rs-sep">
+        <div class="fld"><label for="scenario-select">希望作品<i>*</i></label><div class="sel"><select id="scenario-select" name="希望作品" required><option value="" disabled selected>読み込み中...</option></select></div></div>
+        <div class="row">
+          <div class="fld"><label for="r-date">希望日<i>*</i></label><input id="r-date" type="date" name="希望日" required></div>
+          <div class="fld"><label for="r-time">希望時間<i>*</i></label><div class="sel"><select id="r-time" name="希望時間" required><option value="" disabled selected>時間帯を選択</option><option>10:00〜</option><option>13:00〜</option><option>16:00〜</option><option>19:00〜</option></select></div></div>
+        </div>
+        <div class="fld"><label for="r-ppl">人数<i>*</i></label><div class="sel"><select id="r-ppl" name="人数" required><option value="" disabled selected>人数を選択してください</option><option>1人</option><option>2人</option><option>3人</option><option>4人</option><option>5人</option><option>6人</option><option>7人</option><option>8人以上（要相談）</option></select></div></div>
+        <hr class="rs-sep">
+        <div class="fld"><label for="r-note">その他ご要望</label><textarea id="r-note" name="その他ご要望" placeholder="ご不明な点やご要望などお気軽にご記入ください。"></textarea></div>
+        <button type="submit" class="rs-submit" id="submit-btn">予約を申し込む</button>
+        <p class="rs-foot">送信後、2〜3営業日以内に担当者よりご連絡いたします。</p>
+      </form>
+    </div>
+  </div>
+</section>
+<section class="access" id="access">
+  <div class="ac-ghost" aria-hidden="true">ACCESS</div>
+  <div class="ac-in">
+    <div class="ac-info">
+      <div class="eb">ACCESS / 07</div>
+      <h2>アクセス</h2>
+      <div class="ac-badge">完全予約制</div>
+      <div class="ac-dl"><span class="bar" aria-hidden="true"></span><dl>
+        <dt>店名</dt><dd>浮生三千 マーダーミステリー専門店</dd>
+        <dt>住所</dt><dd>〒170-0005<br>東京都豊島区南大塚1-1-8 ウエストモア 3F</dd>
+        <dt>LINE</dt><dd>@threethousandlives</dd>
+      </dl></div>
+      <h3>交通案内</h3>
+      <ul class="routes">
+        <li><span class="ln" style="background:#F6C64E">バス 上60</span><span class="st">南大塚一丁目</span><span class="tm"><small>徒歩</small>約15秒</span></li>
+        <li><span class="ln" style="background:#F2A9B6">丸ノ内線</span><span class="st">新大塚駅</span><span class="tm"><small>徒歩</small>約9分</span></li>
+        <li><span class="ln" style="background:#BDEA4A">山手線</span><span class="st">大塚駅</span><span class="tm"><small>徒歩</small>約13分</span></li>
+      </ul>
+      <a class="ac-btn" href="https://www.google.com/maps/dir/?api=1&amp;destination=%E6%9D%B1%E4%BA%AC%E9%83%BD%E8%B1%8A%E5%B3%B6%E5%8C%BA%E5%8D%97%E5%A4%A7%E5%A1%9A1-1-8+%E3%82%A6%E3%82%A8%E3%82%B9%E3%83%88%E3%83%A2%E3%82%A23F" target="_blank" rel="noopener">Googleマップで経路を見る →</a>
+    </div>
+    <div class="ac-map">
+      <span class="tag">MAP / OTSUKA</span>
+      <div class="win"><div class="bar"><i></i><i></i><i></i></div>
+        <iframe title="浮生三千の地図" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=%E6%B5%AE%E7%94%9F%E4%B8%89%E5%8D%83%20%E6%9D%B1%E4%BA%AC%E9%83%BD%E8%B1%8A%E5%B3%B6%E5%8C%BA%E5%8D%97%E5%A4%A7%E5%A1%9A1-1-8%20%E3%82%A6%E3%82%A8%E3%82%B9%E3%83%88%E3%83%A2%E3%82%A2&amp;z=17&amp;output=embed"></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="recruit" id="recruit">
+  <div class="rc">
+    <div class="stamp"><div><small>RECRUIT</small>GM<br>募集中</div></div>
     <div>
-      <p><strong>浮生三千</strong>は、東京・大塚を拠点に中国マダミス(剧本杀)の専門店を運営しながら、
-        中国と日本、両方のマーダーミステリー市場をつなぐローカライズ・パートナーとして活動しています。</p>
-      <p>私たちは版権そのものを主張する立場ではなく、<strong>原作発行元と現地の店舗・発行チャネルをつなぐ橋渡し役</strong>として、
-        翻訳、内容調整、パートナーとのすり合わせまでを一貫して担当します。</p>
-      <a href="about.html" class="btn-ghost" style="margin-top:10px;display:inline-block;">私たちについて詳しく →</a>
+      <div class="eb">WE'RE HIRING</div>
+      <h2>一緒に物語を届けるGMを募集しています</h2>
+      <p>マダミスのGM経験がある方、浮生三千で一緒に物語を届けませんか？</p>
+      <div class="chips"><span>GM経験者のみ</span><span>アルバイトOK</span></div>
     </div>
-    <div class="role-list">
-      <div class="role-item">
-        <div class="no">01</div>
-        <div><h3>選品判断</h3><p>両市場での評価データと実際のプレイ体験をもとに、作品を厳選します。</p></div>
-      </div>
-      <div class="role-item">
-        <div class="no">02</div>
-        <div><h3>ローカライズ</h3><p>原作の魅力を保ちながら、現地のプレイヤーが違和感なく楽しめるよう調整します。</p></div>
-      </div>
-      <div class="role-item">
-        <div class="no">03</div>
-        <div><h3>現地連携</h3><p>店舗・発行チャネルと直接連携し、公演・発売開始までをサポートします。</p></div>
-      </div>
-    </div>
+    <a class="go" href="https://line.me/R/oaMessage/%40threethousandlives/?GM%E5%8B%9F%E9%9B%86%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6" target="_blank" rel="noopener">LINEで応募する →</a>
   </div>
 </section>
-
-<footer>
-  © 浮生三千 All rights reserved. ｜ mystery.threethousandlives.com
+<footer class="site-foot">
+  <div class="in">
+    <div class="brand"><span><img src="assets/img/logo.webp" alt=""></span>ThreeThousandLives</div>
+    <div>浮生三千 マーダーミステリー専門店<br>〒170-0005 東京都豊島区南大塚1-1-8 ウエストモア 3F（完全予約制）</div>
+    <nav><a href="#about">私たちについて</a><a href="#lineup">作品ラインナップ</a><a href="#play">遊び方</a><a href="#reserve">公演予約</a><a href="#access">アクセス</a></nav>
+    <div class="copy">© 浮生三千 All rights reserved. ｜ mystery.threethousandlives.com</div>
+  </div>
 </footer>
+</main>
 
+<script>
+/* stagger the profile rows after the line has drawn */
+var profile=document.querySelector('.profile');
+document.querySelectorAll('.profile dt, .profile dd').forEach(function(el,i){
+  el.style.animationDelay=(.45+Math.floor(i/2)*.28)+'s';
+  if(el.tagName==='DT'){el.addEventListener('animationend',function(){el.style.opacity=.72;});}
+});
+var WAVE_FRAME=56; /* hand reaches the wave here */
+
+/* 三千: transparent frame sequence, 24fps loop */
+var FRAMES=["assets/frames/hero-001.webp", "assets/frames/hero-002.webp", "assets/frames/hero-003.webp", "assets/frames/hero-004.webp", "assets/frames/hero-005.webp", "assets/frames/hero-006.webp", "assets/frames/hero-007.webp", "assets/frames/hero-008.webp", "assets/frames/hero-009.webp", "assets/frames/hero-010.webp", "assets/frames/hero-011.webp", "assets/frames/hero-012.webp", "assets/frames/hero-013.webp", "assets/frames/hero-014.webp", "assets/frames/hero-015.webp", "assets/frames/hero-016.webp", "assets/frames/hero-017.webp", "assets/frames/hero-018.webp", "assets/frames/hero-019.webp", "assets/frames/hero-020.webp", "assets/frames/hero-021.webp", "assets/frames/hero-022.webp", "assets/frames/hero-023.webp", "assets/frames/hero-024.webp", "assets/frames/hero-025.webp", "assets/frames/hero-026.webp", "assets/frames/hero-027.webp", "assets/frames/hero-028.webp", "assets/frames/hero-029.webp", "assets/frames/hero-030.webp", "assets/frames/hero-031.webp", "assets/frames/hero-032.webp", "assets/frames/hero-033.webp", "assets/frames/hero-034.webp", "assets/frames/hero-035.webp", "assets/frames/hero-036.webp", "assets/frames/hero-037.webp", "assets/frames/hero-038.webp", "assets/frames/hero-039.webp", "assets/frames/hero-040.webp", "assets/frames/hero-041.webp", "assets/frames/hero-042.webp", "assets/frames/hero-043.webp", "assets/frames/hero-044.webp", "assets/frames/hero-045.webp", "assets/frames/hero-046.webp", "assets/frames/hero-047.webp", "assets/frames/hero-048.webp", "assets/frames/hero-049.webp", "assets/frames/hero-050.webp", "assets/frames/hero-051.webp", "assets/frames/hero-052.webp", "assets/frames/hero-053.webp", "assets/frames/hero-054.webp", "assets/frames/hero-055.webp", "assets/frames/hero-056.webp", "assets/frames/hero-057.webp", "assets/frames/hero-058.webp", "assets/frames/hero-059.webp", "assets/frames/hero-060.webp", "assets/frames/hero-061.webp", "assets/frames/hero-062.webp", "assets/frames/hero-063.webp", "assets/frames/hero-064.webp", "assets/frames/hero-065.webp", "assets/frames/hero-066.webp", "assets/frames/hero-067.webp", "assets/frames/hero-068.webp", "assets/frames/hero-069.webp", "assets/frames/hero-070.webp", "assets/frames/hero-071.webp", "assets/frames/hero-072.webp", "assets/frames/hero-073.webp", "assets/frames/hero-074.webp", "assets/frames/hero-075.webp", "assets/frames/hero-076.webp", "assets/frames/hero-077.webp", "assets/frames/hero-078.webp", "assets/frames/hero-079.webp", "assets/frames/hero-080.webp", "assets/frames/hero-081.webp", "assets/frames/hero-082.webp", "assets/frames/hero-083.webp", "assets/frames/hero-084.webp", "assets/frames/hero-085.webp", "assets/frames/hero-086.webp", "assets/frames/hero-087.webp", "assets/frames/hero-088.webp", "assets/frames/hero-089.webp", "assets/frames/hero-090.webp", "assets/frames/hero-091.webp", "assets/frames/hero-092.webp", "assets/frames/hero-093.webp", "assets/frames/hero-094.webp", "assets/frames/hero-095.webp", "assets/frames/hero-096.webp", "assets/frames/hero-097.webp", "assets/frames/hero-098.webp", "assets/frames/hero-099.webp", "assets/frames/hero-100.webp", "assets/frames/hero-101.webp", "assets/frames/hero-102.webp", "assets/frames/hero-103.webp", "assets/frames/hero-104.webp", "assets/frames/hero-105.webp", "assets/frames/hero-106.webp", "assets/frames/hero-107.webp", "assets/frames/hero-108.webp", "assets/frames/hero-109.webp", "assets/frames/hero-110.webp", "assets/frames/hero-111.webp", "assets/frames/hero-112.webp", "assets/frames/hero-113.webp", "assets/frames/hero-114.webp", "assets/frames/hero-115.webp", "assets/frames/hero-116.webp", "assets/frames/hero-117.webp", "assets/frames/hero-118.webp", "assets/frames/hero-119.webp", "assets/frames/hero-120.webp", "assets/frames/hero-121.webp", "assets/frames/hero-122.webp", "assets/frames/hero-123.webp", "assets/frames/hero-124.webp", "assets/frames/hero-125.webp", "assets/frames/hero-126.webp", "assets/frames/hero-127.webp", "assets/frames/hero-128.webp", "assets/frames/hero-129.webp", "assets/frames/hero-130.webp", "assets/frames/hero-131.webp", "assets/frames/hero-132.webp", "assets/frames/hero-133.webp", "assets/frames/hero-134.webp", "assets/frames/hero-135.webp", "assets/frames/hero-136.webp", "assets/frames/hero-137.webp", "assets/frames/hero-138.webp", "assets/frames/hero-139.webp", "assets/frames/hero-140.webp", "assets/frames/hero-141.webp", "assets/frames/hero-142.webp", "assets/frames/hero-143.webp", "assets/frames/hero-144.webp", "assets/frames/hero-145.webp", "assets/frames/hero-146.webp", "assets/frames/hero-147.webp", "assets/frames/hero-148.webp", "assets/frames/hero-149.webp", "assets/frames/hero-150.webp", "assets/frames/hero-151.webp", "assets/frames/hero-152.webp", "assets/frames/hero-153.webp", "assets/frames/hero-154.webp", "assets/frames/hero-155.webp", "assets/frames/hero-156.webp", "assets/frames/hero-157.webp", "assets/frames/hero-158.webp", "assets/frames/hero-159.webp", "assets/frames/hero-160.webp", "assets/frames/hero-161.webp", "assets/frames/hero-162.webp", "assets/frames/hero-163.webp", "assets/frames/hero-164.webp", "assets/frames/hero-165.webp", "assets/frames/hero-166.webp", "assets/frames/hero-167.webp", "assets/frames/hero-168.webp", "assets/frames/hero-169.webp", "assets/frames/hero-170.webp", "assets/frames/hero-171.webp", "assets/frames/hero-172.webp", "assets/frames/hero-173.webp", "assets/frames/hero-174.webp", "assets/frames/hero-175.webp", "assets/frames/hero-176.webp", "assets/frames/hero-177.webp", "assets/frames/hero-178.webp", "assets/frames/hero-179.webp", "assets/frames/hero-180.webp", "assets/frames/hero-181.webp", "assets/frames/hero-182.webp", "assets/frames/hero-183.webp", "assets/frames/hero-184.webp", "assets/frames/hero-185.webp", "assets/frames/hero-186.webp"];
+(function(){
+  var cv=document.getElementById('sanzen'),ctx=cv.getContext('2d'),imgs=[],ready=0,fps=24;
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  FRAMES.forEach(function(src,i){var im=new Image();im.onload=function(){ready++;if(i===0)ctx.drawImage(im,0,0);};im.src=src;imgs[i]=im;});
+  if(reduce){profile.classList.add('show');return;}
+  var start=null,last=-1;
+  function tick(t){
+    if(start===null)start=t;
+    var f=Math.floor((t-start)/1000*fps)%imgs.length;
+    if(f!==last&&imgs[f].complete&&imgs[f].naturalWidth){ctx.clearRect(0,0,cv.width,cv.height);ctx.drawImage(imgs[f],0,0);last=f;if(f>=WAVE_FRAME&&!profile.classList.contains('show'))profile.classList.add('show');}
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+/* 2nd screen: hover a card -> 三千 plays to that expression and holds */
+var MENU=["assets/frames/menu-001.webp", "assets/frames/menu-002.webp", "assets/frames/menu-003.webp", "assets/frames/menu-004.webp", "assets/frames/menu-005.webp", "assets/frames/menu-006.webp", "assets/frames/menu-007.webp", "assets/frames/menu-008.webp", "assets/frames/menu-009.webp", "assets/frames/menu-010.webp", "assets/frames/menu-011.webp", "assets/frames/menu-012.webp", "assets/frames/menu-013.webp", "assets/frames/menu-014.webp", "assets/frames/menu-015.webp", "assets/frames/menu-016.webp", "assets/frames/menu-017.webp", "assets/frames/menu-018.webp", "assets/frames/menu-019.webp", "assets/frames/menu-020.webp", "assets/frames/menu-021.webp", "assets/frames/menu-022.webp", "assets/frames/menu-023.webp", "assets/frames/menu-024.webp", "assets/frames/menu-025.webp", "assets/frames/menu-026.webp", "assets/frames/menu-027.webp", "assets/frames/menu-028.webp", "assets/frames/menu-029.webp", "assets/frames/menu-030.webp", "assets/frames/menu-031.webp", "assets/frames/menu-032.webp", "assets/frames/menu-033.webp", "assets/frames/menu-034.webp", "assets/frames/menu-035.webp", "assets/frames/menu-036.webp", "assets/frames/menu-037.webp", "assets/frames/menu-038.webp", "assets/frames/menu-039.webp", "assets/frames/menu-040.webp", "assets/frames/menu-041.webp", "assets/frames/menu-042.webp", "assets/frames/menu-043.webp", "assets/frames/menu-044.webp", "assets/frames/menu-045.webp", "assets/frames/menu-046.webp", "assets/frames/menu-047.webp", "assets/frames/menu-048.webp", "assets/frames/menu-049.webp", "assets/frames/menu-050.webp", "assets/frames/menu-051.webp", "assets/frames/menu-052.webp", "assets/frames/menu-053.webp", "assets/frames/menu-054.webp", "assets/frames/menu-055.webp", "assets/frames/menu-056.webp", "assets/frames/menu-057.webp", "assets/frames/menu-058.webp", "assets/frames/menu-059.webp", "assets/frames/menu-060.webp", "assets/frames/menu-061.webp", "assets/frames/menu-062.webp", "assets/frames/menu-063.webp", "assets/frames/menu-064.webp", "assets/frames/menu-065.webp", "assets/frames/menu-066.webp", "assets/frames/menu-067.webp", "assets/frames/menu-068.webp", "assets/frames/menu-069.webp", "assets/frames/menu-070.webp", "assets/frames/menu-071.webp", "assets/frames/menu-072.webp", "assets/frames/menu-073.webp", "assets/frames/menu-074.webp", "assets/frames/menu-075.webp", "assets/frames/menu-076.webp", "assets/frames/menu-077.webp", "assets/frames/menu-078.webp", "assets/frames/menu-079.webp", "assets/frames/menu-080.webp", "assets/frames/menu-081.webp", "assets/frames/menu-082.webp", "assets/frames/menu-083.webp", "assets/frames/menu-084.webp", "assets/frames/menu-085.webp", "assets/frames/menu-086.webp", "assets/frames/menu-087.webp", "assets/frames/menu-088.webp", "assets/frames/menu-089.webp", "assets/frames/menu-090.webp", "assets/frames/menu-091.webp", "assets/frames/menu-092.webp", "assets/frames/menu-093.webp", "assets/frames/menu-094.webp", "assets/frames/menu-095.webp", "assets/frames/menu-096.webp", "assets/frames/menu-097.webp", "assets/frames/menu-098.webp", "assets/frames/menu-099.webp", "assets/frames/menu-100.webp", "assets/frames/menu-101.webp", "assets/frames/menu-102.webp", "assets/frames/menu-103.webp", "assets/frames/menu-104.webp", "assets/frames/menu-105.webp", "assets/frames/menu-106.webp", "assets/frames/menu-107.webp", "assets/frames/menu-108.webp", "assets/frames/menu-109.webp", "assets/frames/menu-110.webp", "assets/frames/menu-111.webp", "assets/frames/menu-112.webp", "assets/frames/menu-113.webp", "assets/frames/menu-114.webp", "assets/frames/menu-115.webp", "assets/frames/menu-116.webp", "assets/frames/menu-117.webp", "assets/frames/menu-118.webp", "assets/frames/menu-119.webp", "assets/frames/menu-120.webp", "assets/frames/menu-121.webp", "assets/frames/menu-122.webp", "assets/frames/menu-123.webp", "assets/frames/menu-124.webp", "assets/frames/menu-125.webp", "assets/frames/menu-126.webp", "assets/frames/menu-127.webp", "assets/frames/menu-128.webp", "assets/frames/menu-129.webp", "assets/frames/menu-130.webp", "assets/frames/menu-131.webp", "assets/frames/menu-132.webp", "assets/frames/menu-133.webp", "assets/frames/menu-134.webp", "assets/frames/menu-135.webp", "assets/frames/menu-136.webp", "assets/frames/menu-137.webp", "assets/frames/menu-138.webp", "assets/frames/menu-139.webp", "assets/frames/menu-140.webp", "assets/frames/menu-141.webp", "assets/frames/menu-142.webp", "assets/frames/menu-143.webp", "assets/frames/menu-144.webp", "assets/frames/menu-145.webp", "assets/frames/menu-146.webp", "assets/frames/menu-147.webp", "assets/frames/menu-148.webp", "assets/frames/menu-149.webp", "assets/frames/menu-150.webp", "assets/frames/menu-151.webp", "assets/frames/menu-152.webp", "assets/frames/menu-153.webp", "assets/frames/menu-154.webp", "assets/frames/menu-155.webp", "assets/frames/menu-156.webp", "assets/frames/menu-157.webp", "assets/frames/menu-158.webp", "assets/frames/menu-159.webp", "assets/frames/menu-160.webp", "assets/frames/menu-161.webp", "assets/frames/menu-162.webp", "assets/frames/menu-163.webp", "assets/frames/menu-164.webp", "assets/frames/menu-165.webp", "assets/frames/menu-166.webp", "assets/frames/menu-167.webp", "assets/frames/menu-168.webp", "assets/frames/menu-169.webp", "assets/frames/menu-170.webp", "assets/frames/menu-171.webp", "assets/frames/menu-172.webp", "assets/frames/menu-173.webp", "assets/frames/menu-174.webp", "assets/frames/menu-175.webp", "assets/frames/menu-176.webp", "assets/frames/menu-177.webp", "assets/frames/menu-178.webp", "assets/frames/menu-179.webp", "assets/frames/menu-180.webp", "assets/frames/menu-181.webp", "assets/frames/menu-182.webp", "assets/frames/menu-183.webp", "assets/frames/menu-184.webp", "assets/frames/menu-185.webp", "assets/frames/menu-186.webp", "assets/frames/menu-187.webp", "assets/frames/menu-188.webp", "assets/frames/menu-189.webp", "assets/frames/menu-190.webp", "assets/frames/menu-191.webp", "assets/frames/menu-192.webp", "assets/frames/menu-193.webp"];
+(function(){
+  var cv=document.getElementById('michi'),ctx=cv.getContext('2d'),imgs=MENU.map(function(s){var i=new Image();i.src=s;return i;});
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches,FPS=24,N=imgs.length;
+  /* [start, peak, end] frame indexes */
+  var SEG={about:[24,45,56],lineup:[58,70,80],ticket:[84,96,106],contact:[108,120,130],jtc:[132,150,168]};var IDLE=0;
+  var cur=IDLE,target=IDLE,last=-1,t0=0,fadeFrom=-1,fadeT=0,after=null,FADE=180;
+  function img(i){var im=imgs[i];return im.complete&&im.naturalWidth?im:null;}
+  function render(t){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    var a=img(cur);if(!a)return;
+    if(fadeFrom>=0){var k=Math.min(1,(t-fadeT)/FADE),b=img(fadeFrom);
+      if(b){ctx.globalAlpha=1-k;ctx.drawImage(b,0,0,cv.width,cv.height);}
+      ctx.globalAlpha=k;ctx.drawImage(a,0,0,cv.width,cv.height);ctx.globalAlpha=1;
+      if(k>=1)fadeFrom=-1;}
+    else ctx.drawImage(a,0,0,cv.width,cv.height);
+    last=cur;
+  }
+  function jump(i,t){fadeFrom=cur;fadeT=t;cur=i;}
+  function loop(t){
+    if(fadeFrom<0&&cur!==target&&t-t0>=1000/FPS){t0=t;cur+=cur<target?1:-1;}
+    if(fadeFrom<0&&cur===target&&after){var f=after;after=null;f(t);}
+    if(cur!==last||fadeFrom>=0)render(t);
+    requestAnimationFrame(loop);
+  }
+  imgs[IDLE].onload=function(){render(performance.now());};
+  requestAnimationFrame(loop);
+  document.querySelectorAll('.wcard').forEach(function(c){
+    var s=SEG[c.dataset.k];
+    function on(){var t=performance.now();after=null;if(reduce){cur=target=s[1];last=-1;return;}jump(s[0],t);target=s[1];}
+    function off(){if(reduce){cur=target=IDLE;last=-1;return;}target=s[0];after=function(t){jump(IDLE,t);target=IDLE;};}
+    c.addEventListener('mouseenter',on);c.addEventListener('focus',on);c.addEventListener('mouseleave',off);c.addEventListener('blur',off);
+  });
+})();
+
+(function(){var nav=document.getElementById('nav'),w=document.getElementById('world');
+function f(){nav.classList.toggle('light',w.getBoundingClientRect().top+innerHeight*.3<64);}
+addEventListener('scroll',f,{passive:true});f();})();
+/* lineup carousel */
+(function(){var tr=document.getElementById('lu-track'),cards=[].slice.call(tr.children),bars=document.getElementById('lu-bars'),
+  prev=document.getElementById('lu-prev'),next=document.getElementById('lu-next');
+  cards.forEach(function(){bars.appendChild(document.createElement('i'));});
+  function idx(){var l=tr.scrollLeft,best=0,d=1e9;cards.forEach(function(c,i){var x=Math.abs(c.offsetLeft-cards[0].offsetLeft-l);if(x<d){d=x;best=i;}});return best;}
+  function upd(){var i=idx();[].forEach.call(bars.children,function(b,j){b.classList.toggle('on',j===i);});prev.disabled=i===0;next.disabled=i===cards.length-1;}
+  function go(d){var i=Math.max(0,Math.min(cards.length-1,idx()+d));tr.scrollTo({left:cards[i].offsetLeft-cards[0].offsetLeft,behavior:'smooth'});}
+  prev.addEventListener('click',function(){go(-1);});next.addEventListener('click',function(){go(1);});
+  tr.addEventListener('scroll',function(){requestAnimationFrame(upd);},{passive:true});upd();
+})();
+/* how to play: hover a step -> panel flips */
+(function(){var st=[].slice.call(document.querySelectorAll('.step')),pn=[].slice.call(document.querySelectorAll('.panel'));
+function show(i){st.forEach(function(s,j){s.classList.toggle('on',j===i);});pn.forEach(function(p,j){p.classList.toggle('on',j===i);});}
+st.forEach(function(s,i){s.addEventListener('mouseenter',function(){show(i);});s.addEventListener('focus',function(){show(i);});s.addEventListener('click',function(){show(i);});});})();
+/* about: looping 三千 sequence, plays while visible */
+var ABOUT=["assets/frames/about-001.webp", "assets/frames/about-002.webp", "assets/frames/about-003.webp", "assets/frames/about-004.webp", "assets/frames/about-005.webp", "assets/frames/about-006.webp", "assets/frames/about-007.webp", "assets/frames/about-008.webp", "assets/frames/about-009.webp", "assets/frames/about-010.webp", "assets/frames/about-011.webp", "assets/frames/about-012.webp", "assets/frames/about-013.webp", "assets/frames/about-014.webp", "assets/frames/about-015.webp", "assets/frames/about-016.webp", "assets/frames/about-017.webp", "assets/frames/about-018.webp", "assets/frames/about-019.webp", "assets/frames/about-020.webp", "assets/frames/about-021.webp", "assets/frames/about-022.webp", "assets/frames/about-023.webp", "assets/frames/about-024.webp", "assets/frames/about-025.webp", "assets/frames/about-026.webp", "assets/frames/about-027.webp", "assets/frames/about-028.webp", "assets/frames/about-029.webp", "assets/frames/about-030.webp", "assets/frames/about-031.webp", "assets/frames/about-032.webp", "assets/frames/about-033.webp", "assets/frames/about-034.webp", "assets/frames/about-035.webp", "assets/frames/about-036.webp", "assets/frames/about-037.webp", "assets/frames/about-038.webp", "assets/frames/about-039.webp", "assets/frames/about-040.webp", "assets/frames/about-041.webp", "assets/frames/about-042.webp", "assets/frames/about-043.webp", "assets/frames/about-044.webp", "assets/frames/about-045.webp", "assets/frames/about-046.webp", "assets/frames/about-047.webp", "assets/frames/about-048.webp", "assets/frames/about-049.webp", "assets/frames/about-050.webp", "assets/frames/about-051.webp", "assets/frames/about-052.webp", "assets/frames/about-053.webp", "assets/frames/about-054.webp", "assets/frames/about-055.webp", "assets/frames/about-056.webp", "assets/frames/about-057.webp", "assets/frames/about-058.webp", "assets/frames/about-059.webp", "assets/frames/about-060.webp", "assets/frames/about-061.webp", "assets/frames/about-062.webp", "assets/frames/about-063.webp", "assets/frames/about-064.webp", "assets/frames/about-065.webp", "assets/frames/about-066.webp", "assets/frames/about-067.webp", "assets/frames/about-068.webp", "assets/frames/about-069.webp", "assets/frames/about-070.webp", "assets/frames/about-071.webp", "assets/frames/about-072.webp", "assets/frames/about-073.webp", "assets/frames/about-074.webp", "assets/frames/about-075.webp", "assets/frames/about-076.webp", "assets/frames/about-077.webp", "assets/frames/about-078.webp", "assets/frames/about-079.webp", "assets/frames/about-080.webp", "assets/frames/about-081.webp", "assets/frames/about-082.webp", "assets/frames/about-083.webp", "assets/frames/about-084.webp", "assets/frames/about-085.webp", "assets/frames/about-086.webp", "assets/frames/about-087.webp", "assets/frames/about-088.webp", "assets/frames/about-089.webp", "assets/frames/about-090.webp", "assets/frames/about-091.webp", "assets/frames/about-092.webp", "assets/frames/about-093.webp", "assets/frames/about-094.webp", "assets/frames/about-095.webp", "assets/frames/about-096.webp", "assets/frames/about-097.webp"];
+(function(){var cv=document.getElementById('about-michi'),ctx=cv.getContext('2d'),im=ABOUT.map(function(s){var i=new Image();i.src=s;return i;}),
+  vis=false,reduce=matchMedia('(prefers-reduced-motion: reduce)').matches,t0=0,f=0;
+  im[0].onload=function(){ctx.drawImage(im[0],0,0);};
+  new IntersectionObserver(function(e){vis=e[0].isIntersecting;},{threshold:.15}).observe(cv);
+  function loop(t){if(vis&&!reduce&&t-t0>=1000/12){t0=t;f=(f+1)%im.length;var i=im[f];if(i.complete&&i.naturalWidth){ctx.clearRect(0,0,cv.width,cv.height);ctx.drawImage(i,0,0);}}requestAnimationFrame(loop);}
+  requestAnimationFrame(loop);})();
+/* reservation: 三千 loop + scenarios + web3forms + confetti */
+var RS=["assets/frames/reserve-001.webp", "assets/frames/reserve-002.webp", "assets/frames/reserve-003.webp", "assets/frames/reserve-004.webp", "assets/frames/reserve-005.webp", "assets/frames/reserve-006.webp", "assets/frames/reserve-007.webp", "assets/frames/reserve-008.webp", "assets/frames/reserve-009.webp", "assets/frames/reserve-010.webp", "assets/frames/reserve-011.webp", "assets/frames/reserve-012.webp", "assets/frames/reserve-013.webp", "assets/frames/reserve-014.webp", "assets/frames/reserve-015.webp", "assets/frames/reserve-016.webp", "assets/frames/reserve-017.webp", "assets/frames/reserve-018.webp", "assets/frames/reserve-019.webp", "assets/frames/reserve-020.webp", "assets/frames/reserve-021.webp", "assets/frames/reserve-022.webp", "assets/frames/reserve-023.webp", "assets/frames/reserve-024.webp", "assets/frames/reserve-025.webp", "assets/frames/reserve-026.webp", "assets/frames/reserve-027.webp", "assets/frames/reserve-028.webp", "assets/frames/reserve-029.webp", "assets/frames/reserve-030.webp", "assets/frames/reserve-031.webp", "assets/frames/reserve-032.webp", "assets/frames/reserve-033.webp", "assets/frames/reserve-034.webp", "assets/frames/reserve-035.webp", "assets/frames/reserve-036.webp", "assets/frames/reserve-037.webp", "assets/frames/reserve-038.webp", "assets/frames/reserve-039.webp", "assets/frames/reserve-040.webp", "assets/frames/reserve-041.webp", "assets/frames/reserve-042.webp", "assets/frames/reserve-043.webp", "assets/frames/reserve-044.webp", "assets/frames/reserve-045.webp", "assets/frames/reserve-046.webp", "assets/frames/reserve-047.webp", "assets/frames/reserve-048.webp", "assets/frames/reserve-049.webp", "assets/frames/reserve-050.webp", "assets/frames/reserve-051.webp", "assets/frames/reserve-052.webp", "assets/frames/reserve-053.webp", "assets/frames/reserve-054.webp", "assets/frames/reserve-055.webp", "assets/frames/reserve-056.webp", "assets/frames/reserve-057.webp", "assets/frames/reserve-058.webp", "assets/frames/reserve-059.webp", "assets/frames/reserve-060.webp", "assets/frames/reserve-061.webp", "assets/frames/reserve-062.webp", "assets/frames/reserve-063.webp", "assets/frames/reserve-064.webp", "assets/frames/reserve-065.webp", "assets/frames/reserve-066.webp", "assets/frames/reserve-067.webp", "assets/frames/reserve-068.webp", "assets/frames/reserve-069.webp", "assets/frames/reserve-070.webp", "assets/frames/reserve-071.webp", "assets/frames/reserve-072.webp", "assets/frames/reserve-073.webp", "assets/frames/reserve-074.webp", "assets/frames/reserve-075.webp", "assets/frames/reserve-076.webp", "assets/frames/reserve-077.webp", "assets/frames/reserve-078.webp", "assets/frames/reserve-079.webp", "assets/frames/reserve-080.webp", "assets/frames/reserve-081.webp", "assets/frames/reserve-082.webp", "assets/frames/reserve-083.webp", "assets/frames/reserve-084.webp", "assets/frames/reserve-085.webp", "assets/frames/reserve-086.webp", "assets/frames/reserve-087.webp", "assets/frames/reserve-088.webp", "assets/frames/reserve-089.webp", "assets/frames/reserve-090.webp", "assets/frames/reserve-091.webp", "assets/frames/reserve-092.webp", "assets/frames/reserve-093.webp", "assets/frames/reserve-094.webp", "assets/frames/reserve-095.webp", "assets/frames/reserve-096.webp", "assets/frames/reserve-097.webp"];
+(function(){var cv=document.getElementById('rs-michi'),ctx=cv.getContext('2d'),im=RS.map(function(s){var i=new Image();i.src=s;return i;}),vis=false,t0=0,f=0,reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  im[0].onload=function(){ctx.drawImage(im[0],0,0);};
+  new IntersectionObserver(function(e){vis=e[0].isIntersecting;},{threshold:.1}).observe(cv);
+  (function loop(t){if(vis&&!reduce&&t-t0>=1000/12){t0=t;f=(f+1)%im.length;var i=im[f];if(i.complete&&i.naturalWidth){ctx.clearRect(0,0,cv.width,cv.height);ctx.drawImage(i,0,0);}}requestAnimationFrame(loop);})(0);
+})();
+(async function(){var sel=document.getElementById('scenario-select');
+  function base(){sel.innerHTML='<option value="" disabled selected>作品を選択してください</option>';}
+  try{var r=await fetch('scenarios.json?t='+Date.now());if(!r.ok)throw 0;var sc=await r.json();if(!Array.isArray(sc)||!sc.length)throw 0;base();
+    sc.forEach(function(s){var o=document.createElement('option');o.value=s.title;o.textContent=s.players?s.title+'（'+s.players+'）':s.title;sel.appendChild(o);});
+  }catch(e){base();['漓川怪談簿','死者は幻夜に目覚める'].forEach(function(t){var o=document.createElement('option');o.value=o.textContent=t+'（7人用）';sel.appendChild(o);});}
+  var o=document.createElement('option');o.value=o.textContent='未定（ご相談ください）';sel.appendChild(o);
+})();
+(function(){var form=document.getElementById('reservation-form'),btn=document.getElementById('submit-btn');
+  function done(ok){form.style.display='none';document.getElementById(ok?'rs-ok':'rs-err').classList.add('show');if(ok)confetti();}
+  form.addEventListener('submit',async function(e){e.preventDefault();btn.disabled=true;btn.textContent='送信中...';
+    var d=form.querySelector('[name="希望日"]').value,t=form.querySelector('[name="希望時間"]').value,p=form.querySelector('[name="人数"]').value;
+    document.getElementById('dynamic-subject').value='【浮生三千】公演予約 - '+d+' '+t+' / '+p;
+    try{var res=await fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(Object.fromEntries(new FormData(form)))});
+      var data=await res.json();done(!!data.success);}catch(err){done(false);}
+  });
+  function confetti(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;var c=document.createElement('canvas');c.id='confetti';document.body.appendChild(c);
+    var x=c.getContext('2d'),W=innerWidth,H=innerHeight,dpr=devicePixelRatio||1;c.width=W*dpr;c.height=H*dpr;x.scale(dpr,dpr);
+    var col=['#F2A9B6','#B9A9EE','#C6F432','#F6C64E','#FFFFFF','#5FB3C6'],bits=[];
+    for(var i=0;i<180;i++)bits.push({x:W/2+(Math.random()-.5)*W*.4,y:H*.65,vx:(Math.random()-.5)*15,vy:-Math.random()*17-7,r:Math.random()*7+4,a:Math.random()*6.28,va:(Math.random()-.5)*.3,c:col[i%6],p:i%3});
+    var t0=performance.now();(function fr(t){x.clearRect(0,0,W,H);bits.forEach(function(b){b.vy+=.36;b.vx*=.99;b.x+=b.vx;b.y+=b.vy;b.a+=b.va;x.save();x.translate(b.x,b.y);x.rotate(b.a);x.fillStyle=b.c;
+      if(b.p===0){x.beginPath();x.ellipse(0,0,b.r,b.r*.55,0,0,6.283);x.fill();}else if(b.p===1){x.fillRect(-b.r/2,-b.r/4,b.r,b.r/2);}else{x.beginPath();for(var k=0;k<5;k++){x.lineTo(Math.cos(k*1.2566-1.57)*b.r,Math.sin(k*1.2566-1.57)*b.r);x.lineTo(Math.cos(k*1.2566-.94)*b.r*.45,Math.sin(k*1.2566-.94)*b.r*.45);}x.fill();}x.restore();});
+      if(t-t0<4500)requestAnimationFrame(fr);else c.remove();})(t0);}
+  window.__rsDemo=function(){done(true);};
+})();
+</script>
+<script>
+/* scroll-in: float up (text) / pop (cards), staggered per group */
+(function(){
+  if(!('IntersectionObserver' in window)){document.documentElement.classList.remove('js');return;}
+  var groups=[
+    ['rv','.world-head>*'],['pop','.wcard'],['rv','.hint'],
+    ['rv','.ab-text>.eb,.ab-text>.hi,.ab-text>h2,.ab-text>.lead'],['rv','.ab-list li'],['pop','.ab-note'],
+    ['rv','.lu-row>*'],['pop','.lu-card'],
+    ['rv','.play-head>*'],['rv','.steps>li'],['pop','.viz'],
+    ['rv','.rs-side>.eb,.rs-side>h2,.rs-side>.lead,.rs-side>.note'],['pop','.rs-card'],
+    ['rv','.ac-info>*'],['pop','.ac-map'],
+    ['pop','.rc']
+  ];
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.12,rootMargin:'0px 0px -6% 0px'});
+  groups.forEach(function(g){
+    document.querySelectorAll(g[1]).forEach(function(el,i){
+      el.classList.add(g[0]);el.style.setProperty('--d',(Math.min(i,8)*0.09)+'s');io.observe(el);
+    });
+  });
+})();
+</script>
+<script>
+/* lineup: 三千 reading on books, 12fps loop while visible */
+var LU=["assets/frames/lineup-001.webp", "assets/frames/lineup-002.webp", "assets/frames/lineup-003.webp", "assets/frames/lineup-004.webp", "assets/frames/lineup-005.webp", "assets/frames/lineup-006.webp", "assets/frames/lineup-007.webp", "assets/frames/lineup-008.webp", "assets/frames/lineup-009.webp", "assets/frames/lineup-010.webp", "assets/frames/lineup-011.webp", "assets/frames/lineup-012.webp", "assets/frames/lineup-013.webp", "assets/frames/lineup-014.webp", "assets/frames/lineup-015.webp", "assets/frames/lineup-016.webp", "assets/frames/lineup-017.webp", "assets/frames/lineup-018.webp", "assets/frames/lineup-019.webp", "assets/frames/lineup-020.webp", "assets/frames/lineup-021.webp", "assets/frames/lineup-022.webp", "assets/frames/lineup-023.webp", "assets/frames/lineup-024.webp", "assets/frames/lineup-025.webp", "assets/frames/lineup-026.webp", "assets/frames/lineup-027.webp", "assets/frames/lineup-028.webp", "assets/frames/lineup-029.webp", "assets/frames/lineup-030.webp", "assets/frames/lineup-031.webp", "assets/frames/lineup-032.webp", "assets/frames/lineup-033.webp", "assets/frames/lineup-034.webp", "assets/frames/lineup-035.webp", "assets/frames/lineup-036.webp", "assets/frames/lineup-037.webp", "assets/frames/lineup-038.webp", "assets/frames/lineup-039.webp", "assets/frames/lineup-040.webp", "assets/frames/lineup-041.webp", "assets/frames/lineup-042.webp", "assets/frames/lineup-043.webp", "assets/frames/lineup-044.webp", "assets/frames/lineup-045.webp", "assets/frames/lineup-046.webp", "assets/frames/lineup-047.webp", "assets/frames/lineup-048.webp", "assets/frames/lineup-049.webp", "assets/frames/lineup-050.webp", "assets/frames/lineup-051.webp", "assets/frames/lineup-052.webp", "assets/frames/lineup-053.webp", "assets/frames/lineup-054.webp", "assets/frames/lineup-055.webp", "assets/frames/lineup-056.webp", "assets/frames/lineup-057.webp", "assets/frames/lineup-058.webp", "assets/frames/lineup-059.webp", "assets/frames/lineup-060.webp", "assets/frames/lineup-061.webp", "assets/frames/lineup-062.webp", "assets/frames/lineup-063.webp", "assets/frames/lineup-064.webp", "assets/frames/lineup-065.webp", "assets/frames/lineup-066.webp", "assets/frames/lineup-067.webp", "assets/frames/lineup-068.webp", "assets/frames/lineup-069.webp", "assets/frames/lineup-070.webp", "assets/frames/lineup-071.webp", "assets/frames/lineup-072.webp", "assets/frames/lineup-073.webp", "assets/frames/lineup-074.webp", "assets/frames/lineup-075.webp", "assets/frames/lineup-076.webp", "assets/frames/lineup-077.webp", "assets/frames/lineup-078.webp", "assets/frames/lineup-079.webp", "assets/frames/lineup-080.webp", "assets/frames/lineup-081.webp", "assets/frames/lineup-082.webp", "assets/frames/lineup-083.webp", "assets/frames/lineup-084.webp", "assets/frames/lineup-085.webp", "assets/frames/lineup-086.webp", "assets/frames/lineup-087.webp", "assets/frames/lineup-088.webp", "assets/frames/lineup-089.webp", "assets/frames/lineup-090.webp", "assets/frames/lineup-091.webp", "assets/frames/lineup-092.webp", "assets/frames/lineup-093.webp", "assets/frames/lineup-094.webp", "assets/frames/lineup-095.webp", "assets/frames/lineup-096.webp", "assets/frames/lineup-097.webp"];
+(function(){var cv=document.getElementById('lu-michi'),ctx=cv.getContext('2d'),im=LU.map(function(s){var i=new Image();i.src=s;return i;}),vis=false,t0=0,f=0,reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  im[0].onload=function(){ctx.drawImage(im[0],0,0);};
+  new IntersectionObserver(function(e){vis=e[0].isIntersecting;},{threshold:.1}).observe(cv);
+  (function loop(t){if(vis&&!reduce&&t-t0>=1000/12){t0=t;f=(f+1)%im.length;var i=im[f];if(i.complete&&i.naturalWidth){ctx.clearRect(0,0,cv.width,cv.height);ctx.drawImage(i,0,0);}}requestAnimationFrame(loop);})(0);
+})();
+</script>
 </body>
 </html>
