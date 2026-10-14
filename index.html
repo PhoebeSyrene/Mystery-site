@@ -425,7 +425,7 @@ html.js .pop.in{animation:rvPop .75s cubic-bezier(.25,.8,.3,1) var(--d,0s) both}
 </section>
 <section class="lineup" id="lineup">
   <div class="lu-top">
-    <div class="lu-ghost" aria-hidden="true">LINEUP</div>
+    <div class="lu-ghost" aria-hidden="true">LINE<span id="lu-u">U</span>P</div>
     <canvas class="lu-michi" id="lu-michi" width="269" height="480" role="img" aria-label="本の上で読書する三千"></canvas>
   </div>
   <div class="lu-row">
@@ -725,6 +725,11 @@ var LU=["assets/frames/lineup-001.webp", "assets/frames/lineup-002.webp", "asset
   new IntersectionObserver(function(e){vis=e[0].isIntersecting;},{threshold:.1}).observe(cv);
   (function loop(t){if(vis&&!reduce&&t-t0>=1000/12){t0=t;f=(f+1)%im.length;var i=im[f];if(i.complete&&i.naturalWidth){ctx.clearRect(0,0,cv.width,cv.height);ctx.drawImage(i,0,0);}}requestAnimationFrame(loop);})(0);
 })();
+
+/* lineup: put the canvas's right edge on the left edge of the ghost "U" */
+(function(){var cv=document.getElementById('lu-michi'),u=document.getElementById('lu-u'),box=cv.parentNode;
+  function place(){var b=box.getBoundingClientRect(),r=u.getBoundingClientRect();cv.style.transform='none';cv.style.left=(r.left-b.left-cv.offsetWidth)+'px';}
+  place();addEventListener('resize',place);addEventListener('load',place);if(document.fonts)document.fonts.ready.then(place);})();
 </script>
 </body>
 </html>
