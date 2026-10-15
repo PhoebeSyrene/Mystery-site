@@ -125,7 +125,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--white);outline-offs
 .wcard[data-k=contact]{left:76%;top:47%;--r:9deg;  --c:#F2B544}
 .wcard[data-k=jtc]    {left:91%;top:68%;--r:15deg; --c:#5FB3C6}
 .wcard[data-k=ticket] .kan{color:#111}
-.michi{position:absolute;left:50%;bottom:0;transform:translateX(-50%);z-index:1;height:56vh;height:56svh;aspect-ratio:526/878;pointer-events:none}
+.michi{position:absolute;left:50%;bottom:0;transform:translateX(-50%);z-index:3;height:50vh;height:50svh;aspect-ratio:346/631;pointer-events:none}
 .michi canvas{width:100%;height:100%;display:block}
 .hint{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);z-index:4;background:#111;color:#fff;font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-weight:700;font-size:13px;padding:9px 18px;border-radius:999px;white-space:nowrap}
 .preview-switch{position:fixed;left:16px;bottom:16px;z-index:60;display:flex;gap:6px;background:#fff;border:2px solid #111;border-radius:999px;padding:4px;font:700 11px var(--latin)}
@@ -346,7 +346,6 @@ html.js .rv.in{animation:rvUp .8s cubic-bezier(.25,.8,.3,1) var(--d,0s) both}
 html.js .pop.in{animation:rvPop .75s cubic-bezier(.25,.8,.3,1) var(--d,0s) both}
 @media (prefers-reduced-motion:reduce){html.js .rv,html.js .pop{opacity:1;animation:none!important}}
 
-#michi{-webkit-mask-image:linear-gradient(to right,transparent,#000 9%,#000 91%,transparent),linear-gradient(to bottom,transparent,#000 7%,#000 93%,transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(to right,transparent,#000 9%,#000 91%,transparent),linear-gradient(to bottom,transparent,#000 7%,#000 93%,transparent);mask-composite:intersect}
 </style>
 </head>
 <body>
@@ -403,7 +402,7 @@ html.js .pop.in{animation:rvPop .75s cubic-bezier(.25,.8,.3,1) var(--d,0s) both}
     <a class="wcard" data-k="contact" href="#play"><span class="media"><span class="kan">遊</span></span><span class="tag">04 / HOW TO PLAY</span><span class="cap">遊び方</span></a>
     <a class="wcard" data-k="jtc" href="#access"><span class="media"><span class="kan">訪</span></span><span class="tag">05 / ACCESS</span><span class="cap">アクセス</span></a>
   </div>
-  <div class="michi"><canvas id="michi" width="526" height="878" role="img" aria-label="三千（みち）"></canvas></div>
+  <div class="michi"><canvas id="michi" width="346" height="631" role="img" aria-label="三千（みち）"></canvas></div>
   <div class="hint">気になるカードを選んでね。三千がご案内します</div>
 </section>
 <section class="about" id="about">
@@ -627,7 +626,9 @@ var MENU=["assets/frames/menu-001.webp", "assets/frames/menu-002.webp", "assets/
     last=cur;
   }
   function jump(i,t){fadeFrom=cur;fadeT=t;cur=i;}
+  var IDLE_END=26,idir=1,idling=true;
   function loop(t){
+    if(idling&&!reduce&&fadeFrom<0&&cur===target&&t-t0>=1000/FPS){t0=t;var n=cur+idir;if(n>IDLE_END||n<0){idir=-idir;n=cur+idir;}cur=target=n;}
     if(fadeFrom<0&&cur!==target&&t-t0>=1000/FPS){t0=t;cur+=cur<target?1:-1;}
     if(fadeFrom<0&&cur===target&&after){var f=after;after=null;f(t);}
     if(cur!==last||fadeFrom>=0)render(t);
@@ -637,8 +638,8 @@ var MENU=["assets/frames/menu-001.webp", "assets/frames/menu-002.webp", "assets/
   requestAnimationFrame(loop);
   document.querySelectorAll('.wcard').forEach(function(c){
     var s=SEG[c.dataset.k];
-    function on(){var t=performance.now();after=null;if(reduce){cur=target=s[1];last=-1;return;}jump(s[0],t);target=s[1];}
-    function off(){if(reduce){cur=target=IDLE;last=-1;return;}target=s[0];after=function(t){jump(IDLE,t);target=IDLE;};}
+    function on(){var t=performance.now();after=null;idling=false;if(reduce){cur=target=s[1];last=-1;return;}jump(s[0],t);target=s[1];}
+    function off(){if(reduce){cur=target=IDLE;last=-1;return;}target=s[0];after=function(t){jump(IDLE,t);target=IDLE;idir=1;idling=true;};}
     c.addEventListener('mouseenter',on);c.addEventListener('focus',on);c.addEventListener('mouseleave',off);c.addEventListener('blur',off);
   });
 })();
