@@ -193,7 +193,7 @@ body{background:var(--paper);color:var(--ink);font-family:'Helvetica Neue',Arial
       <div class="work-list" id="works-list"></div>
       <button class="add-btn" onclick="addWork()">＋ シナリオを追加</button>
       <div class="save-bar">
-        <span class="hint">保存するとlineup.htmlとscenarios.jsonが同時に更新されます</span>
+        <span class="hint">保存すると作品ラインナップと予約フォームが同時に更新されます</span>
         <button class="btn btn-primary" onclick="saveWorks()" id="save-works-btn">保存して公開</button>
       </div>
     </div>
@@ -301,13 +301,53 @@ function setBadge(text, ok) {
 }
 
 // ===== DATA =====
-function loadData() {
+// 編集したら「未公開の変更あり」の印をつける（公開に成功したら消す）
+let suppressDirty = false;
+(function () {
+  const set = localStorage.setItem.bind(localStorage);
+  localStorage.setItem = function (k, v) {
+    set(k, v);
+    if (!suppressDirty && (k === 'works_data' || k === 'candidates_data')) set('admin_dirty', '1');
+  };
+})();
+
+async function loadData() {
   const savedWorks = localStorage.getItem('works_data');
   const savedCandidates = localStorage.getItem('candidates_data');
   works = savedWorks ? JSON.parse(savedWorks) : [];
   candidates = savedCandidates ? JSON.parse(savedCandidates) : [];
+  // サイトに公開中の lineup.json を読み込む（別のパソコンでも最新の内容になる）
+  let remote = null;
+  try {
+    const r = await fetch('../lineup.json?t=' + Date.now());
+    if (r.ok) remote = await r.json();
+  } catch (e) {}
+  if (remote && Array.isArray(remote.works)) {
+    const dirty = localStorage.getItem('admin_dirty') === '1' && (savedWorks || savedCandidates);
+    const useLocal = dirty && confirm('このブラウザに未公開の変更があります。\n\nOK：未公開の変更を使う\nキャンセル：サイトに公開中の内容を読み込む');
+    if (!useLocal) {
+      const fix = o => Object.assign({}, o, o.image && !/^(data:|https?:|\.\.\/)/.test(o.image) ? { image: '../' + o.image, imageName: o.image } : {});
+      works = remote.works.map(fix);
+      candidates = (remote.candidates || []).map(fix);
+      suppressDirty = true;
+      localStorage.setItem('works_data', JSON.stringify(works));
+      localStorage.setItem('candidates_data', JSON.stringify(candidates));
+      suppressDirty = false;
+      localStorage.removeItem('admin_dirty');
+    }
+  }
+  works.forEach(w => { if (!w.reading) Object.assign(w, splitTitle_(w.title, w.reading)); });
+  candidates.forEach(c => { if (!c.reading) Object.assign(c, splitTitle_(c.title, c.reading)); });
   renderWorks();
   renderCandidates();
+}
+
+// 「『漓川怪談簿』（りせん かいだんぼ）」→ 作品名と読み方に分ける
+function splitTitle_(title, reading) {
+  const t = String(title || '').trim();
+  const m = t.match(/^[『「]?(.+?)[』」]?\s*[（(]\s*(.+?)\s*[）)]\s*$/);
+  if (m) return { title: m[1], reading: reading || m[2] };
+  return { title: t.replace(/^[『「]|[』」]$/g, ''), reading: reading || '' };
 }
 
 function defaultWork() {
@@ -444,6 +484,10 @@ function renderWorks() {
           <div class="work-field">
             <label>作品名（日本語）</label>
             <input type="text" value="${escHtml(w.title)}" oninput="updateWork(${w.id}, 'title', this.value); this.closest('.work-item').querySelector('.title-text').textContent = this.value || '（無題）'">
+          </div>
+          <div class="work-field">
+            <label>読み方</label>
+            <input type="text" value="${escHtml(w.reading || '')}" placeholder="りせん かいだんぼ" oninput="updateWork(${w.id}, 'reading', this.value)">
           </div>
           <div class="work-field">
             <label>原題（中国語）</label>
@@ -648,6 +692,10 @@ function renderCandidates() {
             <input type="text" value="${escHtml(c.title)}" oninput="updateCandidate(${c.id}, 'title', this.value); this.closest('.work-item').querySelector('.title-text').textContent = this.value || '（無題）'">
           </div>
           <div class="work-field">
+            <label>読み方</label>
+            <input type="text" value="${escHtml(c.reading || '')}" placeholder="りせん かいだんぼ" oninput="updateCandidate(${c.id}, 'reading', this.value)">
+          </div>
+          <div class="work-field">
             <label>原題（中国語）</label>
             <input type="text" value="${escHtml(c.subtitle)}" oninput="updateCandidate(${c.id}, 'subtitle', this.value)">
           </div>
@@ -791,7 +839,7 @@ function generateScenariosJSON() {
   const scenarios = works
     .filter(w => w.title)
     .map(w => ({
-      title: w.title,
+      title: splitTitle_(w.title, w.reading).title,
       subtitle: w.subtitle || '',
       genre: w.genre || '推理系',
       players: w.players || '',
@@ -803,6 +851,23 @@ function generateScenariosJSON() {
       female: w.genderRule === '固定' ? (Number(w.female) || 0) : null,
     }));
   return JSON.stringify(scenarios, null, 2);
+}
+
+// ===== GENERATE lineup.json（トップページの作品ラインナップ用） =====
+function generateLineupJSON() {
+  const clean = o => {
+    const x = Object.assign({}, o, splitTitle_(o.title, o.reading));
+    let img = x.imageName || x.image || '';
+    if (/^data:/.test(img)) img = '';
+    x.image = img.replace(/^\.\.\//, '');
+    delete x.imageName;
+    return x;
+  };
+  return JSON.stringify({
+    updated: new Date().toISOString(),
+    works: works.filter(w => w.title).map(clean),
+    candidates: candidates.filter(c => c.title).map(clean)
+  }, null, 2);
 }
 
 // ===== GENERATE HTML =====
@@ -992,17 +1057,16 @@ async function saveWorks() {
   btn.innerHTML = '<span class="loading"></span>保存中...';
   btn.disabled = true;
   try {
-    // 1. lineup.html
-    const html = generateLineupHTML();
-    const htmlContent = btoa(unescape(encodeURIComponent(html)));
-    await githubPut('lineup.html', htmlContent, 'Update lineup from admin panel');
+    // 1. lineup.json（トップページの作品ラインナップ）
+    await githubPut('lineup.json', btoa(unescape(encodeURIComponent(generateLineupJSON()))), 'Update lineup.json from admin panel');
 
     // 2. scenarios.json（予約フォーム連動用）
     const json = generateScenariosJSON();
     const jsonContent = btoa(unescape(encodeURIComponent(json)));
     await githubPut('scenarios.json', jsonContent, 'Update scenarios.json');
 
-    showToast('公開しました！予約フォームも自動更新されます', 'success');
+    localStorage.removeItem('admin_dirty');
+    showToast('公開しました！作品ラインナップと予約フォームも自動更新されます', 'success');
   } catch(e) {
     showToast('保存失敗。接続設定を確認してください', 'error');
   } finally {
@@ -1020,10 +1084,9 @@ async function saveCandidates() {
   btn.innerHTML = '<span class="loading"></span>保存中...';
   btn.disabled = true;
   try {
-    const html = generateLineupHTML();
-    const content = btoa(unescape(encodeURIComponent(html)));
-    await githubPut('lineup.html', content, 'Update lineup from admin panel');
-    showToast('公開しました！', 'success');
+    await githubPut('lineup.json', btoa(unescape(encodeURIComponent(generateLineupJSON()))), 'Update lineup.json from admin panel');
+    localStorage.removeItem('admin_dirty');
+    showToast('公開しました！作品ラインナップに反映されます', 'success');
   } catch(e) {
     showToast('保存失敗。接続設定を確認してください', 'error');
   } finally {

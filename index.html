@@ -184,6 +184,15 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--white);outline-offs
 .lu-card .meta-top{display:inline-block;border:1px solid currentColor;border-radius:3px;padding:6px 14px;opacity:.85}
 .lu-card .cta{display:none}.lu-card.is-open .cta{display:inline-block}
 .lu-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.lu-media .seal{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.lu-media .seal i{position:absolute;left:-25%;width:150%;top:50%;height:40px;display:flex;align-items:center;justify-content:center;
+  background:#F7F1E3;border-top:3px solid #B8322A;border-bottom:3px solid #B8322A;box-shadow:0 3px 10px rgba(0,0,0,.25);
+  font-family:'Noto Serif JP',serif;font-style:normal;font-weight:700;font-size:15px;letter-spacing:.22em;color:#B8322A}
+.lu-media .seal i:nth-child(1){transform:translateY(-50%) rotate(-32deg);justify-content:flex-end;padding-right:17%}
+.lu-media .seal i:nth-child(2){transform:translateY(-50%) rotate(32deg);justify-content:flex-start;padding-left:22%}
+.lu-media .seal b{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-6deg);width:58px;height:58px;display:grid;place-items:center;
+  background:#B8322A;color:#F7F1E3;font-family:'Noto Serif JP',serif;font-weight:900;font-size:32px;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.lu-card.is-sealed .lu-media img{filter:saturate(.75) brightness(.92)}
 .lu-media .ph{position:absolute;inset:0;display:grid;place-items:center;padding:20px;text-align:center;font-family:'Noto Serif JP',serif;font-weight:600;font-size:clamp(20px,1.8vw,28px);color:rgba(255,255,255,.8);letter-spacing:.12em}
 .lu-bars{max-width:1200px;margin:22px auto 0;padding:0 40px;display:flex;gap:6px}
 .lu-bars i{display:block;width:22px;height:3px;border-radius:2px;background:rgba(17,17,17,.15);transition:width .3s,background .3s}
@@ -760,14 +769,14 @@ var MENU=["assets/frames/menu-001.webp", "assets/frames/menu-002.webp", "assets/
 function f(){nav.classList.toggle('light',w.getBoundingClientRect().top+innerHeight*.3<64);}
 addEventListener('scroll',f,{passive:true});f();})();
 /* 公開中（scenarios.jsonに掲載）の作品だけ「公演予約」を表示 */
-(async function(){var pub=[];try{var r=await fetch('scenarios.json?t='+Date.now());if(r.ok)pub=await r.json();}catch(e){}
+window.initLineupCta=async function(){var pub=[];try{var r=await fetch('scenarios.json?t='+Date.now());if(r.ok)pub=await r.json();}catch(e){}
   if(!Array.isArray(pub))return;var norm=function(t){return (t||'').replace(/[『』「」\s]/g,'').replace(/[（(].*?[）)]/g,'');};
   document.querySelectorAll('.lu-card').forEach(function(card){var h=card.querySelector('h3'),cta=card.querySelector('.cta');if(!h||!cta)return;
     var t=norm(h.textContent),hit=pub.find(function(s){return norm(s.title)===t;});if(!hit)return;card.classList.add('is-open');
     cta.addEventListener('click',function(){var sel=document.getElementById('scenario-select');if(sel){sel.value=hit.title;sel.dispatchEvent(new Event('change'));}});});
-})();
+};
 /* lineup carousel */
-(function(){var tr=document.getElementById('lu-track'),cards=[].slice.call(tr.children),bars=document.getElementById('lu-bars'),
+window.initCarousel=function(){var tr=document.getElementById('lu-track'),cards=[].slice.call(tr.children),bars=document.getElementById('lu-bars'),
   prev=document.getElementById('lu-prev'),next=document.getElementById('lu-next');
   cards.forEach(function(){bars.appendChild(document.createElement('i'));});
   function idx(){var l=tr.scrollLeft,best=0,d=1e9;cards.forEach(function(c,i){var x=Math.abs(c.offsetLeft-cards[0].offsetLeft-l);if(x<d){d=x;best=i;}});return best;}
@@ -775,6 +784,37 @@ addEventListener('scroll',f,{passive:true});f();})();
   function go(d){var i=Math.max(0,Math.min(cards.length-1,idx()+d));tr.scrollTo({left:cards[i].offsetLeft-cards[0].offsetLeft,behavior:'smooth'});}
   prev.addEventListener('click',function(){go(-1);});next.addEventListener('click',function(){go(1);});
   tr.addEventListener('scroll',function(){requestAnimationFrame(upd);},{passive:true});upd();
+};
+/* 作品ラインナップ：管理画面の lineup.json から表示（公演中 → 準備中（封条付き） → COMING SOON） */
+(async function(){var data=null;try{var r=await fetch('lineup.json?t='+Date.now());if(r.ok)data=await r.json();}catch(e){}
+  var tr=document.getElementById('lu-track');
+  if(data&&Array.isArray(data.works)){
+    var COL=[['#C9D9DE','#16252B','#6E8F99'],['#3D4463','#F3F1F8','#262B44'],['#E6D8BF','#2A2219','#C9B48F']];
+    var GL={'推理系':'推理系','情感系':'エモ系','恐怖系':'ホラー系','欢乐系':'コメディ系','机制系':'メカニクス系'};
+    var esc=function(t){return String(t==null?'':t).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});};
+    var items=data.works.map(function(w){return Object.assign({},w,{status:'公演中',sealed:false});})
+      .concat((data.candidates||[]).filter(function(c){return !c.hidden;}).map(function(c){return Object.assign({},c,{sealed:true});}));
+    var html=items.map(function(w,i){var c=COL[i%3],n=('0'+(i+1)).slice(-2);
+      var mt=String(w.title||'').trim().match(/^[『「]?(.+?)[』」]?\s*[（(]\s*(.+?)\s*[）)]\s*$/);
+      w=Object.assign({},w,mt?{title:mt[1],reading:w.reading||mt[2]}:{title:String(w.title||'').replace(/^[『「]|[』」]$/g,'')});
+      var orig=[w.reading,w.subtitle?'《'+String(w.subtitle).replace(/[《》]/g,'')+'》':''].filter(Boolean).join('　');
+      var tags=(w.tags||[]).map(function(t){return '<span>'+esc(t)+'</span>';}).join('');
+      return '<article class="lu-card'+(w.sealed?' is-sealed':'')+'" style="--c:'+c[0]+';--fg:'+c[1]+';--m:'+c[2]+'"><div class="lu-body"><div class="lu-box lu-info">'+
+        '<div class="lu-head"><div class="meta-top">'+n+' / '+esc(GL[w.genre]||w.genre||'推理系')+' · '+esc(w.status)+'</div>'+(tags?'<div class="tags">'+tags+'</div>':'')+'</div>'+
+        '<h3>'+esc(w.title)+'</h3>'+(orig?'<div class="orig">'+esc(orig)+'</div>':'')+'<p class="desc">'+esc(w.description)+'</p></div>'+
+        '<div class="lu-box lu-spec"><dl><dt>人数</dt><dd>'+esc(w.players||'—')+'</dd><dt>状態</dt><dd>'+esc(w.status)+'</dd></dl><a class="cta" href="#reserve">公演予約</a></div></div>'+
+        '<div class="lu-box lu-poster"><div class="lu-media"><div class="ph">'+esc(w.title)+'</div>'+(w.image?'<img src="'+esc(w.image)+'" alt="『'+esc(w.title)+'』" onerror="this.remove()">':'')+
+        (w.sealed?'<div class="seal" aria-hidden="true"><i>COMING SOON</i><i>近日公開</i><b>封</b></div>':'')+'</div></div></article>';}).join('');
+    var c=COL[items.length%3];
+    html+='<article class="lu-card" style="--c:'+c[0]+';--fg:'+c[1]+';--m:'+c[2]+'"><div class="lu-body"><div class="lu-box lu-info"><div class="meta-top">'+('0'+(items.length+1)).slice(-2)+' / COMING SOON</div>'+
+      '<h3>次の物語、準備中</h3><div class="orig">新しい作品のローカライズを進めています</div><p class="desc">正式決定次第、このラインナップに追加します。</p></div></div>'+
+      '<div class="lu-box lu-poster"><div class="lu-media"><div class="ph">準備中</div></div></div></article>';
+    tr.innerHTML=html;
+  }else{
+    /* lineup.json がまだない間は、今の固定表示の準備中カードに封条を付ける */
+    [].forEach.call(tr.querySelectorAll('.lu-card'),function(card){var m=card.querySelector('.meta-top');if(m&&/審査中|翻訳中|交渉中|準備中/.test(m.textContent)){card.classList.add('is-sealed');card.querySelector('.lu-media').insertAdjacentHTML('beforeend','<div class="seal" aria-hidden="true"><i>COMING SOON</i><i>近日公開</i><b>封</b></div>');}});
+  }
+  initLineupCta();initCarousel();
 })();
 /* how to play: hover a step -> panel flips */
 (function(){var st=[].slice.call(document.querySelectorAll('.step')),pn=[].slice.call(document.querySelectorAll('.panel'));
