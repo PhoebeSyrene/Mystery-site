@@ -767,14 +767,19 @@ var BOOKING_API='https://script.google.com/macros/s/AKfycbx5OwWd-fmrGyBKeFGc52_A
 })();
 /* 人数（男女）チェック */
 /* 開始時間：作品の所要時間から自動計算（10:00開始・弾性1h・整理1h・23:00終了） */
-var SLOT={open:10,close:23,flex:1,clean:1,defaultH:5};
+var SLOT={open:10,close:23,flex:1,clean:1,defaultH:5,deadlineH:48};
 function fmt(h){var m=Math.round((h%1)*60);return Math.floor(h)+':'+(m<10?'0':'')+m;}
 window.buildTimes=function(){var sel=document.getElementById('scenario-select'),ts=document.getElementById('r-time'),s=SCENARIOS[sel.value];
   if(!sel.value){ts.innerHTML='<option value="" disabled selected>先に作品を選択してください</option>';return;}
   var h=(s&&s.durationHours)||SLOT.defaultH,occ=h+SLOT.flex,out=[],t=SLOT.open;
-  while(t+occ<=SLOT.close){out.push(t);t+=occ+SLOT.clean;}
+  var dv=document.getElementById('r-date').value,limit=Date.now()+SLOT.deadlineH*3600e3;
+  while(t+occ<=SLOT.close){var st=dv?new Date(dv+'T'+(t<10?'0':'')+fmt(t)+':00+09:00').getTime():Infinity;if(st>=limit)out.push(t);t+=occ+SLOT.clean;}
+  if(dv&&!out.length){ts.innerHTML='<option value="" disabled selected>この日は受付を終了しました</option>';return;}
   ts.innerHTML='<option value="" disabled selected>時間帯を選択</option>'+out.map(function(t){var v=fmt(t)+'〜'+fmt(t+occ);return '<option value="'+v+'">'+v+'</option>';}).join('');};
 document.getElementById('scenario-select').addEventListener('change',buildTimes);
+/* 希望日：開演48時間前までの枠のみ受付 */
+(function(){var d=document.getElementById('r-date'),m=new Date(Date.now()+9*3600e3+SLOT.deadlineH*3600e3);
+  d.min=m.toISOString().slice(0,10);d.addEventListener('change',buildTimes);})();
 window.checkPpl=function(){var sel=document.getElementById('scenario-select'),hint=document.getElementById('ppl-hint'),
   m=+document.getElementById('r-male').value||0,f=+document.getElementById('r-female').value||0,t=m+f,s=SCENARIOS[sel.value],msg='',err='';
   document.getElementById('r-ppl').value=t+'人（男性'+m+'・女性'+f+'）';
