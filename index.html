@@ -166,10 +166,10 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--white);outline-offs
 .lu-card h3{font-family:'Noto Sans SC','Noto Sans JP',sans-serif;font-weight:900;font-size:clamp(24px,2.3vw,36px);line-height:1.3;margin:16px 0 4px}
 .lu-card .orig{font-size:12px;opacity:.7;margin-bottom:14px}
 .lu-card .desc{font-size:13px;line-height:1.85;opacity:.9;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
-.lu-card dl{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:12px;margin:20px 0 14px}
+.lu-card dl{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:14px;margin:20px 0 14px}
 .lu-card dt{opacity:.6}.lu-card dd{font-weight:700}
 .lu-card .tags{display:flex;flex-wrap:wrap;gap:6px}
-.lu-card .tags span{font-size:11px;border:1px solid currentColor;border-radius:999px;padding:3px 10px;opacity:.85}
+.lu-card .tags span{font-size:13px;border:1px solid currentColor;border-radius:999px;padding:5px 14px;opacity:.85}
 .lu-card .cta{display:inline-block;margin-top:18px;font-size:12px;font-weight:700;background:var(--fg);color:var(--c);padding:8px 16px;border-radius:999px}
 .lu-media{position:relative;border-radius:10px;overflow:hidden;background:var(--m);width:100%;aspect-ratio:5/7}
 .lu-body{display:flex;flex-direction:column;gap:16px;min-width:0}
@@ -180,7 +180,8 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--white);outline-offs
 .lu-spec dl{margin:0}
 .lu-spec .cta{margin:0 0 0 auto}
 .lu-poster{padding:10px;display:flex;align-items:center}
-.lu-card .meta-top{display:inline-block;border:1px solid currentColor;border-radius:999px;padding:4px 12px;opacity:.85}
+.lu-card .meta-top{display:inline-block;border:1px solid currentColor;border-radius:3px;padding:4px 10px;opacity:.85}
+.lu-card .cta{display:none}.lu-card.is-open .cta{display:inline-block}
 .lu-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .lu-media .ph{position:absolute;inset:0;display:grid;place-items:center;padding:20px;text-align:center;font-family:'Noto Serif JP',serif;font-weight:600;font-size:clamp(20px,1.8vw,28px);color:rgba(255,255,255,.8);letter-spacing:.12em}
 .lu-bars{max-width:1200px;margin:22px auto 0;padding:0 40px;display:flex;gap:6px}
@@ -717,6 +718,13 @@ var MENU=["assets/frames/menu-001.webp", "assets/frames/menu-002.webp", "assets/
 (function(){var nav=document.getElementById('nav'),w=document.getElementById('world');
 function f(){nav.classList.toggle('light',w.getBoundingClientRect().top+innerHeight*.3<64);}
 addEventListener('scroll',f,{passive:true});f();})();
+/* 公開中（scenarios.jsonに掲載）の作品だけ「公演予約」を表示 */
+(async function(){var pub=[];try{var r=await fetch('scenarios.json?t='+Date.now());if(r.ok)pub=await r.json();}catch(e){}
+  if(!Array.isArray(pub))return;var norm=function(t){return (t||'').replace(/[『』「」\s]/g,'').replace(/[（(].*?[）)]/g,'');};
+  document.querySelectorAll('.lu-card').forEach(function(card){var h=card.querySelector('h3'),cta=card.querySelector('.cta');if(!h||!cta)return;
+    var t=norm(h.textContent),hit=pub.find(function(s){return norm(s.title)===t;});if(!hit)return;card.classList.add('is-open');
+    cta.addEventListener('click',function(){var sel=document.getElementById('scenario-select');if(sel){sel.value=hit.title;sel.dispatchEvent(new Event('change'));}});});
+})();
 /* lineup carousel */
 (function(){var tr=document.getElementById('lu-track'),cards=[].slice.call(tr.children),bars=document.getElementById('lu-bars'),
   prev=document.getElementById('lu-prev'),next=document.getElementById('lu-next');
