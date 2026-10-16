@@ -255,6 +255,8 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--white);outline-offs
 .rs-fig canvas{width:100%;height:100%;display:block}
 .rs-card{background:#fff;border:4px solid #111;border-radius:10px;box-shadow:8px 8px 0 #111;padding:34px 36px}
 .rs-card .row{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.ppl-hint{font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-size:12px;line-height:1.7;opacity:.75;margin:-8px 0 20px}
+.ppl-hint.err{color:#C2365A;opacity:1;font-weight:700}
 .fld{margin-bottom:20px}
 .fld label{display:block;font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-weight:700;font-size:13px;margin-bottom:7px}
 .fld label i{font-style:normal;color:#C2365A;margin-left:4px}
@@ -275,7 +277,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--white);outline-offs
 .rs-result p{font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-size:14px;line-height:1.8}
 @keyframes hop{0%,100%{transform:translateY(0)}35%{transform:translateY(-16px)}55%{transform:translateY(0)}70%{transform:translateY(-6px)}}
 #confetti{position:fixed;inset:0;pointer-events:none;z-index:200}
-@media (max-width:860px){.rs-in{grid-template-columns:1fr;padding:0 18px;gap:28px}.rs-side{position:relative;top:0}.rs-fig{height:40svh;margin:10px auto 0}.rs-card{padding:24px 18px}.rs-card .row{grid-template-columns:1fr;gap:0}}
+@media (max-width:860px){.rs-in{grid-template-columns:1fr;padding:0 18px;gap:28px}.rs-side{position:relative;top:0}.rs-fig{height:40svh;margin:10px auto 0}.rs-card{padding:24px 18px}.rs-card .row{grid-template-columns:1fr;gap:0}.rs-card .row.ppl2{grid-template-columns:1fr 1fr;gap:12px}}
 @media (prefers-reduced-motion:reduce){.rs-result img{animation:none}}
 /* ---------- 7th screen: アクセス ---------- */
 .access{position:relative;z-index:5;color:var(--ink);overflow:hidden;padding:24vh 0 120px;
@@ -541,6 +543,15 @@ html.intro-on #bgm-btn{opacity:0;pointer-events:none}
         <h3>送信できませんでした</h3>
         <p>通信状況を確認して、もう一度お試しください。</p>
       </div>
+      <div class="rs-result" id="rs-none">
+        <h3>現在、予約受付中の作品はありません</h3>
+        <p>新作の公開まで今しばらくお待ちください。<br>最新情報はLINE公式アカウントでお知らせします。</p>
+        <div class="rs-line">
+          <img src="assets/img/line-qr.png" alt="浮生三千 LINE公式アカウントのQRコード">
+          <div><b>新作情報をLINEでお届け</b><p>友だち追加で、公開情報や相席募集のお知らせをいち早くお受け取りいただけます。</p>
+          <a href="https://line.me/R/ti/p/%40threethousandlives" target="_blank" rel="noopener">LINEで友だち追加</a></div>
+        </div>
+      </div>
       <form id="reservation-form" action="https://api.web3forms.com/submit" method="POST">
         <input type="hidden" name="access_key" value="68ab29d4-5e08-446c-9aaf-51c0aa10ee17">
         <input type="hidden" name="subject" id="dynamic-subject" value="【浮生三千】公演予約">
@@ -556,7 +567,12 @@ html.intro-on #bgm-btn{opacity:0;pointer-events:none}
           <div class="fld"><label for="r-date">希望日<i>*</i></label><input id="r-date" type="date" name="希望日" required></div>
           <div class="fld"><label for="r-time">希望時間<i>*</i></label><div class="sel"><select id="r-time" name="希望時間" required><option value="" disabled selected>時間帯を選択</option><option>10:00〜</option><option>13:00〜</option><option>16:00〜</option><option>19:00〜</option></select></div></div>
         </div>
-        <div class="fld"><label for="r-ppl">人数<i>*</i></label><div class="sel"><select id="r-ppl" name="人数" required><option value="" disabled selected>人数を選択してください</option><option>1人</option><option>2人</option><option>3人</option><option>4人</option><option>5人</option><option>6人</option><option>7人</option><option>8人以上（要相談）</option></select></div></div>
+        <div class="row ppl2">
+          <div class="fld"><label for="r-male">男性<i>*</i></label><div class="sel"><select id="r-male" name="男性" required><option value="0">0人</option><option value="1">1人</option><option value="2">2人</option><option value="3">3人</option><option value="4">4人</option><option value="5">5人</option><option value="6">6人</option><option value="7">7人</option><option value="8">8人</option></select></div></div>
+          <div class="fld"><label for="r-female">女性<i>*</i></label><div class="sel"><select id="r-female" name="女性" required><option value="0">0人</option><option value="1">1人</option><option value="2">2人</option><option value="3">3人</option><option value="4">4人</option><option value="5">5人</option><option value="6">6人</option><option value="7">7人</option><option value="8">8人</option></select></div></div>
+        </div>
+        <input type="hidden" name="人数" id="r-ppl">
+        <p class="ppl-hint" id="ppl-hint">※ご参加者全員の人数を男女別にご入力ください。</p>
         <hr class="rs-sep">
         <div class="fld"><label for="r-note">その他ご要望</label><textarea id="r-note" name="その他ご要望" placeholder="ご不明な点やご要望などお気軽にご記入ください。"></textarea></div>
         <button type="submit" class="rs-submit" id="submit-btn">予約を申し込む</button>
@@ -711,16 +727,30 @@ var RS=["assets/frames/reserve-001.webp", "assets/frames/reserve-002.webp", "ass
   new IntersectionObserver(function(e){vis=e[0].isIntersecting;},{threshold:.1}).observe(cv);
   (function loop(t){if(vis&&!reduce&&t-t0>=1000/12){t0=t;f=(f+1)%im.length;var i=im[f];if(i.complete&&i.naturalWidth){ctx.clearRect(0,0,cv.width,cv.height);ctx.drawImage(i,0,0);}}requestAnimationFrame(loop);})(0);
 })();
-(async function(){var sel=document.getElementById('scenario-select');
-  function base(){sel.innerHTML='<option value="" disabled selected>作品を選択してください</option>';}
-  try{var r=await fetch('scenarios.json?t='+Date.now());if(!r.ok)throw 0;var sc=await r.json();if(!Array.isArray(sc)||!sc.length)throw 0;base();
-    sc.forEach(function(s){var o=document.createElement('option');o.value=s.title;o.textContent=s.players?s.title+'（'+s.players+'）':s.title;sel.appendChild(o);});
-  }catch(e){base();['漓川怪談簿','死者は幻夜に目覚める'].forEach(function(t){var o=document.createElement('option');o.value=o.textContent=t+'（7人用）';sel.appendChild(o);});}
+window.SCENARIOS={};
+(async function(){var sel=document.getElementById('scenario-select'),sc=[];
+  try{var r=await fetch('scenarios.json?t='+Date.now());if(r.ok)sc=await r.json();}catch(e){}
+  sc=Array.isArray(sc)?sc.filter(function(s){return s&&s.title;}):[];
+  if(!sc.length){document.getElementById('reservation-form').style.display='none';document.getElementById('rs-none').classList.add('show');return;}
+  sel.innerHTML='<option value="" disabled selected>作品を選択してください</option>';
+  sc.forEach(function(s){SCENARIOS[s.title]=s;var o=document.createElement('option');o.value=s.title;o.textContent=s.players?s.title+'（'+s.players+'）':s.title;sel.appendChild(o);});
   var o=document.createElement('option');o.value=o.textContent='未定（ご相談ください）';sel.appendChild(o);
 })();
+/* 人数（男女）チェック */
+window.checkPpl=function(){var sel=document.getElementById('scenario-select'),hint=document.getElementById('ppl-hint'),
+  m=+document.getElementById('r-male').value||0,f=+document.getElementById('r-female').value||0,t=m+f,s=SCENARIOS[sel.value],msg='',err='';
+  document.getElementById('r-ppl').value=t+'人（男性'+m+'・女性'+f+'）';
+  if(s&&s.genderRule==='fixed'){msg='※この作品は配役の男女が決まっています（男性'+s.male+'名・女性'+s.female+'名）。不足分は他のお客様と相席で募集します。';
+    if(m>s.male)err='男性の参加枠は'+s.male+'名までです。';else if(f>s.female)err='女性の参加枠は'+s.female+'名までです。';}
+  else if(s){msg='※推理系などの作品は、配役の性別を問いません。キャラクターは当日ご自身でお選びいただけます。'+(s.minPlayers&&t<s.minPlayers?'人数が足りない場合は他のお客様と相席で募集します。':'');}
+  else msg='※ご参加者全員の人数を男女別にご入力ください。';
+  if(!err&&s&&s.maxPlayers&&t>s.maxPlayers)err='この作品の定員は'+s.maxPlayers+'名です。';
+  if(!err&&t<1&&document.getElementById('reservation-form').dataset.tried)err='人数を入力してください。';
+  hint.textContent=err||msg;hint.classList.toggle('err',!!err);return !err&&t>=1;};
+['scenario-select','r-male','r-female'].forEach(function(id){document.getElementById(id).addEventListener('change',checkPpl);});
 (function(){var form=document.getElementById('reservation-form'),btn=document.getElementById('submit-btn');
   function done(ok){form.style.display='none';document.getElementById(ok?'rs-ok':'rs-err').classList.add('show');if(ok)confetti();}
-  form.addEventListener('submit',async function(e){e.preventDefault();btn.disabled=true;btn.textContent='送信中...';
+  form.addEventListener('submit',async function(e){e.preventDefault();form.dataset.tried=1;if(!checkPpl()){document.getElementById('ppl-hint').scrollIntoView({block:'center',behavior:'smooth'});return;}btn.disabled=true;btn.textContent='送信中...';
     var d=form.querySelector('[name="希望日"]').value,t=form.querySelector('[name="希望時間"]').value,p=form.querySelector('[name="人数"]').value;
     document.getElementById('dynamic-subject').value='【浮生三千】公演予約 - '+d+' '+t+' / '+p;
     try{var res=await fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(Object.fromEntries(new FormData(form)))});

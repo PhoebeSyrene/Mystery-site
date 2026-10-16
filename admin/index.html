@@ -77,7 +77,9 @@ body{background:var(--paper);color:var(--ink);font-family:'Helvetica Neue',Arial
 .work-field input,.work-field textarea,.work-field select{width:100%;border:1px solid var(--hair);padding:7px 10px;font-size:0.84rem;font-family:inherit;background:var(--paper);border-radius:2px;}
 .work-field input:focus,.work-field textarea:focus{outline:2px solid var(--gold);border-color:var(--gold);}
 .work-field textarea{resize:vertical;min-height:70px;}
-.field-row-inline{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.field-row-inline{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;}
+.hint-cell{align-self:end;font-size:0.75rem;color:#8a7f72;padding-bottom:8px;}
+.work-field input:disabled{opacity:.55;}
 
 .tag-group{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px;}
 .tag-toggle{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border:1px solid var(--hair);border-radius:2px;font-size:0.75rem;font-family:inherit;background:var(--paper);color:var(--ink-soft);cursor:pointer;transition:all .15s;user-select:none;letter-spacing:0.04em;}
@@ -309,7 +311,7 @@ function loadData() {
 }
 
 function defaultWork() {
-  return { id: Date.now(), title: '', subtitle: '', genre: '', players: '', duration: '', description: '', price: '', tags: [], image: '', imageName: '' };
+  return { id: Date.now(), title: '', subtitle: '', genre: '推理系', players: '', duration: '', minPlayers: '', maxPlayers: '', durationH: '', genderRule: '不限', male: '', female: '', description: '', price: '', tags: [], image: '', imageName: '' };
 }
 
 function defaultCandidate() {
@@ -366,6 +368,8 @@ function promoteCandidate(id) {
     genre: c.genre,
     players: c.players || '',
     duration: '',
+    minPlayers: '', maxPlayers: '', durationH: '',
+    genderRule: c.genre === '情感系' ? '固定' : '不限', male: '', female: '',
     description: c.description,
     price: '',
     tags: c.tags || [],
@@ -448,7 +452,7 @@ function renderWorks() {
           <div class="field-row-inline">
             <div class="work-field">
               <label>ジャンル分類</label>
-              <select onchange="updateWork(${w.id}, 'genre', this.value)">
+              <select onchange="updateWork(${w.id}, 'genre', this.value); updateWork(${w.id}, 'genderRule', this.value==='情感系'?'固定':'不限'); syncPlayers(${w.id}); renderWorks();">
                 <option value="推理系" ${(w.genre||'推理系')==='推理系'?'selected':''}>推理系</option>
                 <option value="情感系" ${w.genre==='情感系'?'selected':''}>情感系（エモ系）</option>
                 <option value="恐怖系" ${w.genre==='恐怖系'?'selected':''}>恐怖系（ホラー系）</option>
@@ -457,13 +461,35 @@ function renderWorks() {
               </select>
             </div>
             <div class="work-field">
-              <label>人数</label>
-              <input type="text" value="${escHtml(w.players)}" placeholder="6人用" oninput="updateWork(${w.id}, 'players', this.value)">
+              <label>最少人数（開催決定）</label>
+              <input type="number" min="1" value="${escHtml(String(w.minPlayers||''))}" placeholder="6" ${w.genderRule==='固定'?'disabled':''} oninput="updateWorkNum(${w.id}, 'minPlayers', this.value)">
             </div>
             <div class="work-field">
-              <label>時間</label>
-              <input type="text" value="${escHtml(w.duration)}" placeholder="4時間" oninput="updateWork(${w.id}, 'duration', this.value)">
+              <label>最多人数（定員）</label>
+              <input type="number" min="1" value="${escHtml(String(w.maxPlayers||''))}" placeholder="7" ${w.genderRule==='固定'?'disabled':''} oninput="updateWorkNum(${w.id}, 'maxPlayers', this.value)">
             </div>
+            <div class="work-field">
+              <label>所要時間（h）</label>
+              <input type="number" min="0.5" step="0.5" value="${escHtml(String(w.durationH||''))}" placeholder="4" oninput="updateWorkNum(${w.id}, 'durationH', this.value)">
+            </div>
+          </div>
+          <div class="field-row-inline">
+            <div class="work-field">
+              <label>性別ルール</label>
+              <select onchange="updateWork(${w.id}, 'genderRule', this.value); syncPlayers(${w.id}); renderWorks();">
+                <option value="不限" ${(w.genderRule||'不限')==='不限'?'selected':''}>性別不問（当日自由選択）</option>
+                <option value="固定" ${w.genderRule==='固定'?'selected':''}>男女固定</option>
+              </select>
+            </div>
+            ${w.genderRule==='固定' ? `
+            <div class="work-field">
+              <label>男性役</label>
+              <input type="number" min="0" value="${escHtml(String(w.male||''))}" placeholder="3" data-f="male" oninput="updateWorkNum(${w.id}, 'male', this.value); renderWorksKeepFocus(this)">
+            </div>
+            <div class="work-field">
+              <label>女性役</label>
+              <input type="number" min="0" value="${escHtml(String(w.female||''))}" placeholder="4" data-f="female" oninput="updateWorkNum(${w.id}, 'female', this.value); renderWorksKeepFocus(this)">
+            </div>` : `<div class="work-field hint-cell">表示：${escHtml(w.players||'—')}${w.duration?' ｜ '+escHtml(w.duration):''}</div>`}
           </div>
           <div class="work-field">
             <label>タグ（複数選択可）</label>
@@ -488,6 +514,49 @@ function updateWork(id, field, value) {
   const w = works.find(w => w.id === id);
   if (w) w[field] = value;
   localStorage.setItem('works_data', JSON.stringify(works));
+}
+
+// 数値フィールド（予約システム用）
+function updateWorkNum(id, field, value) {
+  const w = works.find(w => w.id === id);
+  if (!w) return;
+  w[field] = value === '' ? '' : Number(value);
+  syncPlayers(id);
+}
+
+// 男女固定なら 最少=最多=男+女。表示用の players / duration 文字列も自動生成
+function syncPlayers(id) {
+  const w = works.find(w => w.id === id);
+  if (!w) return;
+  if (w.genderRule === '固定') {
+    const t = (Number(w.male) || 0) + (Number(w.female) || 0);
+    w.minPlayers = t || ''; w.maxPlayers = t || '';
+  }
+  const mn = Number(w.minPlayers), mx = Number(w.maxPlayers);
+  if (mn && mx) w.players = mn === mx ? `${mx}人用` : `${mn}〜${mx}人用`;
+  else if (mx || mn) w.players = `${mx || mn}人用`;
+  if (w.durationH) w.duration = `${w.durationH}時間`;
+  localStorage.setItem('works_data', JSON.stringify(works));
+}
+
+// 男女人数入力中に再描画してもフォーカスを保つ
+function renderWorksKeepFocus(el) {
+  const f = el.dataset.f, wid = el.closest('.work-item').dataset.id;
+  renderWorks();
+  const again = document.querySelector(`#work-${wid} input[data-f="${f}"]`);
+  if (again) { again.focus(); const v = again.value; again.value = ''; again.value = v; }
+}
+
+function validateWorks() {
+  const errs = [];
+  works.filter(w => w.title).forEach(w => {
+    const n = w.title;
+    if (!w.minPlayers || !w.maxPlayers) errs.push(`『${n}』の人数`);
+    else if (Number(w.minPlayers) > Number(w.maxPlayers)) errs.push(`『${n}』の最少人数が最多人数を超えています`);
+    if (!w.durationH) errs.push(`『${n}』の所要時間`);
+    if (w.genderRule === '固定' && !((Number(w.male)||0) + (Number(w.female)||0))) errs.push(`『${n}』の男女人数`);
+  });
+  return errs;
 }
 
 // ===== CANDIDATES =====
@@ -721,7 +790,18 @@ async function githubPut(path, content, message) {
 function generateScenariosJSON() {
   const scenarios = works
     .filter(w => w.title)
-    .map(w => ({ title: w.title, players: w.players || '' }));
+    .map(w => ({
+      title: w.title,
+      subtitle: w.subtitle || '',
+      genre: w.genre || '推理系',
+      players: w.players || '',
+      minPlayers: Number(w.minPlayers) || null,
+      maxPlayers: Number(w.maxPlayers) || null,
+      durationHours: Number(w.durationH) || null,
+      genderRule: w.genderRule === '固定' ? 'fixed' : 'any',
+      male: w.genderRule === '固定' ? (Number(w.male) || 0) : null,
+      female: w.genderRule === '固定' ? (Number(w.female) || 0) : null,
+    }));
   return JSON.stringify(scenarios, null, 2);
 }
 
@@ -900,6 +980,12 @@ ${candidatesHTML}
 async function saveWorks() {
   if (!ghConfig.token || !ghConfig.user || !ghConfig.repo) {
     showToast('まずGitHub接続設定を行ってください', 'error');
+    return;
+  }
+  works.forEach(w => syncPlayers(w.id));
+  const errs = validateWorks();
+  if (errs.length) {
+    showToast('未入力：' + errs.join('、'), 'error');
     return;
   }
   const btn = document.getElementById('save-works-btn');
