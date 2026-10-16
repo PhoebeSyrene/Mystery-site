@@ -303,6 +303,13 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--white);outline-offs
 .bd-empty{font-size:13px;opacity:.7;padding:4px 0 6px}
 @media (max-width:520px){.bd-list{grid-template-columns:1fr}.bd-join{align-self:stretch;text-align:center}}
 .rs-sep{border:0;border-top:2px dashed rgba(17,17,17,.2);margin:6px 0 24px}
+.rs-policy{background:#FAFAF5;border:2px solid #111;border-radius:8px;padding:14px 16px;margin:4px 0 22px;font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif}
+.rs-policy .t{font-weight:700;font-size:13px;margin-bottom:6px}
+.rs-policy ul{margin:0 0 6px 1.2em;font-size:13px;line-height:1.8}
+.rs-policy .n{font-size:12px;opacity:.75;line-height:1.7;margin-bottom:10px}
+.rs-policy .agree{display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px;cursor:pointer}
+.rs-policy .agree input{width:20px;height:20px;accent-color:#111;flex:none}
+.rs-policy .agree i{font-style:normal;color:#C2365A;margin-left:4px}
 .rs-submit{width:100%;background:var(--lime);color:#000;border:3px solid #111;border-radius:999px;padding:15px;font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-weight:700;font-size:16px;cursor:pointer;box-shadow:0 4px 0 #111;transition:transform .15s,box-shadow .15s}
 .rs-submit:hover{transform:translateY(-2px);box-shadow:0 6px 0 #111}
 .rs-submit:active{transform:translateY(2px);box-shadow:0 2px 0 #111}
@@ -637,6 +644,12 @@ html.intro-on #bgm-btn{opacity:0;pointer-events:none}
         <p class="ppl-hint" id="ppl-hint">※ご参加者全員の人数を男女別にご入力ください。</p>
         <hr class="rs-sep">
         <div class="fld"><label for="r-note">その他ご要望</label><textarea id="r-note" name="その他ご要望" placeholder="ご不明な点やご要望などお気軽にご記入ください。"></textarea></div>
+        <div class="rs-policy">
+          <p class="t">キャンセル規定</p>
+          <ul><li>開演48時間前まで：無料</li><li>開演48時間以内：公演費用の全額を頂戴します</li></ul>
+          <p class="n">お支払いは公演当日、店頭にて承ります。キャンセル・日程変更はご予約完了メールへのご返信にてご連絡ください。</p>
+          <label class="agree"><input type="checkbox" name="キャンセル規定への同意" value="同意する" required><span>キャンセル規定に同意する<i>*</i></span></label>
+        </div>
         <button type="submit" class="rs-submit" id="submit-btn">予約を申し込む</button>
         <p class="rs-foot">送信後、2〜3営業日以内に担当者よりご連絡いたします。</p>
       </form>
