@@ -286,6 +286,14 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--white);outline-offs
 .rs-result img{width:150px;height:auto;animation:hop 1s cubic-bezier(.3,.7,.4,1) infinite}
 .rs-result h3{font-family:'Noto Sans SC','Noto Sans JP',sans-serif;font-weight:900;font-size:clamp(22px,2.4vw,32px);margin:14px 0 8px}
 .rs-result p{font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-size:14px;line-height:1.8}
+/* 三千：しゃがむ→ジャンプの2コマ */
+.rs-hop{position:relative;width:170px;aspect-ratio:409/600;margin:0 auto}
+.rs-result .rs-hop img{position:absolute;inset:0;width:100%;height:100%;animation:none}
+.rs-hop .c{animation:hopC 1.3s infinite!important}
+.rs-hop .j{opacity:0;animation:hopJ 1.3s infinite!important}
+@keyframes hopC{0%,38%{opacity:1;transform:scaleY(1)}20%{transform:scaleY(.97);transform-origin:bottom}39%,86%{opacity:0}87%,100%{opacity:1}}
+@keyframes hopJ{0%,38%{opacity:0;transform:translateY(0)}39%{opacity:1;transform:translateY(0)}60%{transform:translateY(-26px)}86%{opacity:1;transform:translateY(0)}87%,100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.rs-hop .c{animation:none!important;opacity:0}.rs-hop .j{animation:none!important;opacity:1}}
 @keyframes hop{0%,100%{transform:translateY(0)}35%{transform:translateY(-16px)}55%{transform:translateY(0)}70%{transform:translateY(-6px)}}
 #confetti{position:fixed;inset:0;pointer-events:none;z-index:200}
 @media (max-width:860px){.rs-in{grid-template-columns:1fr;padding:0 18px;gap:28px}.rs-side{position:relative;top:0}.rs-fig{height:40svh;margin:10px auto 0}.rs-card{padding:24px 18px}.rs-card .row{grid-template-columns:1fr;gap:0}.rs-card .row.ppl2{grid-template-columns:1fr 1fr;gap:12px}}
@@ -549,7 +557,7 @@ html.intro-on #bgm-btn{opacity:0;pointer-events:none}
     </div>
     <div class="rs-card">
       <div class="rs-result" id="rs-ok">
-        <img src="assets/img/sanzen-thanks.webp" alt="三千">
+        <div class="rs-hop" role="img" aria-label="跳んで喜ぶ三千"><img class="c" src="assets/img/sanzen-crouch.webp" alt=""><img class="j" src="assets/img/sanzen-jump.webp" alt=""></div>
         <h3>ご予約ありがとうございます！</h3>
         <p>ご入力いただいた内容を受け付けました。<br>担当者より2〜3営業日以内にご連絡いたします。</p>
         <div class="rs-line">
