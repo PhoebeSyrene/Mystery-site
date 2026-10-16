@@ -160,8 +160,8 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--white);outline-offs
 .lu-arrows button:disabled{opacity:.35;cursor:default;background:#fff}
 .lu-track{display:flex;gap:24px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-left:max(40px,calc((100vw - 1200px)/2));padding:4px max(40px,calc((100vw - 1200px)/2)) 8px;scrollbar-width:none}
 .lu-track::-webkit-scrollbar{display:none}
-.lu-card{flex:0 0 min(800px,64vw);scroll-snap-align:start;display:grid;grid-template-columns:minmax(0,1fr) clamp(190px,21vw,260px);gap:30px;align-items:center;
-  background:var(--c);color:var(--fg);border-radius:16px;padding:28px}
+.lu-card{flex:0 0 min(1000px,80vw);scroll-snap-align:start;display:grid;grid-template-columns:minmax(0,1fr) clamp(230px,25vw,320px);gap:16px;align-items:stretch;
+  background:var(--c);color:var(--fg);border-radius:16px;padding:18px}
 .lu-card .meta-top{font-family:var(--latin);font-weight:700;font-size:10px;letter-spacing:.16em;opacity:.7}
 .lu-card h3{font-family:'Noto Sans SC','Noto Sans JP',sans-serif;font-weight:900;font-size:clamp(24px,2.3vw,36px);line-height:1.3;margin:16px 0 4px}
 .lu-card .orig{font-size:12px;opacity:.7;margin-bottom:14px}
@@ -172,6 +172,15 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--white);outline-offs
 .lu-card .tags span{font-size:11px;border:1px solid currentColor;border-radius:999px;padding:3px 10px;opacity:.85}
 .lu-card .cta{display:inline-block;margin-top:18px;font-size:12px;font-weight:700;background:var(--fg);color:var(--c);padding:8px 16px;border-radius:999px}
 .lu-media{position:relative;border-radius:10px;overflow:hidden;background:var(--m);width:100%;aspect-ratio:5/7}
+.lu-body{display:flex;flex-direction:column;gap:16px;min-width:0}
+.lu-box{background:color-mix(in srgb,var(--c),#fff 42%);border:1px solid color-mix(in srgb,var(--fg) 14%,transparent);border-radius:12px;padding:22px 24px}
+.lu-card[style*="--fg:#F"] .lu-box{background:color-mix(in srgb,var(--c),#fff 9%)}
+.lu-info{flex:1}
+.lu-spec{display:flex;flex-wrap:wrap;align-items:center;gap:14px 22px}
+.lu-spec dl{margin:0}
+.lu-spec .cta{margin:0 0 0 auto}
+.lu-poster{padding:10px;display:flex;align-items:center}
+.lu-card .meta-top{display:inline-block;border:1px solid currentColor;border-radius:999px;padding:4px 12px;opacity:.85}
 .lu-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .lu-media .ph{position:absolute;inset:0;display:grid;place-items:center;padding:20px;text-align:center;font-family:'Noto Serif JP',serif;font-weight:600;font-size:clamp(20px,1.8vw,28px);color:rgba(255,255,255,.8);letter-spacing:.12em}
 .lu-bars{max-width:1200px;margin:22px auto 0;padding:0 40px;display:flex;gap:6px}
@@ -181,7 +190,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--white);outline-offs
   .lineup{padding-top:18vh}.lu-top,.lu-row{padding-left:18px;padding-right:18px}
   .lu-track{scroll-padding-left:18px;padding-left:18px;padding-right:18px}
   .lu-card{flex-basis:86vw;grid-template-columns:1fr;padding:20px}
-  .lu-media{order:-1;width:min(72%,300px);justify-self:center}
+  .lu-poster{order:-1;width:min(78%,300px);justify-self:center}.lu-box{padding:18px}.lu-spec .cta{margin-left:0}
   .lu-bars{padding:0 18px}
 }
 /* ---------- 4th screen: 遊び方 ---------- */
@@ -473,37 +482,47 @@ html.intro-on #bgm-btn{opacity:0;pointer-events:none}
   </div>
   <div class="lu-track" id="lu-track">
     <article class="lu-card" style="--c:#C9D9DE;--fg:#16252B;--m:#6E8F99">
-      <div>
+      <div class="lu-body">
+        <div class="lu-box lu-info">
         <div class="meta-top">01 / 推理系 · 審査中</div>
         <h3>漓川怪談簿</h3>
         <div class="orig">りせん かいだんぼ　《漓川怪谈簿》</div>
         <p class="desc">常世は、この地の名であると同時に、土地の中央に広がる不気味な湖の名でもある。 古くから、この地の水と土は人々の暮らしを育むだけでなく、数え切れないほどの怪談に語り継がれる妖や怪異を生み出してきたと伝えられている──。</p>
+        </div>
+        <div class="lu-box lu-spec">
         <dl><dt>人数</dt><dd>7人用</dd><dt>状態</dt><dd>審査中</dd></dl>
         <div class="tags"><span>店舗限定</span><span>先行公開</span></div>
         <a class="cta" href="#reserve">公演予約</a>
+        </div>
       </div>
-      <div class="lu-media"><div class="ph">漓川怪談簿</div><img src="images/candidate-1784250413949-漓川怪谈簿.jpg" alt="『漓川怪談簿』" onerror="this.remove()"></div>
+      <div class="lu-box lu-poster"><div class="lu-media"><div class="ph">漓川怪談簿</div><img src="images/candidate-1784250413949-漓川怪谈簿.jpg" alt="『漓川怪談簿』" onerror="this.remove()"></div></div>
     </article>
     <article class="lu-card" style="--c:#3D4463;--fg:#F3F1F8;--m:#262B44">
-      <div>
+      <div class="lu-body">
+        <div class="lu-box lu-info">
         <div class="meta-top">02 / 推理系 · 翻訳中</div>
         <h3>死者は幻夜に目覚める</h3>
         <div class="orig">ししゃは げんやに めざめる　《死者在幻夜中醒来》</div>
         <p class="desc">川には、無数の灯火を乗せた紙舟が浮かび、 揺れる水面の上で、まるで夜空に散る星々のように淡く瞬いていた。 果ての見えないその川は、やがて彼岸へと流れ着くという。 人々は信じている。 もし灯火を宿した紙舟が無事に川の果てへ辿り着くことができたなら、この世とあの世――二つの世界に隔てられた者たちは、幻夜の中で再び巡り会えるのだと。</p>
+        </div>
+        <div class="lu-box lu-spec">
         <dl><dt>人数</dt><dd>7人用</dd><dt>状態</dt><dd>翻訳中</dd></dl>
         <div class="tags"><span>店舗限定</span><span>先行公開</span></div>
         <a class="cta" href="#reserve">公演予約</a>
+        </div>
       </div>
-      <div class="lu-media"><div class="ph">死者は幻夜に目覚める</div><img src="images/candidate-1784250725923-死者从幻夜中醒来.jpg" alt="『死者は幻夜に目覚める』" onerror="this.remove()"></div>
+      <div class="lu-box lu-poster"><div class="lu-media"><div class="ph">死者は幻夜に目覚める</div><img src="images/candidate-1784250725923-死者从幻夜中醒来.jpg" alt="『死者は幻夜に目覚める』" onerror="this.remove()"></div></div>
     </article>
     <article class="lu-card" style="--c:#E6D8BF;--fg:#2A2219;--m:#C9B48F">
-      <div>
+      <div class="lu-body">
+        <div class="lu-box lu-info">
         <div class="meta-top">03 / COMING SOON</div>
         <h3>次の物語、準備中</h3>
         <div class="orig">新しい作品のローカライズを進めています</div>
         <p class="desc">正式決定次第、このラインナップに追加します。</p>
+        </div>
       </div>
-      <div class="lu-media"><div class="ph">準備中</div></div>
+      <div class="lu-box lu-poster"><div class="lu-media"><div class="ph">準備中</div></div></div>
     </article>
   </div>
   <div class="lu-bars" id="lu-bars"></div>
