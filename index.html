@@ -756,7 +756,7 @@ var RS=["assets/frames/reserve-001.webp", "assets/frames/reserve-002.webp", "ass
 })();
 window.SCENARIOS={};
 /* 予約自動化（Google Apps Script ウェブアプリ）のURL。空欄なら送らない */
-var BOOKING_API='';
+var BOOKING_API='https://script.google.com/macros/s/AKfycbx5OwWd-fmrGyBKeFGc52_AOq3b6B2KKPtxOrlItydpTKeIvQf2KbtAEPBATGfWsSTB/exec';
 (async function(){var sel=document.getElementById('scenario-select'),sc=[];
   try{var r=await fetch('scenarios.json?t='+Date.now());if(r.ok)sc=await r.json();}catch(e){}
   sc=Array.isArray(sc)?sc.filter(function(s){return s&&s.title;}):[];
