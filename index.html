@@ -293,6 +293,12 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--white);outline-offs
 .bd-need.go{color:#2E7D32}
 .bd-join{align-self:flex-end;margin-top:auto;background:#111;color:#fff;font-weight:700;font-size:12px;padding:8px 14px;border-radius:999px;border:0;cursor:pointer;white-space:nowrap}
 .bd-join:hover{background:#333}
+.bd-foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;margin-top:20px;padding-top:18px;border-top:2px dashed rgba(17,17,17,.2)}
+.bd-foot p{font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-size:13px;opacity:.8}
+.bd-new{display:inline-block;background:var(--lime);color:#000;font-weight:700;font-size:13px;padding:9px 16px;border-radius:999px;border:2px solid #111;white-space:nowrap}
+.bd-chip{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#F2FBD6;border:2px solid #111;border-radius:8px;padding:10px 12px 10px 14px;margin-bottom:20px;font-size:13px}
+.bd-chip[hidden]{display:none}
+.bd-chip button{flex:none;width:28px;height:28px;border-radius:50%;border:2px solid #111;background:#fff;font-weight:700;cursor:pointer;line-height:1}
 .bd-empty{font-size:13px;opacity:.7;padding:4px 0 6px}
 @media (max-width:520px){.bd-list{grid-template-columns:1fr}.bd-join{align-self:stretch;text-align:center}}
 .rs-sep{border:0;border-top:2px dashed rgba(17,17,17,.2);margin:6px 0 24px}
@@ -567,6 +573,7 @@ html.intro-on #bgm-btn{opacity:0;pointer-events:none}
     <div class="rs-board" id="board" hidden>
       <div class="bd-head"><h3>募集中の公演</h3><span class="bd-note">相席で一緒に遊ぶ仲間を募集しています。おひとりでも参加できます。</span></div>
       <div class="bd-list" id="bd-list"></div>
+      <div class="bd-foot"><p>ご希望の日時がない場合は、予約フォームから新しい公演をお申し込みいただけます。</p><a class="bd-new" href="#reserve" id="bd-new">日時を選んで予約する</a></div>
     </div>
   </div>
 </section>
@@ -609,6 +616,7 @@ html.intro-on #bgm-btn{opacity:0;pointer-events:none}
         <input type="hidden" name="subject" id="dynamic-subject" value="【浮生三千】公演予約">
         <input type="hidden" name="from_name" value="浮生三千 予約フォーム">
         <input type="checkbox" name="botcheck" style="display:none">
+        <div class="bd-chip" id="bd-chip" hidden><span>募集中の公演に参加：<b id="bd-chip-t"></b></span><button type="button" id="bd-chip-x" aria-label="選択を解除して日時を選び直す">×</button></div>
         <div class="row">
           <div class="fld"><label for="r-name">お名前<i>*</i></label><input id="r-name" name="お名前" placeholder="山田 花子" required></div>
           <div class="fld"><label for="r-mail">メールアドレス<i>*</i></label><input id="r-mail" type="email" name="メールアドレス" placeholder="example@email.com" required></div>
@@ -806,12 +814,22 @@ var BOOKING_API='https://script.google.com/macros/s/AKfycbx5OwWd-fmrGyBKeFGc52_A
     return '<div class="bd-item"><div><h4>'+s.title+'</h4><div class="bd-meta">'+lbl+' '+s.start+'〜'+s.end+'　'+s.venue+'</div></div>'+
       '<div class="bd-bar"><span class="track"><span class="fill" style="width:'+Math.min(100,Math.round(s.booked/s.max*100))+'%"></span></span><span class="num">'+s.booked+'/'+s.max+'名</span>'+need+'</div>'+
       '<button type="button" class="bd-join" data-i="'+i+'">この公演に参加する</button></div>';}).join('');
+  function clearPick(){document.getElementById('bd-chip').hidden=true;
+    var sel=document.getElementById('scenario-select');sel.selectedIndex=0;sel.dispatchEvent(new Event('change'));
+    var dv=document.getElementById('r-date');dv.value='';dv.dispatchEvent(new Event('change'));
+    document.getElementById('r-venue').selectedIndex=0;if(window.checkPpl)checkPpl();}
+  document.getElementById('bd-chip-x').addEventListener('click',clearPick);
+  document.getElementById('bd-new').addEventListener('click',function(){if(!document.getElementById('bd-chip').hidden)clearPick();});
+  /* 自分で作品・日付を変えたら選択中の表示を消す */
+  ['scenario-select','r-date','r-time','r-venue'].forEach(function(id){document.getElementById(id).addEventListener('input',function(){document.getElementById('bd-chip').hidden=true;});});
   list.addEventListener('click',function(e){var b=e.target.closest('.bd-join');if(!b)return;var s=shows[+b.dataset.i];
     var sel=document.getElementById('scenario-select');sel.value=s.title;sel.dispatchEvent(new Event('change'));
     var dv=document.getElementById('r-date');dv.value=s.date.slice(0,10).replace(/\//g,'-');dv.dispatchEvent(new Event('change'));
     var ts=document.getElementById('r-time');ts.value=s.start+'〜'+s.end;
     if(ts.value!==s.start+'〜'+s.end){var o=document.createElement('option');o.value=o.textContent=s.start+'〜'+s.end;ts.appendChild(o);ts.value=o.value;}
     document.getElementById('r-venue').value=s.venue;if(window.checkPpl)checkPpl();
+    var d=s.date.slice(0,10);document.getElementById('bd-chip-t').textContent=s.title+'　'+(+d.slice(5,7))+'/'+(+d.slice(8,10))+' '+s.start+'〜　'+s.venue;
+    document.getElementById('bd-chip').hidden=false;
     document.getElementById('r-name').scrollIntoView({behavior:'smooth',block:'center'});setTimeout(function(){document.getElementById('r-name').focus({preventScroll:true});},500);});
 })();
 (async function(){var sel=document.getElementById('scenario-select'),sc=[];
