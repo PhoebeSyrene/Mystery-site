@@ -755,6 +755,8 @@ var RS=["assets/frames/reserve-001.webp", "assets/frames/reserve-002.webp", "ass
   (function loop(t){if(vis&&!reduce&&t-t0>=1000/12){t0=t;f=(f+1)%im.length;var i=im[f];if(i.complete&&i.naturalWidth){ctx.clearRect(0,0,cv.width,cv.height);ctx.drawImage(i,0,0);}}requestAnimationFrame(loop);})(0);
 })();
 window.SCENARIOS={};
+/* 予約自動化（Google Apps Script ウェブアプリ）のURL。空欄なら送らない */
+var BOOKING_API='';
 (async function(){var sel=document.getElementById('scenario-select'),sc=[];
   try{var r=await fetch('scenarios.json?t='+Date.now());if(r.ok)sc=await r.json();}catch(e){}
   sc=Array.isArray(sc)?sc.filter(function(s){return s&&s.title;}):[];
@@ -790,7 +792,12 @@ window.checkPpl=function(){var sel=document.getElementById('scenario-select'),hi
     var d=form.querySelector('[name="希望日"]').value,t=form.querySelector('[name="希望時間"]').value,p=form.querySelector('[name="人数"]').value,v=form.querySelector('[name="希望会場"]').value;
     document.getElementById('dynamic-subject').value='【浮生三千】公演予約 - '+d+' '+t+' / '+p+' / '+v;
     try{var res=await fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(Object.fromEntries(new FormData(form)))});
-      var data=await res.json();done(!!data.success);}catch(err){done(false);}
+      var data=await res.json();
+      if(data.success&&BOOKING_API){var q=function(n){var el=form.querySelector('[name="'+n+'"]');return el?el.value:'';};
+        try{await fetch(BOOKING_API,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({
+          name:q('お名前'),email:q('メールアドレス'),scenario:q('希望作品'),date:q('希望日'),time:q('希望時間'),venue:q('希望会場'),
+          male:q('男性'),female:q('女性'),note:q('その他ご要望'),botcheck:form.querySelector('[name="botcheck"]').checked})});}catch(e2){}}
+      done(!!data.success);}catch(err){done(false);}
   });
   function confetti(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;var c=document.createElement('canvas');c.id='confetti';document.body.appendChild(c);
     var x=c.getContext('2d'),W=innerWidth,H=innerHeight,dpr=devicePixelRatio||1;c.width=W*dpr;c.height=H*dpr;x.scale(dpr,dpr);
