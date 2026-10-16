@@ -584,8 +584,9 @@ html.intro-on #bgm-btn{opacity:0;pointer-events:none}
         <div class="fld"><label for="scenario-select">希望作品<i>*</i></label><div class="sel"><select id="scenario-select" name="希望作品" required><option value="" disabled selected>読み込み中...</option></select></div></div>
         <div class="row">
           <div class="fld"><label for="r-date">希望日<i>*</i></label><input id="r-date" type="date" name="希望日" required></div>
-          <div class="fld"><label for="r-time">希望時間<i>*</i></label><div class="sel"><select id="r-time" name="希望時間" required><option value="" disabled selected>時間帯を選択</option><option>10:00〜</option><option>13:00〜</option><option>16:00〜</option><option>19:00〜</option></select></div></div>
+          <div class="fld"><label for="r-time">希望時間<i>*</i></label><div class="sel"><select id="r-time" name="希望時間" required><option value="" disabled selected>先に作品を選択してください</option></select></div></div>
         </div>
+        <div class="fld"><label for="r-venue">ご希望の会場<i>*</i></label><div class="sel"><select id="r-venue" name="希望会場" required><option selected>どちらでも可</option><option>新宿</option><option>大塚</option></select></div></div>
         <div class="row ppl2">
           <div class="fld"><label for="r-male">男性<i>*</i></label><div class="sel"><select id="r-male" name="男性" required><option value="0">0人</option><option value="1">1人</option><option value="2">2人</option><option value="3">3人</option><option value="4">4人</option><option value="5">5人</option><option value="6">6人</option><option value="7">7人</option><option value="8">8人</option></select></div></div>
           <div class="fld"><label for="r-female">女性<i>*</i></label><div class="sel"><select id="r-female" name="女性" required><option value="0">0人</option><option value="1">1人</option><option value="2">2人</option><option value="3">3人</option><option value="4">4人</option><option value="5">5人</option><option value="6">6人</option><option value="7">7人</option><option value="8">8人</option></select></div></div>
@@ -763,6 +764,15 @@ window.SCENARIOS={};
   var o=document.createElement('option');o.value=o.textContent='未定（ご相談ください）';sel.appendChild(o);
 })();
 /* 人数（男女）チェック */
+/* 開始時間：作品の所要時間から自動計算（10:00開始・弾性1h・整理1h・23:00終了） */
+var SLOT={open:10,close:23,flex:1,clean:1,defaultH:5};
+function fmt(h){var m=Math.round((h%1)*60);return Math.floor(h)+':'+(m<10?'0':'')+m;}
+window.buildTimes=function(){var sel=document.getElementById('scenario-select'),ts=document.getElementById('r-time'),s=SCENARIOS[sel.value];
+  if(!sel.value){ts.innerHTML='<option value="" disabled selected>先に作品を選択してください</option>';return;}
+  var h=(s&&s.durationHours)||SLOT.defaultH,occ=h+SLOT.flex,out=[],t=SLOT.open;
+  while(t+occ<=SLOT.close){out.push(t);t+=occ+SLOT.clean;}
+  ts.innerHTML='<option value="" disabled selected>時間帯を選択</option>'+out.map(function(t){var v=fmt(t)+'〜'+fmt(t+occ);return '<option value="'+v+'">'+v+'</option>';}).join('');};
+document.getElementById('scenario-select').addEventListener('change',buildTimes);
 window.checkPpl=function(){var sel=document.getElementById('scenario-select'),hint=document.getElementById('ppl-hint'),
   m=+document.getElementById('r-male').value||0,f=+document.getElementById('r-female').value||0,t=m+f,s=SCENARIOS[sel.value],msg='',err='';
   document.getElementById('r-ppl').value=t+'人（男性'+m+'・女性'+f+'）';
@@ -777,8 +787,8 @@ window.checkPpl=function(){var sel=document.getElementById('scenario-select'),hi
 (function(){var form=document.getElementById('reservation-form'),btn=document.getElementById('submit-btn');
   function done(ok){form.style.display='none';document.getElementById(ok?'rs-ok':'rs-err').classList.add('show');if(ok)confetti();}
   form.addEventListener('submit',async function(e){e.preventDefault();form.dataset.tried=1;if(!checkPpl()){document.getElementById('ppl-hint').scrollIntoView({block:'center',behavior:'smooth'});return;}btn.disabled=true;btn.textContent='送信中...';
-    var d=form.querySelector('[name="希望日"]').value,t=form.querySelector('[name="希望時間"]').value,p=form.querySelector('[name="人数"]').value;
-    document.getElementById('dynamic-subject').value='【浮生三千】公演予約 - '+d+' '+t+' / '+p;
+    var d=form.querySelector('[name="希望日"]').value,t=form.querySelector('[name="希望時間"]').value,p=form.querySelector('[name="人数"]').value,v=form.querySelector('[name="希望会場"]').value;
+    document.getElementById('dynamic-subject').value='【浮生三千】公演予約 - '+d+' '+t+' / '+p+' / '+v;
     try{var res=await fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(Object.fromEntries(new FormData(form)))});
       var data=await res.json();done(!!data.success);}catch(err){done(false);}
   });
