@@ -298,7 +298,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--white);outline-offs
 .bd-foot p{font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-size:13px;opacity:.8}
 .bd-new{display:inline-block;background:var(--lime);color:#000;font-weight:700;font-size:13px;padding:9px 16px;border-radius:999px;border:2px solid #111;white-space:nowrap}
 .bd-chip{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#F2FBD6;border:2px solid #111;border-radius:8px;padding:10px 12px 10px 14px;margin-bottom:20px;font-size:13px}
-.bd-chip[hidden]{display:none}
+.bd-chip[hidden],#slot-fld[hidden],#dt-row[hidden],#venue-fld[hidden]{display:none}
 .bd-chip button{flex:none;width:28px;height:28px;border-radius:50%;border:2px solid #111;background:#fff;font-weight:700;cursor:pointer;line-height:1}
 .bd-empty{font-size:13px;opacity:.7;padding:4px 0 6px}
 @media (max-width:520px){.bd-list{grid-template-columns:1fr}.bd-join{align-self:stretch;text-align:center}}
@@ -631,11 +631,12 @@ html.intro-on #bgm-btn{opacity:0;pointer-events:none}
         </div>
         <hr class="rs-sep">
         <div class="fld"><label for="scenario-select">希望作品<i>*</i></label><div class="sel"><select id="scenario-select" name="希望作品" required><option value="" disabled selected>読み込み中...</option></select></div></div>
-        <div class="row">
+        <div class="fld" id="slot-fld" hidden><label for="r-slot">希望日時・会場<i>*</i></label><div class="sel"><select id="r-slot"><option value="" disabled selected>先に作品を選択してください</option></select></div></div>
+        <div class="row" id="dt-row">
           <div class="fld"><label for="r-date">希望日<i>*</i></label><input id="r-date" type="date" name="希望日" required></div>
           <div class="fld"><label for="r-time">希望時間<i>*</i></label><div class="sel"><select id="r-time" name="希望時間" required><option value="" disabled selected>先に作品を選択してください</option></select></div></div>
         </div>
-        <div class="fld"><label for="r-venue">ご希望の会場<i>*</i></label><div class="sel"><select id="r-venue" name="希望会場" required><option selected>どちらでも可</option><option>新宿</option><option>大塚</option></select></div></div>
+        <div class="fld" id="venue-fld"><label for="r-venue">ご希望の会場<i>*</i></label><div class="sel"><select id="r-venue" name="希望会場" required><option selected>どちらでも可</option><option>新宿</option><option>大塚</option></select></div></div>
         <div class="row ppl2">
           <div class="fld"><label for="r-male">男性<i>*</i></label><div class="sel"><select id="r-male" name="男性" required><option value="0">0人</option><option value="1">1人</option><option value="2">2人</option><option value="3">3人</option><option value="4">4人</option><option value="5">5人</option><option value="6">6人</option><option value="7">7人</option><option value="8">8人</option></select></div></div>
           <div class="fld"><label for="r-female">女性<i>*</i></label><div class="sel"><select id="r-female" name="女性" required><option value="0">0人</option><option value="1">1人</option><option value="2">2人</option><option value="3">3人</option><option value="4">4人</option><option value="5">5人</option><option value="6">6人</option><option value="7">7人</option><option value="8">8人</option></select></div></div>
@@ -839,10 +840,35 @@ var RS=["assets/frames/reserve-001.webp", "assets/frames/reserve-002.webp", "ass
 })();
 window.SCENARIOS={};var SCENARIOS_READY=false;
 /* 予約自動化（Google Apps Script ウェブアプリ）のURL。空欄なら送らない */
+window.API_DATA=null;
 var BOOKING_API='https://script.google.com/macros/s/AKfycbx5OwWd-fmrGyBKeFGc52_AOq3b6B2KKPtxOrlItydpTKeIvQf2KbtAEPBATGfWsSTB/exec';
+/* 予約システムの公開データ（募集ボード・GM枠）を1回だけ取得 */
+window.API_DATA=fetch(BOOKING_API+'?board=1&t='+Date.now()).then(function(r){return r.json();}).catch(function(){return null;});
+/* GM枠モード：GMさんが入れる日時・会場だけを選べるようにする */
+(async function(){var data=await API_DATA;if(!data||!data.gmMode)return;
+  if(!SCENARIOS_READY)await new Promise(function(res){document.addEventListener('scenarios-ready',res,{once:true});});
+  window.GM_MODE=true;var dow='日月火水木金土',slotSel=document.getElementById('r-slot');
+  document.getElementById('slot-fld').hidden=false;document.getElementById('dt-row').hidden=true;document.getElementById('venue-fld').hidden=true;
+  ['r-date','r-time','r-venue'].forEach(function(id){document.getElementById(id).required=false;});slotSel.required=true;
+  function lbl(d){var dt=new Date(d.replace(/\//g,'-')+'T00:00:00+09:00');return (+d.slice(5,7))+'/'+(+d.slice(8,10))+'（'+dow[new Date(dt.getTime()+9*3600e3).getUTCDay()]+'）';}
+  window.buildSlots=function(){var s=SCENARIOS[document.getElementById('scenario-select').value];
+    if(!document.getElementById('scenario-select').value){slotSel.innerHTML='<option value="" disabled selected>先に作品を選択してください</option>';return;}
+    var occ=((s&&s.durationHours)||SLOT.defaultH)+SLOT.flex;
+    var opts=(data.slots||[]).filter(function(g){var h=g.start.split(':');return +h[0]+(+h[1]||0)/60+occ<=SLOT.close;}).map(function(g){
+      var h=g.start.split(':'),en=fmt(+h[0]+(+h[1]||0)/60+occ),v=g.date+'|'+g.start+'|'+en+'|'+g.venue;
+      return '<option value="'+v+'">'+lbl(g.date)+' '+g.start+'〜'+en+'　'+g.venue+'</option>';});
+    slotSel.innerHTML=opts.length?'<option value="" disabled selected>日時・会場を選択</option>'+opts.join(''):'<option value="" disabled selected>現在受付中の日時はありません</option>';};
+  window.applySlot=function(){var v=slotSel.value.split('|');if(v.length<4)return;
+    document.getElementById('r-date').value=v[0].replace(/\//g,'-');
+    var ts=document.getElementById('r-time');ts.innerHTML='<option>'+v[1]+'〜'+v[2]+'</option>';ts.value=v[1]+'〜'+v[2];
+    document.getElementById('r-venue').value=v[3];};
+  document.getElementById('scenario-select').addEventListener('change',buildSlots);slotSel.addEventListener('change',applySlot);
+  slotSel.addEventListener('input',function(){document.getElementById('bd-chip').hidden=true;});
+  buildSlots();
+})();
 /* 募集中の公演（公演シートで「ボード公開」にチェックした公演） */
 (async function(){var box=document.getElementById('board'),list=document.getElementById('bd-list');
-  var data;try{var r=await fetch(BOOKING_API+'?board=1&t='+Date.now());data=await r.json();}catch(e){return;}
+  var data=await API_DATA;if(!data)return;
   if(!SCENARIOS_READY)await new Promise(function(res){document.addEventListener('scenarios-ready',res,{once:true});});
   if(document.getElementById('reservation-form').style.display==='none')return;
   var lim=Date.now()+48*3600e3,dow='日月火水木金土';
@@ -859,7 +885,7 @@ var BOOKING_API='https://script.google.com/macros/s/AKfycbx5OwWd-fmrGyBKeFGc52_A
   function clearPick(){document.getElementById('bd-chip').hidden=true;
     var sel=document.getElementById('scenario-select');sel.selectedIndex=0;sel.dispatchEvent(new Event('change'));
     var dv=document.getElementById('r-date');dv.value='';dv.dispatchEvent(new Event('change'));
-    document.getElementById('r-venue').selectedIndex=0;if(window.checkPpl)checkPpl();}
+    document.getElementById('r-venue').selectedIndex=0;if(window.GM_MODE)document.getElementById('r-slot').selectedIndex=0;if(window.checkPpl)checkPpl();}
   document.getElementById('bd-chip-x').addEventListener('click',clearPick);
   document.getElementById('bd-new').addEventListener('click',function(){if(!document.getElementById('bd-chip').hidden)clearPick();});
   /* 自分で作品・日付を変えたら選択中の表示を消す */
@@ -869,7 +895,10 @@ var BOOKING_API='https://script.google.com/macros/s/AKfycbx5OwWd-fmrGyBKeFGc52_A
     var dv=document.getElementById('r-date');dv.value=s.date.slice(0,10).replace(/\//g,'-');dv.dispatchEvent(new Event('change'));
     var ts=document.getElementById('r-time');ts.value=s.start+'〜'+s.end;
     if(ts.value!==s.start+'〜'+s.end){var o=document.createElement('option');o.value=o.textContent=s.start+'〜'+s.end;ts.appendChild(o);ts.value=o.value;}
-    document.getElementById('r-venue').value=s.venue;if(window.checkPpl)checkPpl();
+    document.getElementById('r-venue').value=s.venue;
+    if(window.GM_MODE){var ss=document.getElementById('r-slot'),key=s.date.slice(0,10)+'|'+s.start+'|'+s.end+'|'+s.venue;ss.value=key;
+      if(ss.value!==key){var o2=document.createElement('option');o2.value=key;o2.textContent=s.date.slice(5,10)+' '+s.start+'〜'+s.end+'　'+s.venue;ss.appendChild(o2);ss.value=key;}applySlot();}
+    if(window.checkPpl)checkPpl();
     var d=s.date.slice(0,10);document.getElementById('bd-chip-t').textContent=s.title+'　'+(+d.slice(5,7))+'/'+(+d.slice(8,10))+' '+s.start+'〜　'+s.venue;
     document.getElementById('bd-chip').hidden=false;
     document.getElementById('r-name').scrollIntoView({behavior:'smooth',block:'center'});setTimeout(function(){document.getElementById('r-name').focus({preventScroll:true});},500);});
