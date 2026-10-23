@@ -351,7 +351,7 @@ function splitTitle_(title, reading) {
 }
 
 function defaultWork() {
-  return { id: Date.now(), title: '', subtitle: '', genre: '推理系', players: '', duration: '', minPlayers: '', maxPlayers: '', durationH: '', genderRule: '不限', male: '', female: '', description: '', price: '', tags: [], image: '', imageName: '' };
+  return { id: Date.now(), title: '', subtitle: '', genre: '推理系', players: '', duration: '', minPlayers: '', maxPlayers: '', durationH: '', genderRule: '不限', male: '', female: '', description: '', price: '', priceYen: '', priceShinjuku: '', tags: [], image: '', imageName: '' };
 }
 
 function defaultCandidate() {
@@ -543,8 +543,18 @@ function renderWorks() {
             <label>紹介文</label>
             <textarea oninput="updateWork(${w.id}, 'description', this.value)">${escHtml(w.description)}</textarea>
           </div>
+          <div class="field-row-inline">
+            <div class="work-field">
+              <label>料金（1人・円）</label>
+              <input type="number" min="0" step="100" value="${escHtml(String(w.priceYen||''))}" placeholder="3500" oninput="updateWorkNum(${w.id}, 'priceYen', this.value)">
+            </div>
+            <div class="work-field">
+              <label>新宿の料金（空欄＝同じ）</label>
+              <input type="number" min="0" step="100" value="${escHtml(String(w.priceShinjuku||''))}" placeholder="同じ" oninput="updateWorkNum(${w.id}, 'priceShinjuku', this.value)">
+            </div>
+          </div>
           <div class="work-field">
-            <label>公演費用</label>
+            <label>公演費用（表示用・空欄なら料金から自動）</label>
             <input type="text" value="${escHtml(w.price)}" placeholder="例：¥3,500/人" oninput="updateWork(${w.id}, 'price', this.value)">
           </div>
         </div>
@@ -849,6 +859,8 @@ function generateScenariosJSON() {
       genderRule: w.genderRule === '固定' ? 'fixed' : 'any',
       male: w.genderRule === '固定' ? (Number(w.male) || 0) : null,
       female: w.genderRule === '固定' ? (Number(w.female) || 0) : null,
+      price: Number(w.priceYen) || null,
+      priceShinjuku: Number(w.priceShinjuku) || Number(w.priceYen) || null,
     }));
   return JSON.stringify(scenarios, null, 2);
 }
@@ -857,6 +869,7 @@ function generateScenariosJSON() {
 function generateLineupJSON() {
   const clean = o => {
     const x = Object.assign({}, o, splitTitle_(o.title, o.reading));
+    if (!x.price && Number(x.priceYen)) x.price = '¥' + Number(x.priceYen).toLocaleString('ja-JP') + '/人';
     let img = x.imageName || x.image || '';
     if (/^data:/.test(img)) img = '';
     x.image = img.replace(/^\.\.\//, '');
