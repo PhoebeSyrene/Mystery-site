@@ -865,12 +865,12 @@ window.API_DATA=fetch(BOOKING_API+'?board=1&t='+Date.now()).then(function(r){ret
     var occ=((s&&s.durationHours)||SLOT.defaultH)+SLOT.flex;
     var opts=(data.slots||[]).filter(function(g){var h=g.start.split(':');return +h[0]+(+h[1]||0)/60+occ<=SLOT.close;}).map(function(g){
       var h=g.start.split(':'),en=fmt(+h[0]+(+h[1]||0)/60+occ),v=g.date+'|'+g.start+'|'+en+'|'+g.venue;
-      return '<option value="'+v+'">'+lbl(g.date)+' '+g.start+'〜'+en+'　'+g.venue+'</option>';});
+      return '<option value="'+v+'">'+lbl(g.date)+' '+g.start+'〜'+en+'　'+(/^(新宿|大塚)$/.test(g.venue)?g.venue:'会場どちらでも')+'</option>';});
     slotSel.innerHTML=opts.length?'<option value="" disabled selected>日時・会場を選択</option>'+opts.join(''):'<option value="" disabled selected>現在受付中の日時はありません</option>';};
   window.applySlot=function(){var v=slotSel.value.split('|');if(v.length<4)return;
     document.getElementById('r-date').value=v[0].replace(/\//g,'-');
     var ts=document.getElementById('r-time');ts.innerHTML='<option>'+v[1]+'〜'+v[2]+'</option>';ts.value=v[1]+'〜'+v[2];
-    document.getElementById('r-venue').value=v[3];};
+    document.getElementById('r-venue').value=/^(新宿|大塚)$/.test(v[3])?v[3]:'どちらでも可';};
   document.getElementById('scenario-select').addEventListener('change',buildSlots);slotSel.addEventListener('change',applySlot);
   slotSel.addEventListener('input',function(){document.getElementById('bd-chip').hidden=true;});
   buildSlots();
@@ -884,7 +884,7 @@ window.API_DATA=fetch(BOOKING_API+'?board=1&t='+Date.now()).then(function(r){ret
     var items=data.slots.filter(function(g){var h=g.start.split(':');return +h[0]+(+h[1]||0)/60+occ<=SLOT.close;}).slice(0,12);
     if(!items.length){box.hidden=true;return;}
     list.innerHTML=items.map(function(g){var h=g.start.split(':'),en=fmt(+h[0]+(+h[1]||0)/60+occ);
-      return '<button type="button" data-d="'+g.date+'" data-t="'+g.start+'〜'+en+'" data-v="'+g.venue+'">'+lbl(g.date)+' '+g.start+'〜'+en+'<small>'+g.venue+'</small></button>';}).join('');
+      return '<button type="button" data-d="'+g.date+'" data-t="'+g.start+'〜'+en+'" data-v="'+(/^(新宿|大塚)$/.test(g.venue)?g.venue:'どちらでも可')+'">'+lbl(g.date)+' '+g.start+'〜'+en+'<small>'+(/^(新宿|大塚)$/.test(g.venue)?g.venue:'会場どちらでも')+'</small></button>';}).join('');
     box.hidden=false;}
   list.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
     var d=document.getElementById('r-date'),ts=document.getElementById('r-time');d.value=b.dataset.d.replace(/\//g,'-');buildTimes();
