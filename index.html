@@ -299,6 +299,14 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--white);outline-offs
 .bd-new{display:inline-block;background:var(--lime);color:#000;font-weight:700;font-size:13px;padding:9px 16px;border-radius:999px;border:2px solid #111;white-space:nowrap}
 .bd-chip{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#F2FBD6;border:2px solid #111;border-radius:8px;padding:10px 12px 10px 14px;margin-bottom:20px;font-size:13px}
 .bd-chip[hidden],#slot-fld[hidden],#dt-row[hidden],#venue-fld[hidden]{display:none}
+.gm-rec{background:#F2FBD6;border:2px solid #111;border-radius:8px;padding:12px 14px;margin:-4px 0 20px}
+.gm-rec[hidden]{display:none}
+.gm-rec-t{font-weight:700;font-size:13px;margin:0 0 8px}
+.gm-rec-t span{display:block;font-weight:400;font-size:11px;color:#555;margin-top:2px}
+.gm-rec-list{display:flex;flex-wrap:wrap;gap:8px}
+.gm-rec-list button{background:#fff;border:2px solid #111;border-radius:999px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;color:#111}
+.gm-rec-list button small{font-weight:400;margin-left:6px}
+.gm-rec-list button.on{background:#111;color:#fff}
 .bd-chip button{flex:none;width:28px;height:28px;border-radius:50%;border:2px solid #111;background:#fff;font-weight:700;cursor:pointer;line-height:1}
 .bd-empty{font-size:13px;opacity:.7;padding:4px 0 6px}
 @media (max-width:520px){.bd-list{grid-template-columns:1fr}.bd-join{align-self:stretch;text-align:center}}
@@ -637,6 +645,7 @@ html.intro-on #bgm-btn{opacity:0;pointer-events:none}
           <div class="fld"><label for="r-time">希望時間<i>*</i></label><div class="sel"><select id="r-time" name="希望時間" required><option value="" disabled selected>先に作品を選択してください</option></select></div></div>
         </div>
         <div class="fld" id="venue-fld"><label for="r-venue">ご希望の会場<i>*</i></label><div class="sel"><select id="r-venue" name="希望会場" required><option selected>どちらでも可</option><option>新宿</option><option>大塚</option></select></div></div>
+        <div class="gm-rec" id="gm-rec" hidden><p class="gm-rec-t">GM確保済みの日時<span>おすすめ・開催が決まりやすい枠です（タップで日時・会場を入力）</span></p><div class="gm-rec-list" id="gm-rec-list"></div></div>
         <div class="row ppl2">
           <div class="fld"><label for="r-male">男性<i>*</i></label><div class="sel"><select id="r-male" name="男性" required><option value="0">0人</option><option value="1">1人</option><option value="2">2人</option><option value="3">3人</option><option value="4">4人</option><option value="5">5人</option><option value="6">6人</option><option value="7">7人</option><option value="8">8人</option></select></div></div>
           <div class="fld"><label for="r-female">女性<i>*</i></label><div class="sel"><select id="r-female" name="女性" required><option value="0">0人</option><option value="1">1人</option><option value="2">2人</option><option value="3">3人</option><option value="4">4人</option><option value="5">5人</option><option value="6">6人</option><option value="7">7人</option><option value="8">8人</option></select></div></div>
@@ -865,6 +874,25 @@ window.API_DATA=fetch(BOOKING_API+'?board=1&t='+Date.now()).then(function(r){ret
   document.getElementById('scenario-select').addEventListener('change',buildSlots);slotSel.addEventListener('change',applySlot);
   slotSel.addEventListener('input',function(){document.getElementById('bd-chip').hidden=true;});
   buildSlots();
+})();
+/* GM枠モードOFFのとき：GMさんが入れる日時を「おすすめ」として表示し、タップで入力 */
+(async function(){var data=await API_DATA;if(!data||data.gmMode||!(data.slots||[]).length)return;
+  if(!SCENARIOS_READY)await new Promise(function(res){document.addEventListener('scenarios-ready',res,{once:true});});
+  var box=document.getElementById('gm-rec'),list=document.getElementById('gm-rec-list'),sel=document.getElementById('scenario-select'),dow='日月火水木金土';
+  function lbl(d){var dt=new Date(d.replace(/\//g,'-')+'T00:00:00+09:00');return (+d.slice(5,7))+'/'+(+d.slice(8,10))+'（'+dow[new Date(dt.getTime()+9*3600e3).getUTCDay()]+'）';}
+  function render(){if(!sel.value||window.GM_MODE){box.hidden=true;return;}var s=SCENARIOS[sel.value],occ=((s&&s.durationHours)||SLOT.defaultH)+SLOT.flex;
+    var items=data.slots.filter(function(g){var h=g.start.split(':');return +h[0]+(+h[1]||0)/60+occ<=SLOT.close;}).slice(0,12);
+    if(!items.length){box.hidden=true;return;}
+    list.innerHTML=items.map(function(g){var h=g.start.split(':'),en=fmt(+h[0]+(+h[1]||0)/60+occ);
+      return '<button type="button" data-d="'+g.date+'" data-t="'+g.start+'〜'+en+'" data-v="'+g.venue+'">'+lbl(g.date)+' '+g.start+'〜'+en+'<small>'+g.venue+'</small></button>';}).join('');
+    box.hidden=false;}
+  list.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
+    var d=document.getElementById('r-date'),ts=document.getElementById('r-time');d.value=b.dataset.d.replace(/\//g,'-');buildTimes();
+    if(![].some.call(ts.options,function(o){return o.value===b.dataset.t;})){var o=document.createElement('option');o.value=o.textContent=b.dataset.t;ts.appendChild(o);}
+    ts.value=b.dataset.t;document.getElementById('r-venue').value=b.dataset.v;
+    [].forEach.call(list.children,function(x){x.classList.toggle('on',x===b);});document.getElementById('bd-chip').hidden=true;});
+  ['r-date','r-time','r-venue'].forEach(function(id){document.getElementById(id).addEventListener('input',function(){[].forEach.call(list.children,function(x){x.classList.remove('on');});});});
+  sel.addEventListener('change',render);render();
 })();
 /* 募集中の公演（公演シートで「ボード公開」にチェックした公演） */
 (async function(){var box=document.getElementById('board'),list=document.getElementById('bd-list');
